@@ -1,6 +1,6 @@
 {
   "name": "haprouter-route-file",
-  "description": "The stock Hap Router FILE route",
+  "description": "The stock HAP Router FILE route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {

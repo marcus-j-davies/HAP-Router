@@ -1,6 +1,6 @@
 {
   "name": "haprouter-route-console",
-  "description": "The stock Hap Router CONSOLE route",
+  "description": "The stock HAP Router CONSOLE route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {

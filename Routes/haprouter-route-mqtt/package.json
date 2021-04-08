@@ -1,6 +1,6 @@
 {
   "name": "haprouter-route-mqtt",
-  "description": "The stock Hap Router MQTT route",
+  "description": "The stock HAP Router MQTT route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {

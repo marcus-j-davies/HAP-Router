@@ -1,6 +1,6 @@
 {
   "name": "haprouter-route-websocket",
-  "description": "The stock Hap RouterWEB SOCKET route",
+  "description": "The stock HAP RouterWEB SOCKET route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {

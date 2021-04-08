@@ -1,6 +1,6 @@
 {
   "name": "haprouter-route-udp",
-  "description": "The stock Hap Router UDP route",
+  "description": "The stock HAP Router UDP route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {

@@ -1,6 +1,6 @@
 {
   "name": "haprouter-route-http",
-  "description": "The stock Hap Router HTTP route",
+  "description": "The stock HAP Router HTTP route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {
