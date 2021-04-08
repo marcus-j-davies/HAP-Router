@@ -88,7 +88,8 @@ console.log(CHALK.keyword('orange')(" | |__| |   /  \\   | |__) || |__) | ___   
 console.log(CHALK.keyword('orange')(" |  __  |  / /\\ \\  |  ___/ |  _  / / _ \\ | | | || __|/ _ \\| '__|")) 
 console.log(CHALK.keyword('orange')(" | |  | | / ____ \\ | |     | | \\ \\| (_) || |_| || |_|  __/| |   ")) 
 console.log(CHALK.keyword('orange')(" |_|  |_|/_/    \\_\\|_|     |_|  \\_\\\\___/  \\__,_| \\__|\\___||_|   ")) 
-console.log(CHALK.keyword('white')(" ----- For the Smart Home Enthusiast, for the curios. -----"))
+console.log(" ")     
+console.log(CHALK.keyword('white')(" ------- For the Smart Home Enthusiast, for the curios. -------"))
 console.log(" ")                                                               
                                                                                             
 // install modules if needed

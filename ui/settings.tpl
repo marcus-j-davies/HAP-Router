@@ -56,8 +56,8 @@
                         <option value="bonjour-hap">BONJOUR-HAP (Legacy)</option>
                         <option value="ciao">CIAO</option>
                      </select>
-                        <script> $("#CFG_Advertiser").val("{{Config.advertiser}}")</script>
-                     </td>
+                     <script> $("#CFG_Advertiser").val("{{Config.advertiser}}")</script>
+                  </td>
                </tr>
                <tr>
                   <td>mDNS Interface</td>
@@ -65,7 +65,7 @@
                      <select id="CFG_MDNSInterface">
                         <option value="ALL">First Available</option>
                         {{#Interfaces}}
-                           <option value="{{.}}">{{.}}</option>
+                        <option value="{{.}}">{{.}}</option>
                         {{/Interfaces}}
                      </select>
                      <script> $("#CFG_MDNSInterface").val("{{Config.interface}}")</script>
@@ -77,7 +77,7 @@
                      <select id="CFG_APIInterface">
                         <option value="ALL">All Interfaces</option>
                         {{#Interfaces}}
-                           <option value="{{.}}">{{.}}</option>
+                        <option value="{{.}}">{{.}}</option>
                         {{/Interfaces}}
                      </select>
                      <script> $("#CFG_APIInterface").val("{{Config.webInterfaceAddress}}")</script>
@@ -90,7 +90,11 @@
             </table>
          </fieldset>
 
-         
+         <fieldset style="text-align: right; margin-top: 20px;">
+            <input type="button" class="StyledButton" value="Save Changes">
+         </fieldset>
+
+
 
       </blockquote>
       <blockquote>
