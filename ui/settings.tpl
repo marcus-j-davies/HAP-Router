@@ -90,6 +90,15 @@
             </table>
          </fieldset>
 
+         <!-- Backup / Restore-->
+         <fieldset>
+            <legend>Backup And Restore</legend>
+            <div style="text-align: center;">
+               <input type="button" class="StyledButton" value="Backup Configuration"> &nbsp; &nbsp; <input type="button" class="StyledButton" value="Restore Configuration">
+            </div>
+         </fieldset>
+
+         <!-- Save-->
          <fieldset style="text-align: right; margin-top: 20px;">
             <input type="button" class="StyledButton" value="Save Changes">
          </fieldset>
