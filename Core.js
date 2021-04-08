@@ -76,10 +76,12 @@ if (UTIL.checkPassword()) {
 // Set routing module path
 ROUTING.setPath(UTIL.RootPath)
 
+
 // Check install module
 if (UTIL.checkInstallRequest()) {
     return; // stop
 }
+
 
  // Banner 
 console.log(CHALK.keyword('orange')("  _    _            _____   _____                _              ")) 
@@ -93,7 +95,7 @@ console.log(CHALK.keyword('white')(" ------- For the Smart Home Enthusiast, for 
 console.log(" ")                                                               
                                                                                             
 // install modules if needed
-ROUTING.installStockModules();
+//ROUTING.installStockModules();
 ROUTING.loadModules();
 
 if (!CONFIG.bridgeConfig.hasOwnProperty("pincode")) {
