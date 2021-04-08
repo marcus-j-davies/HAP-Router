@@ -1,7 +1,7 @@
 {
   "name": "haprouter-route-websocket",
-  "description": "The stock HAP RouterWEB SOCKET route",
-  "version": "1.0.0",
+  "description": "The stock HAP Router WEB SOCKET route",
+  "version": "1.0.1",
   "main": "index.js",
   "author": {
     "name": "Marcus Davies",
