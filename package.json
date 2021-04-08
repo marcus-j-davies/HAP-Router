@@ -1,7 +1,7 @@
 {
-  "name": "homekit-device-stack",
+  "name": "hap-router",
   "version": "4.0.0",
-  "description": "A Middleware Server, for bringing homekit functionality to your Home Automation.",
+  "description": "A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.",
   "main": "App.js",
   "keywords": [
     "homekit",
