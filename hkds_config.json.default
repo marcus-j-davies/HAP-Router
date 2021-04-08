@@ -1,0 +1,47 @@
+{
+    "advertiser": "ciao",
+    "interface": "ALL",
+    "loginUsername": "admin",
+    "loginPassword": "21232f297a57a5a743894a0e4a801fc3",
+    "webInterfacePort": 7989,
+    "webInterfaceAddress": "ALL",
+    "enableIncomingMQTT": "false",
+    "MQTTBroker": "mqtt://test.mosquitto.org",
+    "MQTTTopic": "HKDS/IN/+",
+    "MQTTOptions": {
+        "username": "",
+        "password": ""
+    },
+    "bridgeConfig": {
+    },
+    "routes": {
+        "Node Red": {
+            "type": "hkds-route-http",
+            "destinationURI": "http://192.168.0.2:1880/HKDS/{{accessoryID}}"
+        },
+        "Output To Console": {
+            "type": "hkds-route-console"
+        },
+        "UDP Broadcast": {
+            "type": "hkds-route-udp",
+            "address": "255.255.255.255",
+            "port": 34322
+        },
+        "File Output": {
+            "type": "hkds-route-file",
+            "directory": "/accessory-events/{{accessoryID}}"
+        },
+        "MQTT Broker": {
+            "type": "hkds-route-mqtt",
+            "mqttbroker":"mqtt://broker.mqttdashboard.com",
+            "mqttusername":"",
+            "mqttpassword":"",
+            "topic": "HKDS/OUT/{{accessoryID}}"
+        },
+        "Websocket": {
+            "type": "hkds-route-websocket",
+            "uri": "ws://server.com:9999/path/to/websocket"
+        }
+    },
+    "accessories": []
+}

@@ -1,0 +1,289 @@
+﻿'use strict'
+const UTIL = require('./core/util');
+
+// Check Fresh Environment ?
+UTIL.checkNewEV();
+
+const FS = require('fs');
+const CHALK = require('chalk');
+const SERVER = require('./core/server');
+const ACCESSORY = require('./core/accessory');
+const CONFIG = require(UTIL.ConfigPath);
+const IP = require("ip");
+const MQTT = require('./core/mqtt');
+const PATH = require('path');
+const NODECLEANUP = require('node-cleanup');
+const ROUTING = require('./core/routing');
+
+// resgister process exit handler
+NODECLEANUP(clean);
+
+// Cleanup our mess
+function clean(exitCode, signal) {
+
+    cleanEV().then(() => {
+        process.kill(process.pid, signal);
+    });
+
+    NODECLEANUP.uninstall();
+    return false;
+}
+
+function cleanEV() {
+
+    return new Promise((resolve, reject) => {
+        console.info(' Unpublishing Accessories...');
+        Bridge.unpublish(false);
+
+        const AccessoryIDs = Object.keys(Accesories);
+        for (let i = 0; i < AccessoryIDs.length; i++) {
+            const Acc = Accesories[AccessoryIDs[i]];
+            if (!Acc._Config.bridged) {
+                Acc.unpublish(false);
+            }
+        }
+
+        console.info(' Saving current Characteristics...');
+        const CharacteristicCache = {};
+
+        for (let i = 0; i < AccessoryIDs.length; i++) {
+            const Acc = Accesories[AccessoryIDs[i]];
+            CharacteristicCache[AccessoryIDs[i]] = Acc.getProperties();
+        }
+
+        UTIL.saveCharacteristicCache(CharacteristicCache);
+
+        console.info(' Cleaning up Routes...');
+        let RouteKeys = Object.keys(Routes);
+        RouteKeys.forEach((AE) =>{
+            Routes[AE].close('appclose');
+        })
+
+        resolve();
+    });
+}
+
+// Check if we are being asked for a Reset.
+if (UTIL.checkReset()) {
+    return; // stop (whilst we check they know what they are doing.)
+}
+
+// Check password reset
+if (UTIL.checkPassword()) {
+    return; // stop
+}
+
+// Set routing module path
+ROUTING.setPath(UTIL.RootPath)
+
+// Check install module
+if (UTIL.checkInstallRequest()) {
+    return; // stop
+}
+
+// Banner
+console.log(CHALK.keyword('orange')(" HomeKit"))
+console.log(CHALK.keyword('white')(" Device Stack"))
+console.log(CHALK.keyword('white')(" For the Smart Home Enthusiast, For the curious."))
+console.log(CHALK.keyword('orange')(" _________________________________________________________________"))
+console.log(" ")
+
+// install modules if needed
+ROUTING.installStockModules();
+ROUTING.loadModules();
+
+if (!CONFIG.bridgeConfig.hasOwnProperty("pincode")) {
+
+    // Genertae a Bridge
+    CONFIG.bridgeConfig.pincode = UTIL.getRndInteger(100, 999) + "-" + UTIL.getRndInteger(10, 99) + "-" + UTIL.getRndInteger(100, 999);
+    CONFIG.bridgeConfig.username = UTIL.genMAC();
+    CONFIG.bridgeConfig.setupID = UTIL.makeID(4);
+    CONFIG.bridgeConfig.serialNumber = UTIL.makeID(12)
+    UTIL.saveBridgeConfig(CONFIG.bridgeConfig)
+
+    // Create a demo accessory for new configs (accessories will heronin be created via the ui)
+    const DemoAccessory = {
+        "type": "SWITCH",
+        "name": "Switch Accessory Demo",
+        "route": "Output To Console",
+        "pincode": UTIL.getRndInteger(100, 999) + "-" + UTIL.getRndInteger(10, 99) + "-" + UTIL.getRndInteger(100, 999),
+        "username": UTIL.genMAC(),
+        "setupID": UTIL.makeID(4),
+        "serialNumber": UTIL.makeID(12),
+        "bridged": true
+    }
+    CONFIG.accessories.push(DemoAccessory)
+    UTIL.appendAccessoryToConfig(DemoAccessory)
+}
+
+console.log(" Configuring Homekit Bridge")
+
+// Configure Our Bridge
+const Bridge = new ACCESSORY.Bridge(CONFIG.bridgeConfig)
+Bridge.on('PAIR_CHANGE', Paired)
+Bridge.on('LISTENING', getsetupURI)
+
+// Routes
+const Routes = {}
+
+function setupRoutes() {
+
+    const Keys = Object.keys(Routes);
+
+    for (let i = 0; i < Keys.length; i++) {
+        Routes[Keys[i]].close('reconfigure')
+        delete Routes[Keys[i]];
+    }
+
+    const RouteNames = Object.keys(CONFIG.routes);
+
+    for (let i = 0; i < RouteNames.length; i++) {
+
+        let RouteCFG = CONFIG.routes[RouteNames[i]]
+        console.log(" Configuring Route : " + RouteNames[i] + " (" + RouteCFG.type + ")")
+
+        let RouteClass = new ROUTING.Routes[RouteCFG.type].Class(RouteCFG);
+
+        Routes[RouteNames[i]] = RouteClass;
+
+    }
+}
+
+// This is also called externally (i.e when updating routes via the UI)
+setupRoutes();
+
+// Load up cache (if available)
+var Cache = UTIL.getCharacteristicCache();
+
+// Configure Our Accessories 
+const Accesories = {}
+for (let i = 0; i < CONFIG.accessories.length; i++) {
+
+    let AccessoryOBJ = CONFIG.accessories[i]
+    console.log(" Configuring Accessory : " + AccessoryOBJ.name + " (" + AccessoryOBJ.type + ")")
+    AccessoryOBJ.accessoryID = AccessoryOBJ.username.replace(/:/g, "");
+    let Type = ACCESSORY.Types.filter(C => C.Name == AccessoryOBJ.type)[0]
+    let Acc = new Type.Class(AccessoryOBJ);
+
+    if (Cache != null) {
+        if (Cache.hasOwnProperty(AccessoryOBJ.accessoryID)) {
+            console.log(" Restoring Characteristics...")
+            Acc.setCharacteristics(Cache[AccessoryOBJ.accessoryID]);
+        }
+    }
+
+    Acc.on('STATE_CHANGE', (PL, O) => Change(PL, AccessoryOBJ, O))
+    Acc.on('IDENTIFY', (P) => Identify(P, AccessoryOBJ))
+
+    Accesories[AccessoryOBJ.accessoryID] = Acc;
+
+    if (!AccessoryOBJ.bridged) {
+
+        Acc.on('PAIR_CHANGE', (P) => Pair(P, AccessoryOBJ))
+        console.log("       Pin Code  " + AccessoryOBJ.pincode)
+        console.log("       Publishing Accessory (Unbridged)")
+        Acc.publish();
+    } else {
+        Bridge.addAccessory(Acc.getAccessory())
+    }
+}
+
+// Publish Bridge
+console.log(" Publishing Bridge")
+Bridge.publish();
+
+console.log(" Starting Client Services")
+
+// Web Server (started later)
+const UIServer = new SERVER.Server(Accesories, Change, Identify, Bridge, setupRoutes, Pair);
+
+// MQTT Client (+ Start Server)
+const MQTTC = new MQTT.MQTT(Accesories, MQTTDone)
+
+function MQTTDone() {
+    UIServer.Start(UIServerDone)
+}
+
+// Server Started
+function UIServerDone() {
+    const BridgeFileName = PATH.join(UTIL.HomeKitPath, "AccessoryInfo." + CONFIG.bridgeConfig.username.replace(/:/g, "") + ".json");
+    if (FS.existsSync(BridgeFileName)) {
+        const IsPaired = Object.keys(require(BridgeFileName).pairedClients)
+        UIServer.setBridgePaired(IsPaired.length > 0);
+    } else {
+        UIServer.setBridgePaired(false);
+    }
+
+    // All done.
+
+    var IPAddress = IP.address();
+    if (CONFIG.webInterfaceAddress != 'ALL') {
+        IPAddress = CONFIG.webInterfaceAddress
+    }
+
+    const Address = CHALK.keyword('red')("http://" + IPAddress + ":" + CONFIG.webInterfacePort + "/ui/login")
+    console.log(" " + CHALK.black.bgWhite("┌─────────────────────────────────────────────────────────────────────────────┐"))
+    console.log(" " + CHALK.black.bgWhite("|    Goto " + Address + " to start managing your installation. |"))
+    console.log(" " + CHALK.black.bgWhite("|    Default username and password is admin                                   |"))
+    console.log(" " + CHALK.black.bgWhite("└─────────────────────────────────────────────────────────────────────────────┘"))
+}
+
+// Called when bridge is listenting and online
+function getsetupURI(port) {
+    CONFIG.bridgeConfig.QRData = Bridge.getAccessory().setupURI();
+}
+
+// Bridge Pair Change
+function Paired(IsPaired) {
+    UIServer.setBridgePaired(IsPaired);
+}
+
+// Device Change
+function Change(PL, Object, Originator) {
+    if (Object.hasOwnProperty("route") && Object.route.length > 0) {
+        const Payload = {
+            "accessory": Object,
+            "type": "change",
+            "change": PL,
+            "source": Originator
+        }
+
+        if (Routes.hasOwnProperty(Object.route)) {
+            const R = Routes[Object.route];
+            R.process(Payload);
+        }
+
+    }
+}
+
+// Device Pair
+function Pair(paired, Object) {
+    if (Object.hasOwnProperty("route") && Object.route.length > 0) {
+        const Payload = {
+            "accessory": Object,
+            "type": "pair",
+            "isPaired": paired,
+        }
+
+        if (Routes.hasOwnProperty(Object.route)) {
+            const R = Routes[Object.route];
+            R.process(Payload);
+        }
+    }
+}
+
+// Device Identify
+function Identify(paired, Object) {
+    if (Object.hasOwnProperty("route") && Object.route.length > 0) {
+        const Payload = {
+            "accessory": Object,
+            "type": "identify",
+            "isPaired": paired,
+        }
+
+        if (Routes.hasOwnProperty(Object.route)) {
+            const R = Routes[Object.route];
+            R.process(Payload);
+        }
+    }
+}

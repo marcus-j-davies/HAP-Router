@@ -1,0 +1,14 @@
+{
+  "name": "hkds-route-http",
+  "description": "The stock Homekit Device Stack HTTP route",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": {
+    "name": "Marcus Davies",
+    "email": "marcus.davies83@icloud.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "0.21.1"
+  }
+}

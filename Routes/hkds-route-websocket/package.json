@@ -1,0 +1,14 @@
+{
+  "name": "hkds-route-websocket",
+  "description": "The stock Homekit Device Stack WEB SOCKET route",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": {
+    "name": "Marcus Davies",
+    "email": "marcus.davies83@icloud.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "ws":"7.4.3"
+  }
+}
