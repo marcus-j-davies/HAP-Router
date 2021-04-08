@@ -5,8 +5,8 @@ const READLINE = require("readline");
 const CHALK = require('chalk');
 const CRYPTO = require('crypto')
 const OS = require('os');
-const ROOTPATH = PATH.join(OS.homedir(), "HKDS");
-const CONFIGPATH = PATH.join(ROOTPATH, "hkds_config.json");
+const ROOTPATH = PATH.join(OS.homedir(), "HAPRouter");
+const CONFIGPATH = PATH.join(ROOTPATH, "haprouter_config.json");
 const HOMEKITPATH = PATH.join(ROOTPATH, "HomeKitPersist");
 const PKG = require('../package.json');
 const CACHEPATH = PATH.join(ROOTPATH, "characteristic_cache.json");
@@ -252,23 +252,23 @@ const checkReset = function () {
             });
             console.log(CHALK.keyword('yellow')(" -- WARNING --"))
             console.log('')
-            console.log(CHALK.keyword('yellow')(" HomeKit Device Stack is about to be RESET!!."))
+            console.log(CHALK.keyword('yellow')(" HAP Router is about to be RESET!!."))
             console.log(CHALK.keyword('yellow')(" This will."))
             console.log('')
             console.log(CHALK.keyword('yellow')(" - Delete all your Accessories (Including any CCTV Cameras)."))
             console.log(CHALK.keyword('yellow')(" - Destroy the Bridge hosting those Accessories."))
             console.log(CHALK.keyword('yellow')(" - Delete all HomeKit cache data."))
-            console.log(CHALK.keyword('yellow')(" - Delete all HomeKit Device Stack Configuration."))
+            console.log(CHALK.keyword('yellow')(" - Delete all HAP Router Configuration."))
             console.log(CHALK.keyword('yellow')(" - Discard any Accessory identification."))
             console.log(CHALK.keyword('yellow')(" - Reset the login details for the UI."))
             console.log('')
-            console.log(CHALK.keyword('yellow')(" Evan if you recreate Accessories, you will need to re-enroll HomeKit Device Stack on your iOS device."))
+            console.log(CHALK.keyword('yellow')(" Evan if you recreate Accessories, you will need to re-enroll HAP Router on your iOS device."))
             console.log('')
             rl.question(" Continue? (y/n) :: ", function (value) {
                 if (value.toUpperCase() == 'Y') {
                     console.log('')
                     reset();
-                    console.log(' Homekit Device Stack has been reset.');
+                    console.log(' HAP Router has been reset.');
                     console.log('')
                     process.exit(0);
                 } else {
@@ -288,8 +288,8 @@ const reset = function () {
     FS.rmdirSync(ROOTPATH, { recursive: true })
     FS.mkdirSync(ROOTPATH, { recursive: true })
 
-    let DefaultFile = PATH.join(process.cwd(),"hkds_config.json.default")
-    let SaveTo = PATH.join(ROOTPATH,"hkds_config.json");
+    let DefaultFile = PATH.join(process.cwd(),"haprouter_config.json.default")
+    let SaveTo = PATH.join(ROOTPATH,"haprouter_config.json");
 
     FS.copyFileSync(DefaultFile,SaveTo)
 

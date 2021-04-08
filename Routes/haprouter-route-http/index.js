@@ -48,7 +48,7 @@ HTTPRoute.prototype.process = async function (payload) {
     let CFG = {
         headers: {
             'Content-Type': 'application/json',
-            'User-Agent': 'Homekit Device Stack'
+            'User-Agent': 'HAP Router'
         },
         method: 'post',
         url: this.Route.destinationURI.replace('{{accessoryID}}', payload.accessory.accessoryID),

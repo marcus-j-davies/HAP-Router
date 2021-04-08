@@ -1,6 +1,6 @@
 {
-  "name": "hkds-route-console",
-  "description": "The stock Homekit Device Stack CONSOLE route",
+  "name": "haprouter-route-file",
+  "description": "The stock Hap Router FILE route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {

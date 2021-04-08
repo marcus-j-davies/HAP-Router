@@ -81,13 +81,15 @@ if (UTIL.checkInstallRequest()) {
     return; // stop
 }
 
-// Banner
-console.log(CHALK.keyword('orange')(" HomeKit"))
-console.log(CHALK.keyword('white')(" Device Stack"))
-console.log(CHALK.keyword('white')(" For the Smart Home Enthusiast, For the curious."))
-console.log(CHALK.keyword('orange')(" _________________________________________________________________"))
-console.log(" ")
-
+ // Banner 
+console.log(CHALK.keyword('orange')("  _    _            _____   _____                _              ")) 
+console.log(CHALK.keyword('orange')(" | |  | |    /\\    |  __ \\ |  __ \\              | |             ")) 
+console.log(CHALK.keyword('orange')(" | |__| |   /  \\   | |__) || |__) | ___   _   _ | |_  ___  _ __ ")) 
+console.log(CHALK.keyword('orange')(" |  __  |  / /\\ \\  |  ___/ |  _  / / _ \\ | | | || __|/ _ \\| '__|")) 
+console.log(CHALK.keyword('orange')(" | |  | | / ____ \\ | |     | | \\ \\| (_) || |_| || |_|  __/| |   ")) 
+console.log(CHALK.keyword('orange')(" |_|  |_|/_/    \\_\\|_|     |_|  \\_\\\\___/  \\__,_| \\__|\\___||_|   ")) 
+console.log(" ")                                                               
+                                                                                            
 // install modules if needed
 ROUTING.installStockModules();
 ROUTING.loadModules();
@@ -116,7 +118,7 @@ if (!CONFIG.bridgeConfig.hasOwnProperty("pincode")) {
     UTIL.appendAccessoryToConfig(DemoAccessory)
 }
 
-console.log(" Configuring Homekit Bridge")
+console.log(" Configuring HomeKit Bridge")
 
 // Configure Our Bridge
 const Bridge = new ACCESSORY.Bridge(CONFIG.bridgeConfig)

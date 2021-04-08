@@ -1,6 +1,6 @@
 {
-  "name": "hkds-route-udp",
-  "description": "The stock Homekit Device Stack UDP route",
+  "name": "haprouter-route-console",
+  "description": "The stock Hap Router CONSOLE route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {

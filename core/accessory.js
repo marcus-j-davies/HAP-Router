@@ -220,10 +220,10 @@ AccessoryCLS.prototype._createBatteryService = function() {
  */
 class Bridge extends AccessoryCLS {
     constructor(Config) {
-        Config.name = "HomeKit Device Stack"
+        Config.name = "HAP Router"
         super(Config, Catagories.BRIDGE);
         this._accessory.getService(Service.AccessoryInformation)
-            .setCharacteristic(Characteristic.Model, "HKDS4")
+            .setCharacteristic(Characteristic.Model, "HAP Router 4")
 
     }
 }

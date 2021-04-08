@@ -1,6 +1,6 @@
 {
-  "name": "hkds-route-websocket",
-  "description": "The stock Homekit Device Stack WEB SOCKET route",
+  "name": "haprouter-route-mqtt",
+  "description": "The stock Hap Router MQTT route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {
@@ -9,6 +9,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ws":"7.4.3"
+    "mqtt": "4.2.6"
   }
 }

@@ -3,7 +3,7 @@ const PATH = require('path');
 const FS = require('fs');
 const { spawnSync } = require('child_process');
 
-const StockRoutes = ["hkds-route-console", "hkds-route-file", "hkds-route-http", "hkds-route-mqtt", "hkds-route-udp", "hkds-route-websocket"]
+const StockRoutes = ["haprouter-route-console", "haprouter-route-file", "haprouter-route-http", "haprouter-route-mqtt", "haprouter-route-udp", "haprouter-route-websocket"]
 var RootPath;
 
 const Routes = {
@@ -46,7 +46,7 @@ const loadModules = function (){
 
     Files.forEach((D) => {
 
-        if(!D.startsWith("hkds-route-")){
+        if(!D.startsWith("haprouter-route-")){
           return;
         }
 

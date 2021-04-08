@@ -1,6 +1,6 @@
 {
-  "name": "hkds-route-http",
-  "description": "The stock Homekit Device Stack HTTP route",
+  "name": "haprouter-route-http",
+  "description": "The stock Hap Router HTTP route",
   "version": "1.0.0",
   "main": "index.js",
   "author": {

@@ -3,7 +3,7 @@
 
 <head>
    <meta charset="utf-8" />
-   <title>Homekit Device Stack</title>
+   <title>HAP Router</title>
    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
    <link rel="stylesheet" href="../../../ui/static/Style/style.css" />
    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -19,9 +19,8 @@
    <div class="LoginBanner">
 
       <span class="LoginDisclaimer">
-         Homekit Device Stack.<br />
-         Version: 4.0.0<br /><br /><br />
-         Homekit Device Stack, is not affiliated with, or endoresed by Apple Inc.
+         HAP Router.<br />
+         Version: 4.0.0
       </span>
 
       <table class="LoginTable">

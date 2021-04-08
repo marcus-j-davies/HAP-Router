@@ -3,7 +3,7 @@
 
 <head>
    <meta charset="utf-8" />
-   <title>Homekit Device Stack</title>
+   <title>HAP Router</title>
    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
    <link rel="stylesheet" href="../../../ui/static/Style/style.css" />
    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
