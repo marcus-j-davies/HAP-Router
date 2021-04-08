@@ -85,8 +85,26 @@ fieldset{
     border-color: rgb(0,0,0);
     border-width: 1px;
     margin-bottom: 15px;
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(0,0,0,0.3);
 }
+fieldset > legend{
+    background-color: rgba(0,0,0,0.3);
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    color: rgb(255,255,255);
+    padding: 3px;
+    border-style: solid;
+    border-width: 1px;
+    border-collapse: collapse;
+    border-color: rgb(0,0,0);
+}
+
+fieldset table{
+    color: rgb(255,255,255);
+    font-size: 14px;
+}
+    
 
 li > a, li > a:hover, li > a:visited{
     text-decoration: none;
