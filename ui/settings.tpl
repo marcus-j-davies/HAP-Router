@@ -93,7 +93,7 @@
          <!-- Backup / Restore-->
          <fieldset>
             <legend>Backup And Restore</legend>
-            <div style="text-align: center;">
+            <div style="text-align: right;">
                <input type="button" class="StyledButton" value="Backup Configuration"> &nbsp; &nbsp; <input type="button" class="StyledButton" value="Restore Configuration">
             </div>
          </fieldset>
