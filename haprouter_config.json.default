@@ -7,7 +7,7 @@
     "webInterfaceAddress": "ALL",
     "enableIncomingMQTT": "false",
     "MQTTBroker": "mqtt://test.mosquitto.org",
-    "MQTTTopic": "HKDS/IN/+",
+    "MQTTTopic": "HAPRouter/IN/+",
     "MQTTOptions": {
         "username": "",
         "password": ""
@@ -16,30 +16,30 @@
     },
     "routes": {
         "Node Red": {
-            "type": "hkds-route-http",
-            "destinationURI": "http://192.168.0.2:1880/HKDS/{{accessoryID}}"
+            "type": "haprouter-route-http",
+            "destinationURI": "http://192.168.0.2:1880/HAPRouter/{{accessoryID}}"
         },
         "Output To Console": {
-            "type": "hkds-route-console"
+            "type": "haprouter-route-console"
         },
         "UDP Broadcast": {
-            "type": "hkds-route-udp",
+            "type": "haprouter-route-udp",
             "address": "255.255.255.255",
             "port": 34322
         },
         "File Output": {
-            "type": "hkds-route-file",
+            "type": "haprouter-route-file",
             "directory": "/accessory-events/{{accessoryID}}"
         },
         "MQTT Broker": {
-            "type": "hkds-route-mqtt",
+            "type": "haprouter-route-mqtt",
             "mqttbroker":"mqtt://broker.mqttdashboard.com",
             "mqttusername":"",
             "mqttpassword":"",
-            "topic": "HKDS/OUT/{{accessoryID}}"
+            "topic": "HAPRouter/OUT/{{accessoryID}}"
         },
         "Websocket": {
-            "type": "hkds-route-websocket",
+            "type": "haprouter-route-websocket",
             "uri": "ws://server.com:9999/path/to/websocket"
         }
     },
