@@ -26,10 +26,15 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
     // Template Files
     const Templates = {
         "Login": process.cwd() + "/ui/login.tpl",
-        "Setup": process.cwd() + "/ui/setup.tpl",
         "Main": process.cwd() + "/ui/main.tpl",
+        "Settings": process.cwd() + "/ui/settings.tpl",
+
+
+        "Setup": process.cwd() + "/ui/setup.tpl",
+
         "Create": process.cwd() + "/ui/create.tpl",
         "Edit": process.cwd() + "/ui/edit.tpl",
+
     }
 
     HANDLEBARS.registerHelper('ifvalue', function(conditional, options) {
@@ -66,6 +71,7 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         app.use('/ui/static', EXPRESS.static(process.cwd() + '/ui/static'))
         app.get('/', _Redirect);
         app.get('/ui/main', _Main);
+        app.get('/ui/settings', _Settings);
         app.get('/ui/setup', _Setup);
         app.get('/ui/getroutemeta/:module_name', _GetRouteMeta);
         app.get('/ui/login', _Login);
@@ -103,6 +109,21 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         }
 
         CB();
+    }
+
+     /* Settings Page */
+     function _Settings(req, res) {
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+        
+        let HTML = CompiledTemplates['Settings']({
+            "Config": CONFIG
+        });
+        res.contentType('text/html')
+        res.send(HTML)
+
     }
 
     function _GetRouteMeta(req,res){

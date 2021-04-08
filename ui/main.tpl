@@ -20,14 +20,14 @@
             <ul>
                <li>Accessories</li>
                <li>Routing</li>
-               <li>Settings</li>
+               <li><a href="../ui/settings" target="Content">Settings</a></li>
                <li>Bridge</li>
             </ul>
          </blockquote>
 
       </div>
       <div class="Content">
-       <!--  <iframe src="#" style="width: 100%;height: 100%; border: none;">-->
+         <iframe name="Content" src="about:blank" style="width: 100%;height: 100%; border: none;">
       </div>
    </div>
 
