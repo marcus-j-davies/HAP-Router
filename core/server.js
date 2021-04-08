@@ -69,18 +69,23 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
 
         // UI
         app.use('/ui/static', EXPRESS.static(process.cwd() + '/ui/static'))
+
         app.get('/', _Redirect);
         app.get('/ui/main', _Main);
         app.get('/ui/settings', _Settings);
+
+        app.get('/ui/login', _Login);
+        app.post('/ui/login', _DoLogin);
+
         app.get('/ui/setup', _Setup);
         app.get('/ui/getroutemeta/:module_name', _GetRouteMeta);
-        app.get('/ui/login', _Login);
+        
         app.get('/ui/createaccessory/:type', _CreateAccessory);
         app.get('/ui/editaccessory/:type/:id', _EditAccessory);
         app.get('/ui/pairstatus', _PairStatus);
         app.get('/ui/pairstatus/:id', _PairStatus);
         app.get('/ui/backup', _Backup);
-        app.post('/ui/login', _DoLogin);
+        
         app.post('/ui/deleteroute', _DoDeleteRoute);
         app.post('/ui/setconfig', _DoSaveConfig);
         app.post('/ui/deleteaccessory', _DoDeleteAccessory);
@@ -117,10 +122,24 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         if (!_CheckAuth(req, res)) {
             return;
         }
+
+        let Interfaces = OS.networkInterfaces();
+        let Keys = Object.keys(Interfaces);
+        let IPs = [];
+
+        for (let i = 0; i < Keys.length; i++) {
+            let Net = Interfaces[Keys[i]];
+            Net.forEach((AI) => {
+                if (AI.family == 'IPv4' && !AI.internal) {
+                    IPs.push(AI.address)
+                }
+            })
+        }
         
         let HTML = CompiledTemplates['Settings']({
-            "Config": CONFIG
+            "Config": CONFIG,"Interfaces":IPs
         });
+
         res.contentType('text/html')
         res.send(HTML)
 
