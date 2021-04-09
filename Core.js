@@ -82,7 +82,6 @@ if (UTIL.checkInstallRequest()) {
     return; // stop
 }
 
-
  // Banner 
 console.log(CHALK.keyword('orange')("  _    _            _____   _____                _              ")) 
 console.log(CHALK.keyword('orange')(" | |  | |    /\\    |  __ \\ |  __ \\              | |             ")) 
@@ -171,7 +170,7 @@ for (let i = 0; i < CONFIG.accessories.length; i++) {
     let Type = ACCESSORY.Types.filter(C => C.Name == AccessoryOBJ.type)[0]
     let Acc = new Type.Class(AccessoryOBJ);
 
-    if (Cache != null) {
+    if (Cache !== undefined) {
         if (Cache.hasOwnProperty(AccessoryOBJ.accessoryID)) {
             console.log(" Restoring Characteristics...")
             Acc.setCharacteristics(Cache[AccessoryOBJ.accessoryID]);
@@ -223,7 +222,7 @@ function UIServerDone() {
     // All done.
 
     var IPAddress = IP.address();
-    if (CONFIG.webInterfaceAddress != 'ALL') {
+    if (CONFIG.webInterfaceAddress !== 'ALL') {
         IPAddress = CONFIG.webInterfaceAddress
     }
 

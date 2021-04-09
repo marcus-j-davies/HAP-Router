@@ -1,13 +1,12 @@
 'use strict'
 const PATH = require('path');
 const FS = require('fs');
+const PACKAGE = require('../package.json')
 const { spawnSync } = require('child_process');
 
-const StockRoutes = ["haprouter-route-console", "haprouter-route-file", "haprouter-route-http", "haprouter-route-mqtt", "haprouter-route-udp", "haprouter-route-websocket"]
 var RootPath;
 
 const Routes = {
-
 }
 
 const setPath = function (Path) {
@@ -17,33 +16,8 @@ const setPath = function (Path) {
     module.paths.push(PATH.join(RootPath, "node_modules"))
 }
 
-const installStockModules = function () {
-
-    module.paths.push(PATH.join(RootPath, "node_modules"))
-
-    let FoundModules = []
-
-    if (FS.existsSync(PATH.join(RootPath, "node_modules"))) {
-
-        let Files = FS.readdirSync(PATH.join(RootPath, "node_modules"));
-
-        Files.forEach((D) => {
-            let FI = FS.lstatSync(PATH.join(RootPath, "node_modules", D))
-            if (FI.isDirectory()) {
-                FoundModules.push(D)
-            }
-        })
-    }
-
-    StockRoutes.forEach((SR) => {
-        if (FoundModules.indexOf(SR) < 0) {
-            install(SR)
-        }
-    })
-}
 
 const loadModules = function () {
-
 
     loadStockModules();
 
@@ -77,7 +51,9 @@ const loadModules = function () {
 
 const loadStockModules = function () {
 
-    StockRoutes.forEach((R) => {
+    let Deps = Object.keys(PACKAGE.dependencies).filter((D) => D.startsWith('haprouter-route-')).map((D) => D);
+
+    Deps.forEach((R) => {
 
         let Mod = require(R);
         let RouteOBJ = {}
@@ -101,7 +77,6 @@ const install = function (Module) {
 }
 
 module.exports = {
-    "installStockModules": installStockModules,
     "Routes": Routes,
     "loadModules": loadModules,
     "install": install,

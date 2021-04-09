@@ -15,8 +15,6 @@ const ROUTING = require("./routing");
 const RestoreMin = "4.0.0";
 const RestoreMax = "4.0.0";
 
-
-
 const saveCharacteristicCache = function (Cache) {
     FS.writeFileSync(CACHEPATH, JSON.stringify(Cache), 'utf8', function (err) {
         if (err) {
@@ -31,7 +29,7 @@ const getCharacteristicCache = function () {
         return JSON.parse(C);
     }
 
-    return null;
+    return undefined;
 }
 
 const restore = function (data) {
