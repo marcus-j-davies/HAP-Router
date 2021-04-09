@@ -1,9 +1,10 @@
 'use strict'
 
-const { Service, Accessory, Characteristic, uuid, CharacteristicEventTypes, AccessoryEventTypes, Catagories, Bridge, HAPStorage } = require("hap-nodejs");
+const { Service, Accessory, Characteristic, uuid, CharacteristicEventTypes, AccessoryEventTypes, Categories, Bridge, HAPStorage } = require("hap-nodejs");
 const { EventEmitter } = require("events");
 const { version } = require("../../package.json");
-const { HomeKitPath } = require("../util");
+const { HomeKitPath, ConfigPath } = require("../util");
+const CONFIG = require(ConfigPath)
 
 let Initialised = false;
 
@@ -15,7 +16,10 @@ class BaseAccessory extends EventEmitter {
 
         this._Config = AccessoryOBJ;
         this._Properties = {};
-        this._isBridge = (Category === Catagories.BRIDGE);
+        this._isBridge = (Category === Categories.BRIDGE);
+
+        this.isBridged = AccessoryOBJ.bridged;
+        this.Type = AccessoryOBJ.type
 
         this._Properties = {};
 
@@ -82,7 +86,7 @@ BaseAccessory.prototype._wireUpEvents = function (targetService, EventStruct) {
 BaseAccessory.prototype._set = async function (property, value, callback, connection) {
 
     this._Properties[property] = value;
-    callback(null);
+    callback(undefined);
 
     const PL = {
         "characteristic": property,
@@ -96,21 +100,15 @@ BaseAccessory.prototype._set = async function (property, value, callback, connec
 BaseAccessory.prototype._get = async function (property, callback) {
 
     if (this._Properties[property] !== undefined) {
-        callback(null, this._Properties[property]);
+        callback(undefined, this._Properties[property]);
     } else {
-        callback(null, null);
+        callback(undefined, undefined);
     }
 }
 
 BaseAccessory.prototype.getAccessory = function () {
 
     return this._accessory;
-}
-
-
-BaseAccessory.prototype.getAccessoryType = function () {
-
-    return this._Config.type;
 }
 
 BaseAccessory.prototype.publish = function () {
@@ -120,11 +118,11 @@ BaseAccessory.prototype.publish = function () {
         pincode: this._accessory.pincode,
         category: this._accessory.category,
         setupID: this._accessory.setupID,
-        advertiser: config.advertiser
+        advertiser: CONFIG.advertiser
     }
 
-    if (config.interface !== 'ALL') {
-        CFG.bind = config.interface
+    if (CONFIG.interface !== 'ALL') {
+        CFG.bind = CONFIG.interface
     }
 
     this._accessory.publish(CFG)

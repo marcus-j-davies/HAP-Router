@@ -1,13 +1,13 @@
 'use strict'
 
-const { Service, Characteristic, Catagories} = require("hap-nodejs");
+const { Service, Characteristic, Categories} = require("hap-nodejs");
 const {SetWithBattery,BaseAccessory} = require("./BaseAccessory")
 
 class MotionSensor extends BaseAccessory {
 
     constructor(Config) {
 
-        super(Config, Catagories.SENSOR);
+        super(Config, Categories.SENSOR);
 
         this._service = new Service.MotionSensor(Config.name, Config.name);
 

@@ -1,4 +1,5 @@
 'use strict'
+
 const PATH = require('path');
 const FS = require('fs');
 const MATCHER = require("matcher")
@@ -33,7 +34,6 @@ const loadModules = function () {
     let Match2 = Object.keys(CustomDeps).filter((D) => MATCHER.isMatch(D, 'haprouter-route-*', { caseSensitive: false })).map((D) => D);
 
     Match1 = Match1.concat(Match2)
-
 
     Match1.forEach((D) => {
 

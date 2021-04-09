@@ -1,4 +1,5 @@
 ﻿'use strict'
+
 const FS = require('fs');
 const PATH = require('path');
 const READLINE = require("readline");
@@ -6,6 +7,7 @@ const CHALK = require('chalk');
 const CRYPTO = require('crypto')
 const OS = require('os');
 const ROOTPATH = PATH.join(OS.homedir(), "HAPRouter");
+const ROOTAPPPATH = PATH.join(__dirname, "../")
 const CONFIGPATH = PATH.join(ROOTPATH, "haprouter_config.json");
 const HOMEKITPATH = PATH.join(ROOTPATH, "HomeKitPersist");
 const PKG = require('../package.json');
@@ -16,14 +18,18 @@ const RestoreMin = "4.0.0";
 const RestoreMax = "4.0.0";
 
 const saveCharacteristicCache = function (Cache) {
-    FS.writeFileSync(CACHEPATH, JSON.stringify(Cache), 'utf8', function (err) {
-        if (err) {
-            console.log(" Could not right to the config file.");
-        }
-    })
+
+    try {
+        FS.writeFileSync(CACHEPATH, JSON.stringify(Cache), 'utf8')
+    }
+    catch (err) {
+        console.log(" Could not right to the config file.");
+    }
+
 }
 
 const getCharacteristicCache = function () {
+
     if (FS.existsSync(CACHEPATH)) {
         const C = FS.readFileSync(CACHEPATH, 'utf8');
         return JSON.parse(C);
@@ -32,6 +38,7 @@ const getCharacteristicCache = function () {
     return undefined;
 }
 
+// TODO
 const restore = function (data) {
     try {
         let buff = Buffer.from(data.content, 'base64');
@@ -69,6 +76,7 @@ const restore = function (data) {
 
 }
 
+// TODO
 const generateBackup = function () {
     let BU = {};
 
@@ -191,25 +199,33 @@ const saveBridgeConfig = function (Config) {
 
 // Global write CFG
 const saveConfig = function (Config) {
-    FS.writeFileSync(CONFIGPATH, JSON.stringify(Config), 'utf8', function (err) {
-        if (err) {
-            console.log(" Could not right to the config file.");
-            process.exit(0);
-        }
-    })
+
+    try {
+        FS.writeFileSync(CONFIGPATH, JSON.stringify(Config), 'utf8')
+    }
+    catch (err) {
+        console.log(" Could not right to the config file.");
+        process.exit(0);
+    }
+
 }
 
 // check password reset request
 const checkPassword = function () {
+
     if (process.argv.length > 3) {
+
         if (process.argv[2] == "passwd") {
-            const NPWD = process.argv[3];
+
+            const NUSR = process.argv[3];
+            const NPWD = process.argv[4];
             const PW = CRYPTO.createHash('md5').update(NPWD).digest("hex");
             const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
             const ConfigOBJ = JSON.parse(CFF);
+            ConfigOBJ.loginUsername = NUSR;
             ConfigOBJ.loginPassword = PW;
             saveConfig(ConfigOBJ);
-            console.log(CHALK.keyword('yellow')(" Password has been set."))
+            console.log(CHALK.keyword('yellow')(" Username and Password has been set."))
             console.log('')
             process.exit(0);
         }
@@ -218,15 +234,17 @@ const checkPassword = function () {
 
 // check password reset request
 const checkInstallRequest = function () {
+
     if (process.argv.length > 3) {
+
         if (process.argv[2] == "installmodule") {
             const Module = process.argv[3];
 
             ROUTING.install(Module)
-            console.log(CHALK.keyword('green')(" Module ["+Module+"] has been installed."))
+            console.log(CHALK.keyword('green')(" Module [" + Module + "] has been installed."))
             console.log('')
             process.exit(0);
-           
+
         }
     }
 }
@@ -242,12 +260,16 @@ const deleteAccessory = function (AccessoryID) {
 
 // check reset request
 const checkReset = function () {
+
     if (process.argv.length > 2) {
+
         if (process.argv[2] == "reset") {
+
             const rl = READLINE.createInterface({
                 input: process.stdin,
                 output: process.stdout
             });
+
             console.log(CHALK.keyword('yellow')(" -- WARNING --"))
             console.log('')
             console.log(CHALK.keyword('yellow')(" HAP Router is about to be RESET!!."))
@@ -262,6 +284,7 @@ const checkReset = function () {
             console.log('')
             console.log(CHALK.keyword('yellow')(" Evan if you recreate Accessories, you will need to re-enroll HAP Router on your iOS device."))
             console.log('')
+
             rl.question(" Continue? (y/n) :: ", function (value) {
                 if (value.toUpperCase() == 'Y') {
                     console.log('')
@@ -286,10 +309,10 @@ const reset = function () {
     FS.rmdirSync(ROOTPATH, { recursive: true })
     FS.mkdirSync(ROOTPATH, { recursive: true })
 
-    let DefaultFile = PATH.join(process.cwd(),"haprouter_config.json.default")
-    let SaveTo = PATH.join(ROOTPATH,"haprouter_config.json");
+    let DefaultFile = PATH.join(ROOTAPPPATH, "haprouter_config.json.default")
+    let SaveTo = PATH.join(ROOTPATH, "haprouter_config.json");
 
-    FS.copyFileSync(DefaultFile,SaveTo)
+    FS.copyFileSync(DefaultFile, SaveTo)
 
 
 }
@@ -310,10 +333,12 @@ module.exports = {
     ConfigPath: CONFIGPATH,
     HomeKitPath: HOMEKITPATH,
     RootPath: ROOTPATH,
+    RootAppPath: ROOTAPPPATH,
     checkNewEV: checkNewEV,
     generateBackup: generateBackup,
     restore: restore,
     saveCharacteristicCache: saveCharacteristicCache,
     getCharacteristicCache: getCharacteristicCache,
-    checkInstallRequest:checkInstallRequest
+    checkInstallRequest: checkInstallRequest
+
 }

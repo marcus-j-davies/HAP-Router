@@ -3,8 +3,8 @@ const EXPRESS = require('express')
 const CRYPTO = require('crypto')
 const HANDLEBARS = require('handlebars')
 const FS = require('fs');
-const BODYPARSER = require('body-parser')
-const ACCESSORY = require('./accessory');
+//const BODYPARSER = require('body-parser')
+//const ACCESSORY = require('./accessory');
 const UTIL = require('./util');
 const CONFIG = require(UTIL.ConfigPath);
 const COOKIEPARSER = require('cookie-parser')
@@ -12,7 +12,7 @@ const PATH = require('path');
 const OS = require("os");
 const ROUTING = require('./routing');
 
-const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSetup, PairEvent) {
+const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSetup, PairEvent) {
 
     // Vars
     let _Paired = false;
@@ -25,19 +25,18 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
 
     // Template Files
     const Templates = {
-        "Login": process.cwd() + "/ui/login.tpl",
-        "Main": process.cwd() + "/ui/main.tpl",
-        "Settings": process.cwd() + "/ui/settings.tpl",
 
+        "Login": PATH.join(UTIL.RootAppPath, "ui/login.tpl"),
+        "Main": PATH.join(UTIL.RootAppPath, "ui/main.tpl"),
+        "Settings": PATH.join(UTIL.RootAppPath, "/ui/settings.tpl"),
 
-        "Setup": process.cwd() + "/ui/setup.tpl",
-
-        "Create": process.cwd() + "/ui/create.tpl",
-        "Edit": process.cwd() + "/ui/edit.tpl",
+        "Setup": PATH.join(UTIL.RootAppPath, "ui/setup.tpl"),
+        "Create": PATH.join(UTIL.RootAppPath, "ui/create.tpl"),
+        "Edit": PATH.join(UTIL.RootAppPath, "ui/edit.tpl")
 
     }
 
-    HANDLEBARS.registerHelper('ifvalue', function(conditional, options) {
+    HANDLEBARS.registerHelper('ifvalue', function (conditional, options) {
         if (options.hash.equals === conditional) {
             return options.fn(this)
         } else {
@@ -48,7 +47,7 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
     const CompiledTemplates = {}
 
     // Start Server
-    this.Start = function(CB) {
+    this.Start = function (CB) {
 
         console.log(" Starting Web Server")
         console.log(" ")
@@ -64,19 +63,20 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         const app = EXPRESS()
 
         // Middleware
-        app.use(BODYPARSER.json())
+        app.use(EXPRESS.json())
         app.use(COOKIEPARSER("2jS4khgKVTMaVhwVxYPx8Kjnwwpfyvxa"))
 
         // UI
-        app.use('/ui/static', EXPRESS.static(process.cwd() + '/ui/static'))
+        app.use('/ui/static', EXPRESS.static(PATH.join(UTIL.RootAppPath, "ui/static")))
 
         app.get('/', _Redirect);
+        app.get('/ui/login', _Login);
+        app.post('/ui/login', _DoLogin);
         app.get('/ui/main', _Main);
         app.get('/ui/settings', _Settings);
 
-        app.get('/ui/login', _Login);
-        app.post('/ui/login', _DoLogin);
 
+        /*
         app.get('/ui/setup', _Setup);
         app.get('/ui/getroutemeta/:module_name', _GetRouteMeta);
         
@@ -100,9 +100,10 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         app.get('/:pwd/accessories/', _processAccessoriesGet);
         app.get('/:pwd/accessories/:id', _processAccessoryGet);
         app.put('/:pwd/accessories/:id', _processAccessorySet);
+        */
 
         try {
-            if (CONFIG.webInterfaceAddress == 'ALL') {
+            if (CONFIG.webInterfaceAddress === 'ALL') {
                 app.listen(CONFIG.webInterfacePort)
             } else {
                 app.listen(CONFIG.webInterfacePort, CONFIG.webInterfaceAddress)
@@ -116,8 +117,83 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         CB();
     }
 
-     /* Settings Page */
-     function _Settings(req, res) {
+    // Set Pair Status
+    this.setBridgePaired = function(IsPaired) {
+        _Paired = IsPaired;
+    }
+
+     /* Check Auth */
+     function _CheckAuth(req, res) {
+        if (req.signedCookies.Authentication === undefined || req.signedCookies.Authentication !== 'Success') {
+            res.redirect("../../../ui/login");
+            return false;
+        }
+        return true;
+    }
+
+    /* Redirect */
+    function _Redirect(req, res) {
+        res.redirect('./ui/main')
+    }
+
+    /* Login Page */
+    function _Login(req, res) {
+
+        let HTML = CompiledTemplates['Login']({});
+        res.contentType('text/html')
+        res.send(HTML)
+
+    }
+
+    /* Do Login */
+    function _DoLogin(req, res) {
+
+        const Data = req.body;
+
+        const Username = Data.username;
+        const Password = CRYPTO.createHash('md5').update(Data.password).digest("hex");
+
+        if (Username === CONFIG.loginUsername && Password === CONFIG.loginPassword) {
+
+            res.cookie('Authentication', 'Success', {
+                'signed': true
+            })
+
+            res.contentType('application/json');
+
+            let Response = {
+                success: true,
+                destination: '../../../ui/main'
+            }
+            res.send(JSON.stringify(Response))
+
+        } else {
+
+            res.contentType('application/json');
+            let Response = {
+                success: false
+            }
+            res.send(JSON.stringify(Response))
+        }
+
+    }
+
+    /* Main Page */
+    function _Main(req, res) {
+
+        // Auth, Setup Check
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let HTML = CompiledTemplates['Main']({});
+        res.contentType('text/html')
+        res.send(HTML)
+
+    }
+
+    /* Settings Page */
+    function _Settings(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -130,14 +206,14 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         for (let i = 0; i < Keys.length; i++) {
             let Net = Interfaces[Keys[i]];
             Net.forEach((AI) => {
-                if (AI.family == 'IPv4' && !AI.internal) {
+                if (AI.family === 'IPv4' && !AI.internal) {
                     IPs.push(AI.address)
                 }
             })
         }
-        
+
         let HTML = CompiledTemplates['Settings']({
-            "Config": CONFIG,"Interfaces":IPs
+            "Config": CONFIG, "Interfaces": IPs
         });
 
         res.contentType('text/html')
@@ -145,7 +221,8 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
 
     }
 
-    function _GetRouteMeta(req,res){
+    /*
+    function _GetRouteMeta(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -157,20 +234,20 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         let _Buffer = FS.readFileSync(RouteType.Icon)
 
         let MD = {
-            Inputs:RouteType.Inputs,
-            Icon:_Buffer.toString("base64"),
-            Name:RouteType.Name
+            Inputs: RouteType.Inputs,
+            Icon: _Buffer.toString("base64"),
+            Name: RouteType.Name
         }
 
         res.contentType('application/json');
         res.send(MD);
 
     }
+    */
 
-    function _Redirect(req,res){
-        res.redirect('./ui/main')
-    }
 
+
+    /*
     function _DoEditAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -193,7 +270,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         }
 
     }
+    */
 
+    /*
     function _DoCreateAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -215,7 +294,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
             res.send('{"OK":true}');
         }
     }
+    */
 
+    /*
     function _DoConnect(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -229,7 +310,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.send('{"OK":true}');
 
     }
+    */
 
+    /*
     function _DoDisconnect(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -243,7 +326,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.send('{"OK":true}');
 
     }
+    */
 
+    /*
     function _DoCreateRoute(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -257,7 +342,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.send('{"OK":true}');
 
     }
+    */
 
+    /*
     function _DoRestore(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -284,7 +371,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         }
 
     }
+    */
 
+    /*
     function _DoDeleteAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -298,7 +387,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.send('{"OK":true}');
 
     }
+    */
 
+    /*
     function _DoSaveConfig(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -312,33 +403,11 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.send('{"OK":true}');
 
     }
+    */
 
-    function _DoLogin(req, res) {
 
-        const Data = req.body;
 
-        const Username = Data.username;
-        const Password = CRYPTO.createHash('md5').update(Data.password).digest("hex");
-        if (Username == CONFIG.loginUsername && Password == CONFIG.loginPassword) {
-            res.cookie('Authentication', 'Success', {
-                'signed': true
-            })
-            res.contentType('application/json');
-            let Response = {
-                success: true,
-                destination: '../../../ui/main'
-            }
-            res.send(JSON.stringify(Response))
-        } else {
-            res.contentType('application/json');
-            let Response = {
-                success: false
-            }
-            res.send(JSON.stringify(Response))
-        }
-
-    }
-
+    /*
     function _DoDeleteRoute(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -351,69 +420,12 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.send('{"OK":true}');
 
     }
-
-    /* Main Page */
-    function _Main(req, res) {
-
-        // Auth, Setup Check
-        if (!_CheckAuth(req, res)) {
-            return;
-        }
-
-        // Availbale Route Types
-        let RouteModules = [];
-        let RouteTypes = Object.keys(ROUTING.Routes);
-        RouteTypes.forEach((RT) =>{
-
-            let RouteType = ROUTING.Routes[RT];
-            RouteModules.push({Type:RouteType.Type,Name:RouteType.Name})
-
-        });
-
-        // Configured Routes
-        let ConfiguredRoutesArray = [];
-        let ConfiguredRoutesKeys = Object.keys(CONFIG.routes); 
-        ConfiguredRoutesKeys.forEach((CR) =>{
-            
-            let ConfiguredRoute = CONFIG.routes[CR];
+    */
 
 
-        })
-        
 
+    /*
 
-      
-
-        let Interfaces = OS.networkInterfaces();
-        let Keys = Object.keys(Interfaces);
-        let IPs = [];
-
-        for (let i = 0; i < Keys.length; i++) {
-
-            let Net = Interfaces[Keys[i]];
-
-            Net.forEach((AI) => {
-                if (AI.family == 'IPv4' && !AI.internal) {
-                    IPs.push(AI.address)
-                }
-            })
-
-        }
-
-        let HTML = CompiledTemplates['Main']({
-            "RootPath": UTIL.RootPath,
-            "Config": CONFIG,
-            "RouteModules": RouteModules,
-            "AccessoryTypes": ACCESSORY.Types,
-            "AccessoryTypesJSON": JSON.stringify(ACCESSORY.Types, null, 2),
-            "interfaces": IPs
-        });
-        res.contentType('text/html')
-        res.send(HTML)
-
-    }
-
-    /* Setup Page */
     function _Setup(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -431,18 +443,11 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.send(HTML)
 
     }
+    */
 
-    /* Login Page */
-    function _Login(req, res) {
 
-        let HTML = CompiledTemplates['Login']({});
 
-        res.contentType('text/html')
-        res.send(HTML)
-
-    }
-
-    /* Create Page */
+    /*
     function _CreateAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -460,8 +465,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.send(HTML)
 
     }
+    */
 
-    // Edit Pgae */
+    /*
     function _EditAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -482,8 +488,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.contentType('text/html')
         res.send(HTML)
     }
+    */
 
-    // Pair Status */
+    /*
     function _PairStatus(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -509,7 +516,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.contentType('application/json');
         res.send(JSON.stringify(Response))
     }
+    */
 
+    /*
     function _Backup(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -519,8 +528,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.header("Content-Disposition", "attachment; filename=\"HKDS-Backup.dat\"");
         res.send(UTIL.generateBackup())
     }
+    */
 
-    // Add new accessory
+    /*
     function _AddAccessory(Data, Props) {
 
         UTIL.appendAccessoryToConfig(Data)
@@ -545,16 +555,19 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         }
         return Acc.getAccessory().setupURI();
     }
+    */
 
-    // Delete Route
+    /*
     function _DeleteRoute(Name) {
         let Routes = CONFIG.routes;
         delete Routes[Name]
         _RouteSetup();
         UTIL.updateRouteConfig(Routes);
     }
+    */
 
-    // Add Route
+    
+    /*
     function _AddRoute(Route) {
         let Routes = CONFIG.routes;
         let Name = Route.name;
@@ -563,20 +576,23 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         _RouteSetup();
         UTIL.updateRouteConfig(Routes);
     }
+    */
 
-    // Update Device Route
+    /*
     function _ReRoute(AccessoryID, Route) {
         CONFIG.accessories.filter((A) => A.accessoryID == AccessoryID)[0].route = Route.split('_')[1];
         UTIL.routeAccessory(AccessoryID, Route.split('_')[1]);
     }
+    */
 
-    // Clear Device Route
+    /*
     function _Unroute(AccessoryID) {
         CONFIG.accessories.filter((A) => A.accessoryID == AccessoryID)[0].route = "";
         UTIL.routeAccessory(AccessoryID, "");
     }
+    */
 
-    // Delete Accessory
+    /*
     function _DeleteAccessory(AccessoryID, Username, Bridged, Permanent) {
 
         if (Bridged) {
@@ -595,17 +611,11 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
             CONFIG.accessories = NA;
         }
     }
+    */
 
-    // Check Auth
-    function _CheckAuth(req, res) {
-        if (req.signedCookies.Authentication == null || req.signedCookies.Authentication != 'Success') {
-            res.redirect("../../../ui/login");
-            return false;
-        }
-        return true;
-    }
+   
 
-    // get Accessories
+    /*
     function _processAccessoriesGet(req, res) {
         const PW = CRYPTO.createHash('md5').update(req.params.pwd).digest("hex");
         if (PW != CONFIG.loginPassword) {
@@ -626,8 +636,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.contentType("application/json");
         res.send(JSON.stringify(TPL));
     }
+    */
 
-    // get  Accessory
+    /*
     function _processAccessoryGet(req, res) {
         const PW = CRYPTO.createHash('md5').update(req.params.pwd).digest("hex");
         if (PW != CONFIG.loginPassword) {
@@ -654,8 +665,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
         res.contentType("application/json");
         res.send(JSON.stringify(PL));
     }
+    */
 
-    // Set Accessory data
+    /*
     function _processAccessorySet(req, res) {
         const PW = CRYPTO.createHash('md5').update(req.params.pwd).digest("hex");
         if (PW != CONFIG.loginPassword) {
@@ -680,11 +692,9 @@ const Server = function(Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSet
             ok: true
         }));
     }
+    */
 
-    // Set Pair Status
-    this.setBridgePaired = function(IsPaired) {
-        _Paired = IsPaired;
-    }
+    
 }
 
 module.exports = {

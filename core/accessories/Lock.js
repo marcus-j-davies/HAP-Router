@@ -1,13 +1,13 @@
 'use strict'
 
-const { Service, Characteristic, Catagories} = require("hap-nodejs");
+const { Service, Characteristic, Categories} = require("hap-nodejs");
 const {BasicSet,BaseAccessory} = require("./BaseAccessory")
 
 class Lock extends BaseAccessory {
 
     constructor(Config) {
         
-        super(Config, Catagories.DOOR_LOCK);
+        super(Config, Categories.DOOR_LOCK);
 
         this._service = new Service.LockMechanism(Config.name, Config.name);
 

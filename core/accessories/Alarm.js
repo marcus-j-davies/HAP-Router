@@ -1,13 +1,13 @@
 'use strict'
 
-const { Service, Characteristic, Catagories} = require("hap-nodejs");
+const { Service, Characteristic, Categories} = require("hap-nodejs");
 const {BasicSet, BaseAccessory} = require("./BaseAccessory")
 
 class Alarm extends BaseAccessory {
 
     constructor(Config) {
 
-        super(Config, Catagories.SECURITY_SYSTEM);
+        super(Config, Categories.SECURITY_SYSTEM);
 
         this._service = new Service.SecuritySystem(Config.name, Config.name);
 

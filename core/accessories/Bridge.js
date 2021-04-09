@@ -1,13 +1,13 @@
 'use strict'
 
-const { Service, Characteristic, Catagories} = require("hap-nodejs");
+const { Service, Characteristic, Categories} = require("hap-nodejs");
 const {BaseAccessory} = require("./BaseAccessory")
 
 class Bridge extends BaseAccessory {
 
     constructor(Config) {
         Config.name = "HAP Router Bridge"
-        super(Config, Catagories.BRIDGE);
+        super(Config, Categories.BRIDGE);
         this._accessory.getService(Service.AccessoryInformation)
             .setCharacteristic(Characteristic.Model, "HAP Router 4")
 

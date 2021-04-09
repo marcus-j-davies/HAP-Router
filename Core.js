@@ -1,7 +1,6 @@
 ﻿'use strict'
-const UTIL = require('./core/util');
 
-// Check Fresh Environment ?
+const UTIL = require('./core/util');
 UTIL.checkNewEV();
 
 const FS = require('fs');
@@ -38,7 +37,7 @@ function cleanEV() {
         const AccessoryIDs = Object.keys(Accesories);
         for (let i = 0; i < AccessoryIDs.length; i++) {
             const Acc = Accesories[AccessoryIDs[i]];
-            if (!Acc._Config.bridged) {
+            if (!Acc.isBridged) {
                 Acc.unpublish(false);
             }
         }
@@ -166,7 +165,7 @@ for (let i = 0; i < CONFIG.accessories.length; i++) {
     let AccessoryOBJ = CONFIG.accessories[i]
     console.log(" Configuring Accessory : " + AccessoryOBJ.name + " (" + AccessoryOBJ.type + ")")
     AccessoryOBJ.accessoryID = AccessoryOBJ.username.replace(/:/g, "");
-    let Type = ACCESSORY.Types[AccessoryOBJ];
+    let Type = ACCESSORY.Types[AccessoryOBJ.type];
     let Acc = new Type.Class(AccessoryOBJ);
 
     if (Cache !== undefined) {
