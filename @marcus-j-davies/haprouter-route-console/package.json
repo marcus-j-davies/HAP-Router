@@ -1,5 +1,5 @@
 {
-  "name": "haprouter-route-console",
+  "name": "@marcus-j-davies/haprouter-route-console",
   "description": "The stock HAP Router CONSOLE route",
   "version": "1.0.0",
   "main": "index.js",

@@ -8,6 +8,7 @@ const { Switch } = require("./Switch")
 const { Fan } = require("./Fan")
 const { MotionSensor } = require("./MotionSensor")
 const { Lock } = require("./Lock")
+const { LightBulb } = require("./LightBulb")
 
 let Types = {
 
@@ -59,6 +60,16 @@ let Types = {
         SupportsRouting: true,
         Class: Lock,
         ConfigProperties: []
+    },
+    "LIGHT_BULB": {
+        Label: "Smart Bulb",
+        Icon: "LIGHT.png",
+        SupportsRouting: true,
+        Class: LightBulb,
+        ConfigProperties: [
+            {id:"supportsBrightness", label:"Supports Brightness", type:"checkbox", default:false},
+            {id:"colorMode", label:"Color Mode", type:"select", options:["hue","temperature"], default:"hue"}
+        ]
     }
 }
 

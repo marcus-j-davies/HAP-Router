@@ -7,7 +7,7 @@ UTIL.checkNewEV();
 const FS = require('fs');
 const CHALK = require('chalk');
 const SERVER = require('./core/server');
-const ACCESSORY = require('./core/accessory');
+const ACCESSORY = require('./core/accessories/Types');
 const CONFIG = require(UTIL.ConfigPath);
 const IP = require("ip");
 const MQTT = require('./core/mqtt');
@@ -93,8 +93,7 @@ console.log(" ")
 console.log(CHALK.keyword('white')(" ------- For the Smart Home Enthusiast, for the curios. -------"))
 console.log(" ")                                                               
                                                                                             
-// install modules if needed
-//ROUTING.installStockModules();
+// Load Route Modules
 ROUTING.loadModules();
 
 if (!CONFIG.bridgeConfig.hasOwnProperty("pincode")) {
@@ -167,7 +166,7 @@ for (let i = 0; i < CONFIG.accessories.length; i++) {
     let AccessoryOBJ = CONFIG.accessories[i]
     console.log(" Configuring Accessory : " + AccessoryOBJ.name + " (" + AccessoryOBJ.type + ")")
     AccessoryOBJ.accessoryID = AccessoryOBJ.username.replace(/:/g, "");
-    let Type = ACCESSORY.Types.filter(C => C.Name == AccessoryOBJ.type)[0]
+    let Type = ACCESSORY.Types[AccessoryOBJ];
     let Acc = new Type.Class(AccessoryOBJ);
 
     if (Cache !== undefined) {

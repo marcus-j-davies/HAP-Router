@@ -16,30 +16,30 @@
     },
     "routes": {
         "Node Red": {
-            "type": "haprouter-route-http",
+            "type": "@marcus-j-davies/haprouter-route-http",
             "destinationURI": "http://192.168.0.2:1880/HAPRouter/{{accessoryID}}"
         },
         "Output To Console": {
-            "type": "haprouter-route-console"
+            "type": "@marcus-j-davies/haprouter-route-console"
         },
         "UDP Broadcast": {
-            "type": "haprouter-route-udp",
+            "type": "@marcus-j-davies/haprouter-route-udp",
             "address": "255.255.255.255",
             "port": 34322
         },
         "File Output": {
-            "type": "haprouter-route-file",
+            "type": "@marcus-j-davies/haprouter-route-file",
             "directory": "/accessory-events/{{accessoryID}}"
         },
         "MQTT Broker": {
-            "type": "haprouter-route-mqtt",
+            "type": "@marcus-j-davies/haprouter-route-mqtt",
             "mqttbroker":"mqtt://broker.mqttdashboard.com",
             "mqttusername":"",
             "mqttpassword":"",
             "topic": "HAPRouter/OUT/{{accessoryID}}"
         },
         "Websocket": {
-            "type": "haprouter-route-websocket",
+            "type": "@marcus-j-davies/haprouter-route-websocket",
             "uri": "ws://server.com:9999/path/to/websocket"
         }
     },

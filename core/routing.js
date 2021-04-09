@@ -1,8 +1,9 @@
 'use strict'
 const PATH = require('path');
 const FS = require('fs');
-const PACKAGE = require('../package.json')
+const MATCHER = require("matcher")
 const { spawnSync } = require('child_process');
+const { dependencies } = require("../package-lock.json")
 
 var RootPath;
 
@@ -12,7 +13,7 @@ const Routes = {
 const setPath = function (Path) {
 
     RootPath = Path;
-    FS.mkdirSync(PATH.join(RootPath, "node_modules"),{recursive:true})
+    FS.mkdirSync(PATH.join(RootPath, "node_modules"), { recursive: true })
     module.paths.push(PATH.join(RootPath, "node_modules"))
 }
 
@@ -21,52 +22,56 @@ const loadModules = function () {
 
     loadStockModules();
 
-    let Files = FS.readdirSync(PATH.join(RootPath, "node_modules"));
+    let LockPath = PATH.join(RootPath, "package-lock.json");
 
-    Files.forEach((D) => {
+    if (!FS.existsSync(LockPath)) {
+        return
+    }
 
-        if (!D.startsWith("haprouter-route-")) {
-            return;
-        }
+    let CustomDeps = require(LockPath).dependencies
+    let Match1 = Object.keys(CustomDeps).filter((D) => MATCHER.isMatch(D, '@*/haprouter-route-*', { caseSensitive: false })).map((D) => D);
+    let Match2 = Object.keys(CustomDeps).filter((D) => MATCHER.isMatch(D, 'haprouter-route-*', { caseSensitive: false })).map((D) => D);
 
-        let FI = FS.lstatSync(PATH.join(RootPath, "node_modules", D))
-        if (FI.isDirectory()) {
+    Match1 = Match1.concat(Match2)
 
-            let Mod = require(D);
-            let RouteOBJ = {}
 
-            let DIR = PATH.dirname(require.resolve(D))
+    Match1.forEach((D) => {
 
-            RouteOBJ.Type = D
-            RouteOBJ.Icon = PATH.join(DIR, Mod.Icon);
-            RouteOBJ.Name = Mod.Name;
-            RouteOBJ.Class = Mod.Route;
-            RouteOBJ.Inputs = Mod.Inputs;
+        let Mod = require(D);
+        let RouteOBJ = {}
 
-            Routes[D] = RouteOBJ;
-        }
+        let DIR = PATH.dirname(require.resolve(D))
+
+        RouteOBJ.Type = D
+        RouteOBJ.Icon = PATH.join(DIR, Mod.Icon);
+        RouteOBJ.Name = Mod.Name;
+        RouteOBJ.Class = Mod.Route;
+        RouteOBJ.Inputs = Mod.Inputs;
+
+        Routes[D] = RouteOBJ;
+
     })
 
 }
 
 const loadStockModules = function () {
 
-    let Deps = Object.keys(PACKAGE.dependencies).filter((D) => D.startsWith('haprouter-route-')).map((D) => D);
+    let RPKGS = Object.keys(dependencies).filter((D) => MATCHER.isMatch(D, '@*/haprouter-route-*', { caseSensitive: false })).map((D) => D);
 
-    Deps.forEach((R) => {
+    RPKGS.forEach((RP) => {
 
-        let Mod = require(R);
+        let Mod = require(RP);
         let RouteOBJ = {}
 
-        let DIR = PATH.dirname(require.resolve(R))
+        let DIR = PATH.dirname(require.resolve(RP))
 
-        RouteOBJ.Type = R
+        RouteOBJ.Type = RP
         RouteOBJ.Icon = PATH.join(DIR, Mod.Icon);
         RouteOBJ.Name = Mod.Name;
         RouteOBJ.Class = Mod.Route;
         RouteOBJ.Inputs = Mod.Inputs;
 
-        Routes[R] = RouteOBJ;
+        Routes[RP] = RouteOBJ;
 
     })
 }

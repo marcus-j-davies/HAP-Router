@@ -1,5 +1,5 @@
 {
-  "name": "haprouter-route-websocket",
+  "name": "@marcus-j-davies/haprouter-route-websocket",
   "description": "The stock HAP Router WEB SOCKET route",
   "version": "1.0.1",
   "main": "index.js",

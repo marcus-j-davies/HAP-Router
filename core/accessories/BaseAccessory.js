@@ -79,7 +79,7 @@ BaseAccessory.prototype._wireUpEvents = function (targetService, EventStruct) {
 }
 
 
-BaseAccessory.prototype._set = function (property, value, callback, connection) {
+BaseAccessory.prototype._set = async function (property, value, callback, connection) {
 
     this._Properties[property] = value;
     callback(null);
@@ -89,11 +89,11 @@ BaseAccessory.prototype._set = function (property, value, callback, connection) 
         "value": value,
     }
 
-    this.emit("STATE_CHANGE", PL, connection == null ? "API" : "iOS_DEVICE");
+    this.emit("STATE_CHANGE", PL, connection === undefined ? "API" : "iOS_DEVICE");
 
 }
 
-BaseAccessory.prototype._get = function (property, callback) {
+BaseAccessory.prototype._get = async function (property, callback) {
 
     if (this._Properties[property] !== undefined) {
         callback(null, this._Properties[property]);

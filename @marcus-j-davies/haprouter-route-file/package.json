@@ -1,5 +1,5 @@
 {
-  "name": "haprouter-route-file",
+  "name": "@marcus-j-davies/haprouter-route-file",
   "description": "The stock HAP Router FILE route",
   "version": "1.0.0",
   "main": "index.js",

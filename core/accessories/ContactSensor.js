@@ -32,7 +32,7 @@ class ContactSensor extends BaseAccessory {
     }
 }
 
-Contact.prototype.setCharacteristics = SetWithBattery;
+ContactSensor.prototype.setCharacteristics = SetWithBattery;
 
 module.exports  = {
     ContactSensor:ContactSensor
