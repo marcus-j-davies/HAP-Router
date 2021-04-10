@@ -16,36 +16,50 @@
    <blockquote class="ContentSection">
          <div class="ContentTitle">Configured Accessories</div>
 
+         {{#if BridgedAccessories.length}}
+            <fieldset>
+               <legend>Bridged Accessories</legend>
+
+               <table style="width: 100%;">
+                  {{#BridgedAccessories}}
+                        <tr>
+                           <td rowspan="4" style="width: 70px; vertical-align: top; text-align: center;">
+                              <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/{{AccessoryCFG.icon}}"> 
+                           </td>
+                           <td><strong>{{AccessoryCFG.name}}</strong></td>
+                           <td rowspan="4">{{AccessoryCFG.route}}</td>
+                        </tr>
+                        <tr><td>Motion Sensor</td></tr>
+                        <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
+                        <tr><td>&nbsp</td></tr>
+                  {{/BridgedAccessories}}
+               </table>
+
+            </fieldset>
+         {{/if}}
   
-         <fieldset>
-            <legend>Bridged Accessories</legend>
+        
+         {{#if UNBridgedAccessories.length}}
+            <fieldset>
+               <legend>None-Bridged Accessories (Stand Alone)</legend>
 
-            <table style="width: 100%;">
+               <table style="width: 100%;">
+                  {{#UNBridgedAccessories}}
+                        <tr>
+                           <td rowspan="4" style="width: 70px; vertical-align: top; text-align: center;">
+                              <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/{{AccessoryCFG.icon}}"> 
+                           </td>
+                           <td><strong>{{AccessoryCFG.name}}</strong></td>
+                           <td rowspan="4">{{AccessoryCFG.route}}</td>
+                        </tr>
+                        <tr><td>Motion Sensor</td></tr>
+                        <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
+                        <tr><td>&nbsp</td></tr>
+                  {{/UNBridgedAccessories}}
+               </table>
 
-               {{#Acessories}}
-                  {{#if AccessoryCFG.bridged}}
-                     <tr>
-                        <td rowspan="4" style="width: 70px; vertical-align: top; text-align: center;">
-                           <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/{{AccessoryCFG.icon}}"> 
-                        </td>
-                        <td><strong>{{AccessoryCFG.name}}</strong></td>
-                        <td rowspan="4">{{AccessoryCFG.route}}</td>
-                     </tr>
-                     <tr><td>Motion Sensor</td></tr>
-                     <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
-                     <tr><td>&nbsp</td></tr>
-                  {{/if}}
-               {{/Acessories}}
-
-            </table>
-         </fieldset>
-
-
-         <fieldset>
-            <legend>Non-Bridged (Standalone) Accessories</legend>
-
-          
-          </fieldset>
+            </fieldset>
+         {{/if}}
 
 
 

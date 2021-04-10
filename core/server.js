@@ -282,7 +282,8 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             return;
         }
         
-        let Accessories = []
+        let BridgedAccessories = []
+        let UNBridgedAccessories = []
         let AccessoryIDs = Object.keys(_ConfiguredAccessories);
 
         AccessoryIDs.forEach((AID) => {
@@ -290,18 +291,26 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             let AccessoryCFG = _ConfiguredAccessories[AID].getConfig();
             let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
 
+            let Element = {
+                AccessoryCFG:AccessoryCFG
+            }
+
             if(ConfiguredRoute !== undefined){
                 let Route = ROUTING.Routes[ConfiguredRoute.type]
-                Accessories.push({AccessoryCFG:AccessoryCFG, RouteCFG:Route})
+                Element.RouteCFG = Route
+            }
+
+            if(AccessoryCFG.bridged){
+                BridgedAccessories.push(Element)
             }
             else{
-                Accessories.push({AccessoryCFG:AccessoryCFG})
+                UNBridgedAccessories.push(Element)
             }
-           
         })
 
         let HTML = CompiledTemplates['Accessories']({
-            Acessories:Accessories
+            BridgedAccessories:BridgedAccessories,
+            UNBridgedAccessories:UNBridgedAccessories
         });
 
         res.contentType('text/html')
