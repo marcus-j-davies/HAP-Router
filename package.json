@@ -1,8 +1,8 @@
 {
   "name": "hap-router",
-  "version": "4.0.0",
+  "version": "1.0.0",
   "description": "A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.",
-  "main": "App.js",
+  "main": "HAPRouter.js",
   "keywords": [
     "homekit",
     "smart",

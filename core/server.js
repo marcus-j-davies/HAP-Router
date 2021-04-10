@@ -3,6 +3,7 @@ const EXPRESS = require('express')
 const CRYPTO = require('crypto')
 const HANDLEBARS = require('handlebars')
 const FS = require('fs');
+const ACCESSORY = require("./accessories/Types")
 //const BODYPARSER = require('body-parser')
 //const ACCESSORY = require('./accessory');
 const UTIL = require('./util');
@@ -16,12 +17,13 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
 
     // Vars
     let _Paired = false;
-    const _Accessories = Accesories
+    const _ConfiguredAccessories = Accesories
     const _ChangeEvent = ChangeEvent;
     const _IdentifyEvent = IdentifyEvent
     const _Bridge = Bridge;
     const _RouteSetup = RouteSetup
     const _PairEvent = PairEvent;
+    let _RestartRequired = false;
 
     // Template Files
     const Templates = {
@@ -29,10 +31,11 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         "Login": PATH.join(UTIL.RootAppPath, "ui/login.tpl"),
         "Main": PATH.join(UTIL.RootAppPath, "ui/main.tpl"),
         "Settings": PATH.join(UTIL.RootAppPath, "/ui/settings.tpl"),
+        "Accessories": PATH.join(UTIL.RootAppPath, "/ui/accessories.tpl"),
 
-        "Setup": PATH.join(UTIL.RootAppPath, "ui/setup.tpl"),
-        "Create": PATH.join(UTIL.RootAppPath, "ui/create.tpl"),
-        "Edit": PATH.join(UTIL.RootAppPath, "ui/edit.tpl")
+       // "Setup": PATH.join(UTIL.RootAppPath, "ui/setup.tpl"),
+      //  "Create": PATH.join(UTIL.RootAppPath, "ui/create.tpl"),
+      //  "Edit": PATH.join(UTIL.RootAppPath, "ui/edit.tpl")
 
     }
 
@@ -70,10 +73,17 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         app.use('/ui/static', EXPRESS.static(PATH.join(UTIL.RootAppPath, "ui/static")))
 
         app.get('/', _Redirect);
+        app.get('/ui/resources/accessoryicon/:ICON',_DoAccessoryIcon)
+
         app.get('/ui/login', _Login);
         app.post('/ui/login', _DoLogin);
+
         app.get('/ui/main', _Main);
+
         app.get('/ui/settings', _Settings);
+        app.post('/ui/settings', _DoSettings);
+
+        app.get('/ui/accessories', _Accessories);
 
 
         /*
@@ -134,6 +144,19 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
     /* Redirect */
     function _Redirect(req, res) {
         res.redirect('./ui/main')
+    }
+
+    /* Accessory Icon */
+    function _DoAccessoryIcon(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        res.contentType('image/png')
+        res.sendFile(PATH.join(UTIL.RootAppPath,"core","accessories","Icons",req.params.ICON));
+     
+       
     }
 
     /* Login Page */
@@ -213,7 +236,72 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         }
 
         let HTML = CompiledTemplates['Settings']({
-            "Config": CONFIG, "Interfaces": IPs
+            "Config": CONFIG, "Interfaces": IPs, "RestartRequired":_RestartRequired
+        });
+
+        res.contentType('text/html')
+        res.send(HTML)
+
+    }
+
+    /* Do Settings */
+    function _DoSettings(req, res) {
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let CFG = req.body;
+
+        CONFIG.enableIncomingMQTT = CFG.enableIncomingMQTT;
+        CONFIG.MQTTBroker = CFG.MQTTBroker;
+        CONFIG.MQTTTopic = CFG.MQTTTopic;
+        CONFIG.advertiser = CFG.advertiser;
+        CONFIG.interface = CFG.interface;
+        CONFIG.webInterfaceAddress = CFG.webInterfaceAddress;
+        CONFIG.webInterfacePort = CFG.webInterfacePort;
+        CONFIG.MQTTOptions.username = CFG.MQTTOptions.username
+        CONFIG.MQTTOptions.password = CFG.MQTTOptions.password
+
+        UTIL.updateOptions(CFG)
+
+        _RestartRequired = true;
+
+        let Response = {
+            success: true
+        }
+        res.contentType('application/json')
+        res.send(JSON.stringify(Response))
+       
+    }
+
+    /* Accessories */
+    function _Accessories(req,res) {
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+        
+        let Accessories = []
+        let AccessoryIDs = Object.keys(_ConfiguredAccessories);
+
+        AccessoryIDs.forEach((AID) => {
+
+            let AccessoryCFG = _ConfiguredAccessories[AID].getConfig();
+            let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
+
+            if(ConfiguredRoute !== undefined){
+                let Route = ROUTING.Routes[ConfiguredRoute.type]
+                Accessories.push({AccessoryCFG:AccessoryCFG, RouteCFG:Route})
+            }
+            else{
+                Accessories.push({AccessoryCFG:AccessoryCFG})
+            }
+           
+        })
+
+        let HTML = CompiledTemplates['Accessories']({
+            Acessories:Accessories
         });
 
         res.contentType('text/html')

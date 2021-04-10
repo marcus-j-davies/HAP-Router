@@ -148,6 +148,7 @@ const updateRouteConfig = function (Config) {
 
 // Adjust options
 const updateOptions = function (Config) {
+
     const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
 
     const ConfigOBJ = JSON.parse(CFF);
@@ -159,15 +160,9 @@ const updateOptions = function (Config) {
     ConfigOBJ.interface = Config.interface;
     ConfigOBJ.webInterfaceAddress = Config.webInterfaceAddress;
     ConfigOBJ.webInterfacePort = Config.webInterfacePort;
-
-    if (ConfigOBJ.hasOwnProperty("MQTTOptions")) {
-        ConfigOBJ.MQTTOptions.username = Config.MQTTOptions.username
-        ConfigOBJ.MQTTOptions.password = Config.MQTTOptions.password
-    } else {
-        ConfigOBJ.MQTTOptions = {}
-        ConfigOBJ.MQTTOptions.username = Config.MQTTOptions.username
-        ConfigOBJ.MQTTOptions.password = Config.MQTTOptions.password
-    }
+    ConfigOBJ.MQTTOptions.username = Config.MQTTOptions.username
+    ConfigOBJ.MQTTOptions.password = Config.MQTTOptions.password
+   
 
     saveConfig(ConfigOBJ);
 }

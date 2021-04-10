@@ -1,23 +1,28 @@
 'use strict'
 const mqtt = require('mqtt')
-const util = require('./util');
-const config = require(util.ConfigPath);
+const UTIL = require('./util');
+const CONFIG = require(UTIL.ConfigPath);
 
 var MQTTC;
 var _Accessories;
 var CallBack;
 
-const MQTTError = function(Error) {
+const MQTTError = function (Error) {
+
     console.log(" Could not connect to MQTT Broker : " + Error);
     process.exit(0)
+
 }
 
-const MQTTConnected = function(Client) {
+const MQTTConnected = function (Client) {
+
     MQTTC = Client;
-    MQTTC.subscribe(config.MQTTTopic, MQTTSubscribeDone)
+    MQTTC.subscribe(CONFIG.MQTTTopic, MQTTSubscribeDone)
+
 }
 
-const MQTTSubscribeDone = function(error) {
+const MQTTSubscribeDone = function (error) {
+
     if (!error) {
         MQTTC.on('message', MQTTMessageReceved)
         CallBack();
@@ -27,7 +32,8 @@ const MQTTSubscribeDone = function(error) {
     }
 }
 
-const MQTTMessageReceved = function(topic, message) {
+const MQTTMessageReceved = function (topic, message) {
+
     try {
         const sPL = message.toString();
         const PL = JSON.parse(sPL);
@@ -35,7 +41,7 @@ const MQTTMessageReceved = function(topic, message) {
 
         const Ac = _Accessories[TargetAccessory]
 
-        if (Ac != null) {
+        if (Ac !== undefined) {
             Ac.setCharacteristics(PL)
         }
     } catch (e) {
@@ -44,26 +50,39 @@ const MQTTMessageReceved = function(topic, message) {
 
 }
 
-const MQTT = function(Accesories, CB) {
+const MQTT = function (Accesories, CB) {
+
     _Accessories = Accesories;
     CallBack = CB;
 
-    if (config.hasOwnProperty("enableIncomingMQTT") && config.enableIncomingMQTT == 'true') {
-        if (!config.hasOwnProperty("MQTTOptions")) {
-            config.MQTTOptions = {};
-        } else if (config.MQTTOptions.username.length < 1) {
-            delete config.MQTTOptions["username"]
-            delete config.MQTTOptions["password"]
+    if (CONFIG.enableIncomingMQTT === true) {
+
+
+        let Options = {
         }
+
+        let OptionKeys = Object.keys(CONFIG.MQTTOptions);
+        OptionKeys.forEach((K) =>{
+            Options[K] = CONFIG.MQTTOptions[K]
+        })
+
+        if(Options.hasOwnProperty("username") && Options.username.length < 1)
+        {
+            delete Options.username;
+            delete Options.password
+        }
+
 
         console.log(" Starting MQTT Client")
 
         try {
-            const _MQTTC = mqtt.connect(config.MQTTBroker, config.MQTTOptions)
+
+            const _MQTTC = mqtt.connect(CONFIG.MQTTBroker, Options)
             _MQTTC.on('error', MQTTError);
             _MQTTC.on('connect', () => MQTTConnected(_MQTTC))
 
         } catch (err) {
+            
             console.log(" Could not connect to MQTT Broker : " + err);
             process.exit(0);
         }

@@ -163,10 +163,14 @@ const Accesories = {}
 for (let i = 0; i < CONFIG.accessories.length; i++) {
 
     let AccessoryOBJ = CONFIG.accessories[i]
+    let TypeMetadata = ACCESSORY.Types[AccessoryOBJ.type];
+
     console.log(" Configuring Accessory : " + AccessoryOBJ.name + " (" + AccessoryOBJ.type + ")")
+
     AccessoryOBJ.accessoryID = AccessoryOBJ.username.replace(/:/g, "");
-    let Type = ACCESSORY.Types[AccessoryOBJ.type];
-    let Acc = new Type.Class(AccessoryOBJ);
+    AccessoryOBJ.icon = TypeMetadata.Icon
+
+    let Acc = new TypeMetadata.Class(AccessoryOBJ);
 
     if (Cache !== undefined) {
         if (Cache.hasOwnProperty(AccessoryOBJ.accessoryID)) {
@@ -201,7 +205,7 @@ console.log(" Starting Client Services")
 const UIServer = new SERVER.Server(Accesories, Change, Identify, Bridge, setupRoutes, Pair);
 
 // MQTT Client (+ Start Server)
-const MQTTC = new MQTT.MQTT(Accesories, MQTTDone)
+let MQTTC = new MQTT.MQTT(Accesories, MQTTDone)
 
 function MQTTDone() {
     UIServer.Start(UIServerDone)

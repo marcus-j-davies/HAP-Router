@@ -106,6 +106,11 @@ BaseAccessory.prototype._get = async function (property, callback) {
     }
 }
 
+BaseAccessory.prototype.getConfig = function(){
+    
+    return this._Config;
+}
+
 BaseAccessory.prototype.getAccessory = function () {
 
     return this._accessory;
@@ -198,15 +203,22 @@ const BasicSet = function(payload) {
 const SetWithBattery = function(payload) {
 
     const Props = Object.keys(payload);
-    const BatteryTargets = ["BatteryLevel", "StatusLowBattery", "ChargingState"]
 
     for (let i = 0; i < Props.length; i++) {
+
         this._Properties[Props[i]] = payload[Props[i]];
 
-        if (BatteryTargets.includes(Props[i])) {
-            this._batteryService.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
-        } else {
-            this._service.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
+        switch(Props[i])
+        {
+            case "BatteryLevel":
+            case "StatusLowBattery":
+            case "ChargingState":
+                this._batteryService.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
+                break;
+            
+            default:
+                this._service.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
+                break;
         }
 
     }

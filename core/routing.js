@@ -30,25 +30,25 @@ const loadModules = function () {
     }
 
     let CustomDeps = require(LockPath).dependencies
-    let Match1 = Object.keys(CustomDeps).filter((D) => MATCHER.isMatch(D, '@*/haprouter-route-*', { caseSensitive: false })).map((D) => D);
-    let Match2 = Object.keys(CustomDeps).filter((D) => MATCHER.isMatch(D, 'haprouter-route-*', { caseSensitive: false })).map((D) => D);
+    let Match1 = Object.keys(CustomDeps).filter((RP) => MATCHER.isMatch(RP, '@*/haprouter-route-*', { caseSensitive: false })).map((RP) => RP);
+    let Match2 = Object.keys(CustomDeps).filter((RP) => MATCHER.isMatch(RP, 'haprouter-route-*', { caseSensitive: false })).map((RP) => RP);
 
     Match1 = Match1.concat(Match2)
 
-    Match1.forEach((D) => {
+    Match1.forEach((RP) => {
 
-        let Mod = require(D);
+        let Mod = require(RP);
         let RouteOBJ = {}
 
-        let DIR = PATH.dirname(require.resolve(D))
+        let DIR = PATH.dirname(require.resolve(RP))
 
-        RouteOBJ.Type = D
+        RouteOBJ.Type = RP
         RouteOBJ.Icon = PATH.join(DIR, Mod.Icon);
         RouteOBJ.Name = Mod.Name;
         RouteOBJ.Class = Mod.Route;
         RouteOBJ.Inputs = Mod.Inputs;
 
-        Routes[D] = RouteOBJ;
+        Routes[RP] = RouteOBJ;
 
     })
 

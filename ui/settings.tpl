@@ -13,9 +13,7 @@
 </head>
 
 <body>
-
-   <blockquote>
-      <blockquote>
+      <blockquote class="ContentSection">
          <div class="ContentTitle">HAP Router Settings</div>
 
          <!-- MQTT-->
@@ -24,7 +22,11 @@
             <table>
                <tr>
                   <td>Enabled</td>
-                  <td><input type="checkbox" id="CFG_MQTTEnabled" value="true"></td>
+                  <td><input type="checkbox" id="CFG_MQTTEnabled"></td>
+
+                  {{#if Config.enableIncomingMQTT}}
+                     <script> $("#CFG_MQTTEnabled").prop('checked', true);</script>
+                  {{/if}}
                </tr>
                <tr>
                   <td>MQTT Broker</td>
@@ -100,14 +102,16 @@
 
          <!-- Save-->
          <fieldset style="text-align: right; margin-top: 20px;">
-            <input type="button" class="StyledButton" value="Save Changes">
+           <span style="color: rgb(255,255,255);" id="Message"></span> <input type="button" class="StyledButton" value="Save Changes" onclick="SaveSettings()">
          </fieldset>
 
 
 
       </blockquote>
-      <blockquote>
 
+      {{#if RestartRequired}}
+      <script>$("#Message").text("A restart is required to apply some recent changes.")</script>
+      {{/if}}
 
 </body>
 

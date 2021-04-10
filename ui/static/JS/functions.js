@@ -26,6 +26,43 @@ function LoginDone(data) {
     }
 }
 
+// Save Settings
+function SaveSettings() {
+
+    let Data = {
+
+        "advertiser": $("#CFG_Advertiser").val(),
+        "interface": $("#CFG_MDNSInterface").val(),
+        "webInterfacePort": parseInt($("#CFG_APIPort").val()),
+        "webInterfaceAddress": $("#CFG_APIInterface").val(),
+
+        "enableIncomingMQTT": $('#CFG_MQTTEnabled').is(":checked"),
+        "MQTTBroker":$("#CFG_MQTTBroker").val(),
+        "MQTTTopic":$("#CFG_MQTTTopic").val(),
+        "MQTTOptions": {
+            "username": $('#CFG_MQTTUsername').val(),
+            "password": $('#CFG_MQTTPassword').val()
+        }
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "../../../ui/settings",
+        data: JSON.stringify(Data),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: SaveConfigDone
+    });
+}
+
+function SaveConfigDone(data) {
+    if (data.success) {
+        $('#Message').text('Settings updated! Please restart HAP Router.');
+    } else {
+        $('#Message').text('Could not save Settings');
+    }
+}
+
 // delete route()
 function DeleteRoute() {
     if (confirm("Are you sure you wish to delete this route?")) {
@@ -66,7 +103,7 @@ function SaveConfig() {
         data: JSON.stringify(Data),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
-        success: function() {
+        success: function () {
             alert('Please restart the server to apply the new configuration.')
         }
     });
@@ -86,7 +123,7 @@ function StartRestore() {
 function ProcessRestore(input) {
     let FR = new FileReader();
 
-    FR.onload = function() {
+    FR.onload = function () {
         $.ajax({
             type: "POST",
             data: JSON.stringify({
@@ -160,9 +197,9 @@ function RouteTypeChanged() {
     $.ajax({
 
         type: "GET",
-        url: "../../../ui/getroutemeta/"+Type,
+        url: "../../../ui/getroutemeta/" + Type,
         dataType: "json",
-        success: function(data){
+        success: function (data) {
 
             let Anchor = $("#Anchor")
 
@@ -170,10 +207,10 @@ function RouteTypeChanged() {
 
             data.Inputs.reverse()
 
-            data.Inputs.forEach((I) =>{
+            data.Inputs.forEach((I) => {
 
 
-                Anchor.after('<tr class="param_row"><td valign="top">'+I.label+'</td><td style="text-align:right"><input param="'+I.id+'" class="config_param" type="text" style="width: 300px"></td></tr>')
+                Anchor.after('<tr class="param_row"><td valign="top">' + I.label + '</td><td style="text-align:right"><input param="' + I.id + '" class="config_param" type="text" style="width: 300px"></td></tr>')
 
 
             })
@@ -181,8 +218,8 @@ function RouteTypeChanged() {
         }
     });
 
-    
-    
+
+
 }
 
 // Populate Route Data
@@ -415,7 +452,7 @@ function UpdateAccessory() {
     AccessoryOBJ.setupID = ConfiguredObject.setupID;
     AccessoryOBJ.serialNumber = ConfiguredObject.serialNumber;
 
-    Props.each(function() {
+    Props.each(function () {
         if ($(this).is('textarea')) {
 
             let lines = $(this).val().replace(/\r\n/g, "\n").split("\n");
@@ -453,7 +490,7 @@ function SaveAccessory(Bridged) {
     AccessoryOBJ.type = Prototype.Name;
     AccessoryOBJ.route = ''
 
-    Props.each(function() {
+    Props.each(function () {
         if ($(this).is('textarea')) {
 
             let lines = $(this).val().replace(/\r\n/g, "\n").split("\n");
@@ -516,12 +553,12 @@ function SaveRoute() {
 
     let Params = $(".config_param");
 
-    Params.each(function(index){
+    Params.each(function (index) {
 
-       Data[$(this).attr('param')] = $(this).val();
+        Data[$(this).attr('param')] = $(this).val();
     })
 
-   
+
     $.ajax({
         type: "POST",
         url: "../../../ui/createroute",
