@@ -23,8 +23,8 @@ body{
     left: calc(50% - 264px);
 }
 .LoginBanner{
-    position: relative;
-    margin-top: 550px;
+    position: absolute;
+    top: 55%;
     width: 100%;
     height: 150px;
     background-color: rgba(0,0,0,0.5);
