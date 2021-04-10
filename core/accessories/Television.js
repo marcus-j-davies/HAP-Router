@@ -1,6 +1,6 @@
 'use strict'
 
-const { Service, Characteristic, Categories} = require("hap-nodejs");
+const { Service, Characteristic, Categories, CharacteristicEventTypes} = require("hap-nodejs");
 const {BaseAccessory} = require("./BaseAccessory")
 
  const Set = function(payload) {

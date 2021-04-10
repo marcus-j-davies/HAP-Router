@@ -28,7 +28,7 @@ let Types = {
         Class: ContactSensor,
         ConfigProperties: []
     },
-    "ALARM": {
+    "INTRUDER_ALARM": {
         Label: "Intruder Alarm",
         Icon: "INTRUDER_ALARM.png",
         SupportsRouting: true,
