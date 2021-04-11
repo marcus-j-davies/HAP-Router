@@ -24,6 +24,10 @@
                <li style="background: url('../../../UI/static/Images/baseline_dns_white_24dp.png') left center no-repeat;"><a href="../../../ui/bridge" target="Content">Bridge</a></li>
             </ul>
          </blockquote>
+         <div class="VersionDiv">
+           HAP Router: {{RouterPackage.version}}<br />
+           HAP-NodeJS: {{HAPPackage.version}}<br />
+         </div>
 
       </div>
       <div class="Content">

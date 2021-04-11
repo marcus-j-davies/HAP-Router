@@ -24,10 +24,10 @@
                   {{#BridgedAccessories}}
                         <tr>
                            <td rowspan="4" style="width: 70px; vertical-align: top; text-align: center;">
-                              <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/{{AccessoryCFG.icon}}"> 
+                              <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/?type={{AccessoryCFG.type}}"> 
                            </td>
                            <td><strong>{{AccessoryCFG.name}}</strong></td>
-                           <td rowspan="4">{{AccessoryCFG.route}}</td>
+                           <td rowspan="4"><img class="AccessoryIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
                         </tr>
                         <tr><td>Motion Sensor</td></tr>
                         <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
@@ -47,7 +47,7 @@
                   {{#UNBridgedAccessories}}
                         <tr>
                            <td rowspan="4" style="width: 70px; vertical-align: top; text-align: center;">
-                              <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/{{AccessoryCFG.icon}}"> 
+                              <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/?type={{AccessoryCFG.type}}"> 
                            </td>
                            <td><strong>{{AccessoryCFG.name}}</strong></td>
                            <td rowspan="4" style="text-align: right"><div class="PincodeHint">{{AccessoryCFG.pincode}}</div></td>

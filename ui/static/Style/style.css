@@ -135,6 +135,15 @@ fieldset table{
     float: right;
     font-family: monospace;
 }
+
+.VersionDiv{
+
+    font-size: 14px;
+    text-align: center;
+    position: fixed;
+    bottom: 50px;
+    left: 65px;
+}
     
 
 li > a, li > a:hover, li > a:visited{

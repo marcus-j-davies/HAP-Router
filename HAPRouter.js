@@ -168,7 +168,6 @@ for (let i = 0; i < CONFIG.accessories.length; i++) {
     console.log(" Configuring Accessory : " + AccessoryOBJ.name + " (" + AccessoryOBJ.type + ")")
 
     AccessoryOBJ.accessoryID = AccessoryOBJ.username.replace(/:/g, "");
-    AccessoryOBJ.icon = TypeMetadata.Icon
 
     let Acc = new TypeMetadata.Class(AccessoryOBJ);
 

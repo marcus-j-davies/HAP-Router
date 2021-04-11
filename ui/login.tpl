@@ -19,8 +19,7 @@
    <div class="LoginBanner">
 
       <span class="LoginDisclaimer">
-         HAP Router.<br />
-         Version: 4.0.0
+         HAP Router: {{RouterPackage.version}}
       </span>
 
       <table class="LoginTable">

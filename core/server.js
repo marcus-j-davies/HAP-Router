@@ -12,6 +12,8 @@ const COOKIEPARSER = require('cookie-parser')
 const PATH = require('path');
 const OS = require("os");
 const ROUTING = require('./routing');
+const HAPPackage = require('hap-nodejs/package.json');
+const RouterPackage = require("../package.json");
 
 const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSetup, PairEvent) {
 
@@ -73,7 +75,8 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         app.use('/ui/static', EXPRESS.static(PATH.join(UTIL.RootAppPath, "ui/static")))
 
         app.get('/', _Redirect);
-        app.get('/ui/resources/accessoryicon/:ICON',_DoAccessoryIcon)
+        app.get('/ui/resources/accessoryicon/',_DoAccessoryIcon)
+        app.get('/ui/resources/routeicon/',_DoRouteIcon)
 
         app.get('/ui/login', _Login);
         app.post('/ui/login', _DoLogin);
@@ -154,15 +157,32 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         }
 
         res.contentType('image/png')
-        res.sendFile(PATH.join(UTIL.RootAppPath,"core","accessories","Icons",req.params.ICON));
+
+        let Icon = ACCESSORY.Types[req.query.type].Icon
+        res.sendFile(PATH.join(UTIL.RootAppPath,"core","accessories","Icons",Icon));
      
-       
+    }
+
+    /* Accessory Icon */
+    function _DoRouteIcon(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        res.contentType('image/png')
+
+        let Icon = ROUTING.Routes[req.query.type].Icon
+        res.sendFile(Icon);
+     
     }
 
     /* Login Page */
     function _Login(req, res) {
 
-        let HTML = CompiledTemplates['Login']({});
+        let HTML = CompiledTemplates['Login']({
+            "RouterPackage":RouterPackage
+        });
         res.contentType('text/html')
         res.send(HTML)
 
@@ -209,7 +229,10 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             return;
         }
 
-        let HTML = CompiledTemplates['Main']({});
+        let HTML = CompiledTemplates['Main']({
+            "HAPPackage":HAPPackage,
+            "RouterPackage":RouterPackage
+        });
         res.contentType('text/html')
         res.send(HTML)
 
@@ -296,8 +319,9 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             }
 
             if(ConfiguredRoute !== undefined){
-                let Route = ROUTING.Routes[ConfiguredRoute.type]
-                Element.RouteCFG = Route
+                Element.RouteCFG = {}
+                Element.RouteCFG.name = AccessoryCFG.route
+                Element.RouteCFG.type = ConfiguredRoute.type
             }
 
             if(AccessoryCFG.bridged){
