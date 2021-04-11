@@ -19,8 +19,8 @@
       
             <fieldset>
              {{#Types}}
-             <div style="display: inline-block; text-align: center; vertical-align: middle; margin: 15px; font-size: 14px; color: rgb(255,255,255); width: 90px; height: 90px;">
-               <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/?type={{type}}"><br />
+             <div class="OptionBox" onclick="location.href='../../../ui/createaccessory/{{type}}'">
+               <img class="AccessoryIcon" style="margin-bottom: 5px;" src="../../../ui/resources/accessoryicon/?type={{type}}"><br />
                {{label}}
             </div>
              {{/Types}}

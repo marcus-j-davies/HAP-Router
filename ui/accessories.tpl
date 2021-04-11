@@ -31,7 +31,7 @@
                               <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/?type={{AccessoryCFG.type}}"> 
                            </td>
                            <td><strong>{{AccessoryCFG.name}}</strong></td>
-                           <td rowspan="4" style="text-align: right; vertical-align: top;"><img class="AccessoryIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
+                           <td rowspan="4" style="text-align: right; vertical-align: top;"><img class="RouteIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
                         </tr>
                         <tr><td>{{AccessoryCFG.typedisplay}}</td></tr>
                         <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
@@ -61,7 +61,7 @@
                               <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/?type={{AccessoryCFG.type}}"> 
                            </td>
                            <td><strong>{{AccessoryCFG.name}}</strong></td>
-                           <td rowspan="4" style="text-align: right; vertical-align: top;"><span class="PincodeHint">{{AccessoryCFG.pincode}}</span> <img class="AccessoryIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
+                           <td rowspan="4" style="text-align: right; vertical-align: top;"><span class="PincodeHint">{{AccessoryCFG.pincode}}</span> <img class="RouteIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
                         </tr>
                         <tr><td>{{AccessoryCFG.typedisplay}}</td></tr>
                         <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
