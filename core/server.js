@@ -15,6 +15,14 @@ const ROUTING = require('./routing');
 const HAPPackage = require('hap-nodejs/package.json');
 const RouterPackage = require("../package.json");
 
+const titleCase = function(str) {
+    str = str.toLowerCase().split(' ');
+    for (var i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
+    }
+    return str.join(' ');
+  }
+
 const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSetup, PairEvent) {
 
     // Vars
@@ -34,6 +42,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         "Main": PATH.join(UTIL.RootAppPath, "ui/main.tpl"),
         "Settings": PATH.join(UTIL.RootAppPath, "/ui/settings.tpl"),
         "Accessories": PATH.join(UTIL.RootAppPath, "/ui/accessories.tpl"),
+        "AccessorTypes": PATH.join(UTIL.RootAppPath, "/ui/accessorytypes.tpl"),
 
        // "Setup": PATH.join(UTIL.RootAppPath, "ui/setup.tpl"),
       //  "Create": PATH.join(UTIL.RootAppPath, "ui/create.tpl"),
@@ -87,6 +96,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         app.post('/ui/settings', _DoSettings);
 
         app.get('/ui/accessories', _Accessories);
+        app.get('/ui/availableactypes', _ListAccessoryesTypes)
 
 
         /*
@@ -312,6 +322,9 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         AccessoryIDs.forEach((AID) => {
 
             let AccessoryCFG = _ConfiguredAccessories[AID].getConfig();
+
+            AccessoryCFG.typedisplay = ACCESSORY.Types[AccessoryCFG.type].Label
+
             let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
 
             let Element = {
@@ -340,6 +353,30 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         res.contentType('text/html')
         res.send(HTML)
 
+    }
+
+    function _ListAccessoryesTypes(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+      
+        let Available = []
+        let Types = Object.keys(ACCESSORY.Types);
+        Types.forEach((T)=>{
+
+            Available.push({
+                type:T,
+                label:ACCESSORY.Types[T].Label
+            })
+        })
+
+        let HTML = CompiledTemplates['AccessorTypes']({
+            Types:Available
+        });
+
+        res.contentType('text/html')
+        res.send(HTML)
     }
 
     /*

@@ -14,7 +14,11 @@
 
 <body>
    <blockquote class="ContentSection">
-         <div class="ContentTitle">Configured Accessories</div>
+         <div class="ContentTitle">Configured Accessories
+            <span style="float: right;">
+            <input type="button" value="Add New Accessory" class="StyledButton" onclick="location.href='../../../ui/availableactypes'">
+            </span>
+         </div>
 
          {{#if BridgedAccessories.length}}
             <fieldset>
@@ -27,13 +31,20 @@
                               <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/?type={{AccessoryCFG.type}}"> 
                            </td>
                            <td><strong>{{AccessoryCFG.name}}</strong></td>
-                           <td rowspan="4"><img class="AccessoryIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
+                           <td rowspan="4" style="text-align: right; vertical-align: top;"><img class="AccessoryIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
                         </tr>
-                        <tr><td>Motion Sensor</td></tr>
+                        <tr><td>{{AccessoryCFG.typedisplay}}</td></tr>
                         <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
                         <tr><td>&nbsp</td></tr>
+
                   {{/BridgedAccessories}}
                </table>
+
+               <script>
+                  
+
+                  
+               </script>
 
             </fieldset>
          {{/if}}
@@ -50,9 +61,9 @@
                               <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/?type={{AccessoryCFG.type}}"> 
                            </td>
                            <td><strong>{{AccessoryCFG.name}}</strong></td>
-                           <td rowspan="4" style="text-align: right"><div class="PincodeHint">{{AccessoryCFG.pincode}}</div></td>
+                           <td rowspan="4" style="text-align: right; vertical-align: top;"><span class="PincodeHint">{{AccessoryCFG.pincode}}</span> <img class="AccessoryIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
                         </tr>
-                        <tr><td>Motion Sensor</td></tr>
+                        <tr><td>{{AccessoryCFG.typedisplay}}</td></tr>
                         <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
                         <tr><td>&nbsp</td></tr>
                   {{/UNBridgedAccessories}}
