@@ -50,7 +50,7 @@
                               <img class="AccessoryIcon" src="../../../ui/resources/accessoryicon/{{AccessoryCFG.icon}}"> 
                            </td>
                            <td><strong>{{AccessoryCFG.name}}</strong></td>
-                           <td rowspan="4">{{AccessoryCFG.route}}</td>
+                           <td rowspan="4" style="text-align: right"><div class="PincodeHint">{{AccessoryCFG.pincode}}</div></td>
                         </tr>
                         <tr><td>Motion Sensor</td></tr>
                         <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>

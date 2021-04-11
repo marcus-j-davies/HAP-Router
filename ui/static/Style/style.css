@@ -118,6 +118,23 @@ fieldset table{
     color: rgb(255,255,255);
     font-size: 12px;
 }
+
+.PincodeHint{
+    font-size: 12px;
+    background-color: rgb(243,107,8);
+    color: rgb(255,255,255);
+    text-align: center;
+    border-style: solid;
+    border-color: rgb(0,0,0);
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    border-width: 1px;
+    padding: 5px;
+    width: 80px;
+    float: right;
+    font-family: monospace;
+}
     
 
 li > a, li > a:hover, li > a:visited{
