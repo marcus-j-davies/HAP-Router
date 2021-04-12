@@ -74,7 +74,7 @@
                      {{#eq type "text"}}
                         <tr>
                            <td style="width: 200px">{{label}}</td>
-                           <td><input type="text" data-param="{{id}}" class="ConfigParam" value="{{default}}"></td>
+                           <td><input type="text" data-type="{{type}}" data-param="{{id}}" class="ConfigParam" value="{{default}}"></td>
                         </tr>
                      {{/eq}}
 
@@ -82,7 +82,7 @@
                      {{#eq type "numeric"}}
                        <tr>
                           <td style="width: 200px">{{label}}</td>
-                          <td><input type="number" data-param="{{id}}" class="ConfigParam" value="{{default}}"></td>
+                          <td><input type="number" data-type="{{type}}" data-param="{{id}}" class="ConfigParam" value="{{default}}"></td>
                        </tr>
                     {{/eq}}
 
@@ -90,7 +90,7 @@
                      {{#eq type "checkbox"}}
                         <tr>
                            <td style="width: 200px">{{label}}</td>
-                           <td><input type="checkbox" data-param="{{id}}" class="ConfigParam" {{#if default}}checked{{/if}}></td>
+                           <td><input type="checkbox" data-type="{{type}}" data-param="{{id}}" class="ConfigParam" {{#if default}}checked{{/if}}></td>
                         </tr>
                      {{/eq}}
 
@@ -99,7 +99,7 @@
                      <tr>
                         <td style="width: 200px">{{label}}</td>
                         <td>
-                           <select data-param="{{id}}" class="ConfigParam">
+                           <select data-type="{{type}}" data-param="{{id}}" class="ConfigParam">
                            {{#options}}
                            <option value="{{.}}">{{.}}</option>
                            {{/options}}
@@ -113,7 +113,7 @@
                       <tr>
                          <td style="width: 200px">{{label}}</td>
                          <td>
-                            <textarea data-param="{{id}}" class="ConfigParam">{{#default}}{{.}}&#013;&#010;{{/default}}</textarea>
+                            <textarea data-type="{{type}}" data-param="{{id}}" class="ConfigParam">{{#default}}{{.}}&#013;&#010;{{/default}}</textarea>
                          
                             </td>
                       </tr>
