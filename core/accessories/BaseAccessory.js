@@ -37,10 +37,16 @@ class BaseAccessory extends EventEmitter {
         }
 
         this._accessory.getService(Service.AccessoryInformation)
-            .setCharacteristic(Characteristic.SerialNumber, AccessoryOBJ.serialNumber)
-            .setCharacteristic(Characteristic.Manufacturer, "Marcus Davies")
-            .setCharacteristic(Characteristic.FirmwareRevision, version)
             .setCharacteristic(Characteristic.Name, AccessoryOBJ.name)
+            .setCharacteristic(Characteristic.SerialNumber, AccessoryOBJ.serialNumber)
+            .setCharacteristic(Characteristic.FirmwareRevision, version)
+
+        if(AccessoryOBJ.model !== undefined && AccessoryOBJ.model.length > 0){
+            this._accessory.getService(Service.AccessoryInformation).setCharacteristic(Characteristic.Model, AccessoryOBJ.model)
+        }
+        if(AccessoryOBJ.manufacturer !== undefined && AccessoryOBJ.manufacturer.length > 0){
+            this._accessory.getService(Service.AccessoryInformation).setCharacteristic(Characteristic.Manufacturer, AccessoryOBJ.manufacturer)
+        }
 
         this._accessory.username = AccessoryOBJ.username;
         this._accessory.pincode = AccessoryOBJ.pincode;

@@ -6,11 +6,11 @@ const {BaseAccessory} = require("./BaseAccessory")
 class Bridge extends BaseAccessory {
 
     constructor(Config) {
-        Config.name = "HAP Router Bridge"
+        Config.name = "HAP Router"
+        Config.model = "HAP Router v1"
+        Config.manufacturer = "Marcus Davies"
         super(Config, Categories.BRIDGE);
-        this._accessory.getService(Service.AccessoryInformation)
-            .setCharacteristic(Characteristic.Model, "HAP Router 4")
-
+        
     }
 
 }

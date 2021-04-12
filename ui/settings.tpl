@@ -21,12 +21,8 @@
             <legend>MQTT Client</legend>
             <table>
                <tr>
-                  <td>Enabled</td>
-                  <td><input type="checkbox" id="CFG_MQTTEnabled"></td>
-
-                  {{#if Config.enableIncomingMQTT}}
-                     <script> $("#CFG_MQTTEnabled").prop('checked', true);</script>
-                  {{/if}}
+                  <td style="width: 200px;">Enabled</td>
+                  <td><input type="checkbox" id="CFG_MQTTEnabled" {{#if Config.enableIncomingMQTT}}checked{{/if}}></td>
                </tr>
                <tr>
                   <td>MQTT Broker</td>
@@ -52,7 +48,7 @@
             <legend>Network / mDNS</legend>
             <table>
                <tr>
-                  <td>mDNS Advertiser</td>
+                  <td style="width: 200px;">mDNS Advertiser</td>
                   <td>
                      <select id="CFG_Advertiser">
                         <option value="bonjour-hap">BONJOUR-HAP (Legacy)</option>
@@ -87,7 +83,7 @@
                </tr>
                <tr>
                   <td>Web/API Port</td>
-                  <td><input type="text" id="CFG_APIPort" value="{{Config.webInterfacePort}}"></td>
+                  <td><input type="number" id="CFG_APIPort" value="{{Config.webInterfacePort}}"></td>
                </tr>
             </table>
          </fieldset>

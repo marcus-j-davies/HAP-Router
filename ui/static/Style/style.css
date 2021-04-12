@@ -210,6 +210,26 @@ img.RouteIcon{
     vertical-align: middle;
 }
 
+input[type='text'], input[type='number'], input[type='password'], select, textarea{
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    border-collapse: collapse;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+    width: 215px;
+    height: 15px;
+}
+textarea{
+    width:227px;
+    height: 100px;
+}
+select{
+    height: 25px;
+}
+
+
 .StyledButton[withborder]
 {
     border-color: rgb(0,0,0);

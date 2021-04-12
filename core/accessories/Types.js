@@ -76,7 +76,7 @@ let Types = {
         SupportsRouting: true,
         Class: LightBulb,
         ConfigProperties: [
-            {id:"colorMode", label:"Color Mode", type:"select", options:["hue","temperature"], default:"hue"},
+            {id:"colorMode", label:"Color Mode", type:"select", options:["hue","temperature","none"], default:"hue"},
             {id:"supportsBrightness", label:"Supports Brightness", type:"checkbox", default:false}
         ]
     },
@@ -137,24 +137,24 @@ let Types = {
         SupportsRouting: true,
         Class: Camera,
         ConfigProperties: [
+            {id:"processor", label:"Stream Processor", type:"text", default:"ffmpeg"},
+            {id:"liveStreamSource", label:"Live Stream Source", type:"text", default:"-rtsp_transport tcp -i rtsp://username:password@ip:port/StreamURI"},
+            {id:"stillImageSource", label:"Still Image Source", type:"text", default:"http://username:password@ip:port/SnapshotURI"},
             {id:"enableDoorbellService", label:"Enable Door Service", type:"checkbox", default:false},
             {id:"enableMotionDetectionService", label:"Enable Motion Detection Service", type:"checkbox", default:false},
-            {id:"enableAudio", label:"Enable Audio Streaming", type:"checkbox", default:false},
             {id:"maxFPS", label:"Max FPS", type:"numeric", default:10},
             {id:"snapshotCacheTime", label:"Frame Snapshot Age (seconds)", type:"numeric", default:60},
             {id:"maxBitrate", label:"Max Bit Rate", type:"numeric", default:300},
             {id:"packetSize", label:"Max Packet Size", type:"numeric", default:1316},
             {id:"maxStreams", label:"Max Stream Clients", type:"numeric", default:2},
             {id:"maxWidthHeight", label:"Max Width/Hight (WxH)", type:"text", default:"1280x720"},
-            {id:"processor", label:"Stream Processor", type:"text", default:"ffmpeg"},
-            {id:"stillImageSource", label:"Still Image Source", type:"text", default:"http://username:password@ip:port/SnapshotURI"},
-            {id:"liveStreamSource", label:"Live Stream Source", type:"text", default:"-rtsp_transport tcp -i rtsp://username:password@ip:port/StreamURI"},
             {id:"mapVideo", label:"Video Map", type:"text", default:"0:0"},
             {id:"videoEncoder", label:"Video Encoder", type:"text", default:"libx264"},
-            {id:"additionalCommandline", label:"Additional Processor Args", type:"text", default:"-tune zerolatency -preset ultrafast"},
             {id:"honourRequestedResolution", label:"Honour Requested Resolution", type:"checkbox", default:true},
+            {id:"enableAudio", label:"Enable Audio Streaming", type:"checkbox", default:false},
             {id:"mapAudio", label:"Audio Map", type:"text", default:"0:1"},
             {id:"audioEncoder", label:"Audio Encoder", type:"text", default:"libfdk_aac"},
+            {id:"additionalCommandline", label:"Additional Processor Args", type:"text", default:"-tune zerolatency -preset ultrafast"},
         ]
     }
 }

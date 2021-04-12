@@ -14,7 +14,11 @@
 
 <body>
    <blockquote class="ContentSection">
-         <div class="ContentTitle">Choose Accessory Type</div>
+         <div class="ContentTitle">Choose Accessory type
+            <span style="float: right;">
+            <input type="button" value="Back" class="StyledButton" onclick="location.href='../../../ui/accessories'">
+            </span>
+         </div>
 
       
             <fieldset>

@@ -4,8 +4,6 @@ const CRYPTO = require('crypto')
 const HANDLEBARS = require('handlebars')
 const FS = require('fs');
 const ACCESSORY = require("./accessories/Types")
-//const BODYPARSER = require('body-parser')
-//const ACCESSORY = require('./accessory');
 const UTIL = require('./util');
 const CONFIG = require(UTIL.ConfigPath);
 const COOKIEPARSER = require('cookie-parser')
@@ -14,14 +12,6 @@ const OS = require("os");
 const ROUTING = require('./routing');
 const HAPPackage = require('hap-nodejs/package.json');
 const RouterPackage = require("../package.json");
-
-const titleCase = function(str) {
-    str = str.toLowerCase().split(' ');
-    for (var i = 0; i < str.length; i++) {
-      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
-    }
-    return str.join(' ');
-  }
 
 const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSetup, PairEvent) {
 
@@ -43,6 +33,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         "Settings": PATH.join(UTIL.RootAppPath, "/ui/settings.tpl"),
         "Accessories": PATH.join(UTIL.RootAppPath, "/ui/accessories.tpl"),
         "AccessorTypes": PATH.join(UTIL.RootAppPath, "/ui/accessorytypes.tpl"),
+        "NewAccessory": PATH.join(UTIL.RootAppPath, "/ui/createaccessory.tpl"),
 
        // "Setup": PATH.join(UTIL.RootAppPath, "ui/setup.tpl"),
       //  "Create": PATH.join(UTIL.RootAppPath, "ui/create.tpl"),
@@ -50,8 +41,8 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
 
     }
 
-    HANDLEBARS.registerHelper('ifvalue', function (conditional, options) {
-        if (options.hash.equals === conditional) {
+    HANDLEBARS.registerHelper('eq', function (a, b, options) {
+        if (a === b) {
             return options.fn(this)
         } else {
             return options.inverse(this);
@@ -97,6 +88,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
 
         app.get('/ui/accessories', _Accessories);
         app.get('/ui/availableactypes', _ListAccessoryesTypes)
+        app.get('/ui/createaccessory/:type', _CreateAccessory)
 
 
         /*
@@ -355,6 +347,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
 
     }
 
+    /* List Accessory Type */
     function _ListAccessoryesTypes(req,res){
 
         if (!_CheckAuth(req, res)) {
@@ -373,6 +366,23 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
 
         let HTML = CompiledTemplates['AccessorTypes']({
             Types:Available
+        });
+
+        res.contentType('text/html')
+        res.send(HTML)
+    }
+
+    function _CreateAccessory(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        
+
+        let HTML = CompiledTemplates["NewAccessory"]({
+            Specification:ACCESSORY.Types[req.params.type],
+            Routes:Object.keys(CONFIG.routes)
         });
 
         res.contentType('text/html')
