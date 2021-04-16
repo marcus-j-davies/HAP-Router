@@ -127,7 +127,7 @@
          {{/if}}
 
          <fieldset style="text-align: right; margin-top: 20px;">
-            <span style="color: rgb(255,255,255);" id="Message"></span> <input type="button" class="StyledButton" value="Publish" onclick="">
+            <span style="color: rgb(255,255,255);" id="Message"></span> <input type="button" class="StyledButton" value="Publish" onclick="SaveNewAccessory('{{Specification.type}}')">
           </fieldset>
 
       </blockquote>

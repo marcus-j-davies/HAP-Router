@@ -37,8 +37,8 @@ function SaveSettings() {
         "webInterfaceAddress": $("#CFG_APIInterface").val(),
 
         "enableIncomingMQTT": $('#CFG_MQTTEnabled').is(":checked"),
-        "MQTTBroker":$("#CFG_MQTTBroker").val(),
-        "MQTTTopic":$("#CFG_MQTTTopic").val(),
+        "MQTTBroker": $("#CFG_MQTTBroker").val(),
+        "MQTTTopic": $("#CFG_MQTTTopic").val(),
         "MQTTOptions": {
             "username": $('#CFG_MQTTUsername').val(),
             "password": $('#CFG_MQTTPassword').val()
@@ -62,6 +62,85 @@ function SaveConfigDone(data) {
         $('#Message').text('Could not save Settings');
     }
 }
+
+// Save Accessory
+function SaveNewAccessory(type) {
+
+    let Accessory = {
+        name: $("#ACC_Name").val(),
+        manufacturer: $("#ACC_MAN").val(),
+        model: $("#ACC_MODEL").val(),
+        serialNumber: $("#ACC_SN").val(),
+        route: $("#ACC_Route").val(),
+        bridged: ($("#ACC_PublishMode").val() === 'Attached'),
+        type:type
+    }
+
+    if(Accessory.manufacturer.length < 1){
+        delete Accessory.manufacturer;
+    }
+
+    if(Accessory.model.length < 1){
+        delete Accessory.model;
+    }
+
+    if(Accessory.serialNumber.length < 1){
+        delete Accessory.serialNumber;
+    }
+
+    let ParamElements = $(".ConfigParam");
+    
+    ParamElements.each((index,element) => {
+
+        let EL = $(element)
+
+        let Type  = EL.attr('data-type');
+        let ID = EL.attr('data-param')
+        var Value;
+
+        switch(Type)
+        {
+            case "text":
+            case "select":
+            case "numeric":
+                Value = EL.val();
+                break
+
+            case "checkbox":
+                Value = EL.is(":checked")
+                break;
+
+            case "array":
+                Value = []
+                let Lines = EL.val().split(/\n/);
+                Lines.forEach((AE)=>{
+                    if(AE && AE.length){
+                        Value.push(AE);
+                     }
+                })
+               
+                break;
+        }
+
+        Accessory[ID] = Value;
+    })
+
+    
+    $.ajax({
+        type: "POST",
+        data: JSON.stringify(Accessory),
+        contentType: "application/json",
+        url: "../../../ui/createaccessory/"+type,
+        dataType: "json",
+        success: AddAccessoryDone
+    });
+  
+}
+
+function AddAccessoryDone(data) {
+    
+}
+
 
 // delete route()
 function DeleteRoute() {

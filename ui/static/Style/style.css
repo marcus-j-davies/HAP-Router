@@ -1,4 +1,19 @@
-﻿html{
+﻿@font-face {
+	font-family: 'roboto';
+	src: url('./roboto-light-webfont.woff2') format('woff2'), url('./roboto-light-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'roboto';
+	src: url('./roboto-bold-webfont.woff2') format('woff2'), url('./roboto-bold-webfont.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+}
+
+
+html{
     margin:0;
     padding: 0;
     width: 100%;
@@ -12,7 +27,7 @@
     
 body{
     margin: 0;
-    font-family:'HelveticaNeue-Light', 'Calibri Light', Roboto;
+    font-family:'roboto';
     color:rgb(0,0,0);
     font-size:18px;
 }
@@ -210,10 +225,16 @@ img.RouteIcon{
     vertical-align: middle;
 }
 
+select{
+    -moz-appearance: none; 
+	-webkit-appearance: none; 
+	appearance: none;
+}
+
 input[type='text'], input[type='number'], input[type='password'], select, textarea{
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
-    border-radius: 2px;
+    border-radius: 3px;
     border-collapse: collapse;
     border-style: solid;
     border-width: 1px;

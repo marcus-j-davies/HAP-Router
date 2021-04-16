@@ -89,6 +89,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         app.get('/ui/accessories', _Accessories);
         app.get('/ui/availableactypes', _ListAccessoryesTypes)
         app.get('/ui/createaccessory/:type', _CreateAccessory)
+        app.post('/ui/createaccessory/:type', _DoCreateAccessory)
 
 
         /*
@@ -364,6 +365,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             })
         })
 
+       
         let HTML = CompiledTemplates['AccessorTypes']({
             Types:Available
         });
@@ -379,14 +381,55 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         }
 
         
-
-        let HTML = CompiledTemplates["NewAccessory"]({
+        let PL = {
             Specification:ACCESSORY.Types[req.params.type],
             Routes:Object.keys(CONFIG.routes)
-        });
+        }
+        PL.Specification.type = req.params.type;
+
+        let HTML = CompiledTemplates["NewAccessory"](PL);
 
         res.contentType('text/html')
         res.send(HTML)
+    }
+
+    function _DoCreateAccessory(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+        
+        let PL = req.body;
+
+        PL.pincode = UTIL.getRndInteger(100, 999) + "-" + UTIL.getRndInteger(10, 99) + "-" + UTIL.getRndInteger(100, 999)
+        PL.username =  UTIL.genMAC()
+        PL.setupID =  UTIL.makeID(4)
+        if(PL.serialNumber === undefined){
+            PL.serialNumber = UTIL.makeID(12);
+        }
+
+        UTIL.appendAccessoryToConfig(PL)
+
+        PL.accessoryID = PL.username.replace(/:/g, "");
+        CONFIG.accessories.push(PL)
+
+        let Type = ACCESSORY.Types[PL.type];
+
+        let Acc = new Type.Class(PL);
+        Acc.on('STATE_CHANGE', (PL, O) => _ChangeEvent(PL, Data, O))
+        Acc.on('IDENTIFY', (P) => _IdentifyEvent(P, Data))
+        _ConfiguredAccessories[PL.accessoryID] = Acc;
+        if (PL.bridged) {
+            _Bridge.addAccessory(Acc.getAccessory())
+        } else {
+            Acc.on('PAIR_CHANGE', (P) => _PairEvent(P, Data))
+            Acc.publish();
+        }
+
+        res.contentType('application/true')
+        res.send({success:true,SetupURI:Acc.getAccessory().setupURI()})
+
+       
     }
 
     /*

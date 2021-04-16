@@ -54,7 +54,7 @@ function cleanEV() {
 
         console.info(' Cleaning up Routes...');
         let RouteKeys = Object.keys(Routes);
-        RouteKeys.forEach((AE) =>{
+        RouteKeys.forEach((AE) => {
             Routes[AE].close('appclose');
         })
 
@@ -81,17 +81,17 @@ if (UTIL.checkInstallRequest()) {
     return; // stop
 }
 
- // Banner 
-console.log(CHALK.keyword('orange')("  _    _            _____   _____                _              ")) 
-console.log(CHALK.keyword('orange')(" | |  | |    /\\    |  __ \\ |  __ \\              | |             ")) 
-console.log(CHALK.keyword('orange')(" | |__| |   /  \\   | |__) || |__) | ___   _   _ | |_  ___  _ __ ")) 
-console.log(CHALK.keyword('orange')(" |  __  |  / /\\ \\  |  ___/ |  _  / / _ \\ | | | || __|/ _ \\| '__|")) 
-console.log(CHALK.keyword('orange')(" | |  | | / ____ \\ | |     | | \\ \\| (_) || |_| || |_|  __/| |   ")) 
-console.log(CHALK.keyword('orange')(" |_|  |_|/_/    \\_\\|_|     |_|  \\_\\\\___/  \\__,_| \\__|\\___||_|   ")) 
-console.log(" ")     
+// Banner 
+console.log(CHALK.keyword('orange')("  _    _            _____   _____                _              "))
+console.log(CHALK.keyword('orange')(" | |  | |    /\\    |  __ \\ |  __ \\              | |             "))
+console.log(CHALK.keyword('orange')(" | |__| |   /  \\   | |__) || |__) | ___   _   _ | |_  ___  _ __ "))
+console.log(CHALK.keyword('orange')(" |  __  |  / /\\ \\  |  ___/ |  _  / / _ \\ | | | || __|/ _ \\| '__|"))
+console.log(CHALK.keyword('orange')(" | |  | | / ____ \\ | |     | | \\ \\| (_) || |_| || |_|  __/| |   "))
+console.log(CHALK.keyword('orange')(" |_|  |_|/_/    \\_\\|_|     |_|  \\_\\\\___/  \\__,_| \\__|\\___||_|   "))
+console.log(" ")
 console.log(CHALK.keyword('white')(" ------- For the Smart Home Enthusiast, for the curios. -------"))
-console.log(" ")                                                               
-                                                                                            
+console.log(" ")
+
 // Load Route Modules
 ROUTING.loadModules();
 
@@ -109,6 +109,8 @@ if (!CONFIG.bridgeConfig.hasOwnProperty("pincode")) {
         "type": "SWITCH",
         "name": "Switch Accessory Demo",
         "route": "Output To Console",
+        "manufacturer": "Marcus Davies",
+        "model": "HR 1 Switch",
         "pincode": UTIL.getRndInteger(100, 999) + "-" + UTIL.getRndInteger(10, 99) + "-" + UTIL.getRndInteger(100, 999),
         "username": UTIL.genMAC(),
         "setupID": UTIL.makeID(4),
