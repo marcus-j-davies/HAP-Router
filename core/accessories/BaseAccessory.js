@@ -3,10 +3,8 @@
 const { Service, Accessory, Characteristic, uuid, CharacteristicEventTypes, AccessoryEventTypes, Categories, Bridge, HAPStorage } = require("hap-nodejs");
 const { EventEmitter } = require("events");
 const { version } = require("../../package.json");
-const { HomeKitPath, ConfigPath } = require("../util");
+const { ConfigPath } = require("../util");
 const CONFIG = require(ConfigPath)
-
-let Initialised = false;
 
 class BaseAccessory extends EventEmitter {
 
@@ -22,11 +20,6 @@ class BaseAccessory extends EventEmitter {
         this.Type = AccessoryOBJ.type
 
         this._Properties = {};
-
-        if (!Initialised) {
-            HAPStorage.setCustomStoragePath(HomeKitPath);
-            Initialised = true;
-        }
 
         const UUID = uuid.generate('hap-nodejs:accessories:' + AccessoryOBJ.name + ':' + AccessoryOBJ.username);
 

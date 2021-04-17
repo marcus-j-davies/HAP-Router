@@ -399,30 +399,30 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             return;
         }
         
-        let PL = req.body;
+        let NewAccessoryOBJ = req.body;
 
-        PL.pincode = UTIL.getRndInteger(100, 999) + "-" + UTIL.getRndInteger(10, 99) + "-" + UTIL.getRndInteger(100, 999)
-        PL.username =  UTIL.genMAC()
-        PL.setupID =  UTIL.makeID(4)
-        if(PL.serialNumber === undefined){
-            PL.serialNumber = UTIL.makeID(12);
+        NewAccessoryOBJ.pincode = UTIL.getRndInteger(100, 999) + "-" + UTIL.getRndInteger(10, 99) + "-" + UTIL.getRndInteger(100, 999)
+        NewAccessoryOBJ.username =  UTIL.genMAC()
+        NewAccessoryOBJ.setupID =  UTIL.makeID(4)
+        if(NewAccessoryOBJ.serialNumber === undefined){
+            NewAccessoryOBJ.serialNumber = UTIL.makeID(12);
         }
 
-        UTIL.appendAccessoryToConfig(PL)
+        UTIL.appendAccessoryToConfig(NewAccessoryOBJ)
 
-        PL.accessoryID = PL.username.replace(/:/g, "");
-        CONFIG.accessories.push(PL)
+        NewAccessoryOBJ.accessoryID = NewAccessoryOBJ.username.replace(/:/g, "");
+        CONFIG.accessories.push(NewAccessoryOBJ)
 
-        let Type = ACCESSORY.Types[PL.type];
+        let Type = ACCESSORY.Types[NewAccessoryOBJ.type];
 
-        let Acc = new Type.Class(PL);
-        Acc.on('STATE_CHANGE', (PL, O) => _ChangeEvent(PL, Data, O))
-        Acc.on('IDENTIFY', (P) => _IdentifyEvent(P, Data))
-        _ConfiguredAccessories[PL.accessoryID] = Acc;
-        if (PL.bridged) {
+        let Acc = new Type.Class(NewAccessoryOBJ);
+        Acc.on('STATE_CHANGE', (PL, O) => _ChangeEvent(PL, NewAccessoryOBJ, O))
+        Acc.on('IDENTIFY', (P) => _IdentifyEvent(P, NewAccessoryOBJ))
+        _ConfiguredAccessories[NewAccessoryOBJ.accessoryID] = Acc;
+        if (NewAccessoryOBJ.bridged) {
             _Bridge.addAccessory(Acc.getAccessory())
         } else {
-            Acc.on('PAIR_CHANGE', (P) => _PairEvent(P, Data))
+            Acc.on('PAIR_CHANGE', (P) => _PairEvent(P, NewAccessoryOBJ))
             Acc.publish();
         }
 

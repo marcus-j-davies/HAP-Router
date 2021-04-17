@@ -138,7 +138,7 @@ function SaveNewAccessory(type) {
 }
 
 function AddAccessoryDone(data) {
-    
+    $("#EnrollDiv").css("display","block")
 }
 
 

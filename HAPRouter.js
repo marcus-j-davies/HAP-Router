@@ -13,6 +13,7 @@ const MQTT = require('./core/mqtt');
 const PATH = require('path');
 const NODECLEANUP = require('node-cleanup');
 const ROUTING = require('./core/routing');
+const { HAPStorage } = require("hap-nodejs");
 
 // resgister process exit handler
 NODECLEANUP(clean);
@@ -122,6 +123,8 @@ if (!CONFIG.bridgeConfig.hasOwnProperty("pincode")) {
 }
 
 console.log(" Configuring HomeKit Bridge")
+
+HAPStorage.setCustomStoragePath(UTIL.HomeKitPath);
 
 // Configure Our Bridge
 const Bridge = new ACCESSORY.Bridge(CONFIG.bridgeConfig)

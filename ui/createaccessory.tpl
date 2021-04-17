@@ -132,7 +132,7 @@
 
       </blockquote>
 
-      <div class="EnrollPopUp">
+      <div id="EnrollDiv" class="EnrollPopUp">
          <div class="Content">
          </div>
             
