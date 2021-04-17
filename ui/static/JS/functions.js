@@ -138,8 +138,21 @@ function SaveNewAccessory(type) {
 }
 
 function AddAccessoryDone(data) {
-    $("#EnrollDiv").css("display","block")
+
+    if(data.success){
+
+        if(($("#ACC_PublishMode").val() === 'Attached')){
+            location.href = '../../../ui/accessories'
+        }
+        else{
+            $("#EnrollDiv").css("display","block")
+        }
+    }
+   
+    
 }
+
+/******************************************* */
 
 
 // delete route()
