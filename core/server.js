@@ -10,6 +10,7 @@ const COOKIEPARSER = require('cookie-parser')
 const PATH = require('path');
 const OS = require("os");
 const ROUTING = require('./routing');
+const QRCODE = require('qrcode');
 const HAPPackage = require('hap-nodejs/package.json');
 const RouterPackage = require("../package.json");
 
@@ -34,6 +35,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         "Accessories": PATH.join(UTIL.RootAppPath, "/ui/accessories.tpl"),
         "AccessorTypes": PATH.join(UTIL.RootAppPath, "/ui/accessorytypes.tpl"),
         "NewAccessory": PATH.join(UTIL.RootAppPath, "/ui/createaccessory.tpl"),
+        "EditAccessory": PATH.join(UTIL.RootAppPath, "/ui/editaccessory.tpl"),
 
        // "Setup": PATH.join(UTIL.RootAppPath, "ui/setup.tpl"),
       //  "Create": PATH.join(UTIL.RootAppPath, "ui/create.tpl"),
@@ -73,6 +75,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
 
         // UI
         app.use('/ui/static', EXPRESS.static(PATH.join(UTIL.RootAppPath, "ui/static")))
+        app.get('/ui/qrcode/', _DOQRCode)
 
         app.get('/', _Redirect);
         app.get('/ui/resources/accessoryicon/',_DoAccessoryIcon)
@@ -90,6 +93,8 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         app.get('/ui/availableactypes', _ListAccessoryesTypes)
         app.get('/ui/createaccessory/:type', _CreateAccessory)
         app.post('/ui/createaccessory/:type', _DoCreateAccessory)
+        app.get('/ui/editaccessory/:id', _EditAccessory)
+        app.post('/ui/editaccessory/:id', _DoEditAccessory)
 
 
         /*
@@ -138,6 +143,25 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         _Paired = IsPaired;
     }
 
+    /* Check PairStatus */
+    function checkPairStatus(ID) {
+
+        const AccessoryFileName = PATH.join(UTIL.HomeKitPath, "AccessoryInfo." + ID + ".json");
+
+        if (FS.existsSync(AccessoryFileName)) {
+
+            delete require.cache[require.resolve(AccessoryFileName)];
+            const IsPaired = Object.keys(require(AccessoryFileName).pairedClients)
+
+            return IsPaired.length > 0;
+
+        } else {
+            return false
+        }
+
+
+    }
+
      /* Check Auth */
      function _CheckAuth(req, res) {
         if (req.signedCookies.Authentication === undefined || req.signedCookies.Authentication !== 'Success') {
@@ -145,6 +169,20 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             return false;
         }
         return true;
+    }
+
+    /* QR Code */
+    async function  _DOQRCode(req,res){
+
+        let Text = req.query.data;
+        let Width = req.query.width
+
+        let BUF = await QRCODE.toBuffer(Text,{margin:2,width:Width,type:'png'})
+
+        res.contentType('image/png')
+        res.send(BUF);
+
+
     }
 
     /* Redirect */
@@ -166,7 +204,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
      
     }
 
-    /* Accessory Icon */
+    /* Route Icon */
     function _DoRouteIcon(req,res){
 
         if (!_CheckAuth(req, res)) {
@@ -317,17 +355,16 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             let AccessoryCFG = _ConfiguredAccessories[AID].getConfig();
 
             AccessoryCFG.typedisplay = ACCESSORY.Types[AccessoryCFG.type].Label
+            AccessoryCFG.isPaired = checkPairStatus(AccessoryCFG.accessoryID)
 
             let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
 
             let Element = {
-                AccessoryCFG:AccessoryCFG
-            }
-
-            if(ConfiguredRoute !== undefined){
-                Element.RouteCFG = {}
-                Element.RouteCFG.name = AccessoryCFG.route
-                Element.RouteCFG.type = ConfiguredRoute.type
+                AccessoryCFG:AccessoryCFG,
+                RouteCFG:{
+                    name:AccessoryCFG.route,
+                    type:ConfiguredRoute.type
+                }
             }
 
             if(AccessoryCFG.bridged){
@@ -374,6 +411,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         res.send(HTML)
     }
 
+    /* Create Accessory */
     function _CreateAccessory(req,res){
 
         if (!_CheckAuth(req, res)) {
@@ -393,6 +431,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         res.send(HTML)
     }
 
+    /* DO Create Accessory */
     function _DoCreateAccessory(req,res){
 
         if (!_CheckAuth(req, res)) {
@@ -426,10 +465,55 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             Acc.publish();
         }
 
-        res.contentType('application/true')
-        res.send({success:true,SetupURI:Acc.getAccessory().setupURI()})
+        res.contentType('application/json')
+        res.send({
+            success:true,
+            SetupURI:Acc.getAccessory().setupURI(),
+            AID:NewAccessoryOBJ.accessoryID,
+            SN:NewAccessoryOBJ.serialNumber,
+            Name:NewAccessoryOBJ.name,
+            Pincode:NewAccessoryOBJ.pincode
+
+        })
 
        
+    }
+
+    /* Edit Accessory */
+    function _EditAccessory(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let ID = req.params.id;
+
+        let AccessoryCFG = _ConfiguredAccessories[ID].getConfig();
+
+        let PL = {
+            AccessoryCFG:AccessoryCFG,
+            Specification:ACCESSORY.Types[AccessoryCFG.type],
+            Routes:Object.keys(CONFIG.routes)
+        }
+        PL.Specification.type = AccessoryCFG.type
+
+        let HTML = CompiledTemplates['EditAccessory'](PL);
+
+        res.contentType('text/html')
+        res.send(HTML)
+    }
+
+    /* Do Edit Accessory */
+    function _DoEditAccessory(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let HTML = CompiledTemplates['EditAccessory']({});
+
+        res.contentType('text/html')
+        res.send(HTML)
     }
 
     /*

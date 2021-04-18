@@ -152,6 +152,10 @@ fieldset table{
     margin-right: 10px;
 }
 
+.PincodeHint[enrolled]{
+    opacity: 0.3;
+}
+
 .VersionDiv{
 
     font-size: 14px;
@@ -200,9 +204,16 @@ img.AccessoryIcon{
     vertical-align: middle;
 }
 
+img.AccessoryIcon[Invert]{
+    filter: invert(1);
+}
+
 img.RouteIcon{
     width: 40px;
     vertical-align: middle;
+}
+img.RouteIcon[Invert]{
+    filter: invert(1);
 }
 
 
@@ -250,8 +261,7 @@ select{
     height: 25px;
 }
 
-div.EnrollPopUp{
-
+div.PopupCurtain{
     position: absolute;
     top:0px;
     left: 0px;
@@ -259,6 +269,27 @@ div.EnrollPopUp{
     height: 100%;
     background-color: rgba(0,0,0,0.3);
     display: none;
+}
+
+div.PopupCurtain > div.Content{ 
+   
+    position: relative;
+    margin-top: 10%;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #F36B08;
+    background-color: rgb(255,255,255);
+    -webkit-box-shadow: 10px 10px 5px -4px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px -4px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 5px -4px rgba(0,0,0,0.75);
+    overflow: hidden;
+    
+
 }
 
 

@@ -79,11 +79,9 @@ function SaveNewAccessory(type) {
     if(Accessory.manufacturer.length < 1){
         delete Accessory.manufacturer;
     }
-
     if(Accessory.model.length < 1){
         delete Accessory.model;
     }
-
     if(Accessory.serialNumber.length < 1){
         delete Accessory.serialNumber;
     }
@@ -141,16 +139,26 @@ function AddAccessoryDone(data) {
 
     if(data.success){
 
+        
+
         if(($("#ACC_PublishMode").val() === 'Attached')){
             location.href = '../../../ui/accessories'
         }
         else{
+
+            $("#AC_QRImage").attr("src","../../../ui/qrcode/?data="+data.SetupURI+"&width=170");
+            $("#AC_Name").text(data.Name);
+            $("#AC_AID").text(data.AID);
+            $("#AC_SN").text(data.SN);
+            $("#AC_Code").text(data.Pincode);
+
             $("#EnrollDiv").css("display","block")
         }
     }
    
     
 }
+
 
 /******************************************* */
 
