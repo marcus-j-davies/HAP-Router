@@ -510,10 +510,24 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
             return;
         }
 
-        let HTML = CompiledTemplates['EditAccessory']({});
+        let AID = req.params.id;
 
-        res.contentType('text/html')
-        res.send(HTML)
+        let AccCFG = _ConfiguredAccessories[AID].getConfig();
+        let Acc = _ConfiguredAccessories[AID]
+
+        if(AccCFG.bridged){
+            _Bridge.removeAccessory(Acc.getAccessory())
+        }else{
+            Acc.unpublish(false);
+        }
+
+        delete _ConfiguredAccessories[AID];
+
+
+
+    
+        res.contentType('application/json')
+        res.send({success:true})
     }
 
     /*

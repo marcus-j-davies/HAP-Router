@@ -120,7 +120,7 @@
          {{/if}}
 
          <fieldset style="text-align: right; margin-top: 20px;">
-            <span style="color: rgb(255,255,255);" id="Message"></span> <input type="button" class="StyledButton" value="Publish" onclick="SaveAccessoryChanges('{{Specification.type}}')">
+            <span style="color: rgb(255,255,255);" id="Message">Note: The accessory may, for a brief moment, disappear from HomeKit.</span> <input type="button" class="StyledButton" value="Apply Changes" onclick="SaveAccessoryChanges('{{AccessoryCFG.accessoryID}}')">
           </fieldset>
 
       </blockquote>

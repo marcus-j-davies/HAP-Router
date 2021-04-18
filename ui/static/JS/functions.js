@@ -63,31 +63,10 @@ function SaveConfigDone(data) {
     }
 }
 
-// Save Accessory
-function SaveNewAccessory(type) {
-
-    let Accessory = {
-        name: $("#ACC_Name").val(),
-        manufacturer: $("#ACC_MAN").val(),
-        model: $("#ACC_MODEL").val(),
-        serialNumber: $("#ACC_SN").val(),
-        route: $("#ACC_Route").val(),
-        bridged: ($("#ACC_PublishMode").val() === 'Attached'),
-        type:type
-    }
-
-    if(Accessory.manufacturer.length < 1){
-        delete Accessory.manufacturer;
-    }
-    if(Accessory.model.length < 1){
-        delete Accessory.model;
-    }
-    if(Accessory.serialNumber.length < 1){
-        delete Accessory.serialNumber;
-    }
+function GetParams(Package){
 
     let ParamElements = $(".ConfigParam");
-    
+
     ParamElements.each((index,element) => {
 
         let EL = $(element)
@@ -120,8 +99,35 @@ function SaveNewAccessory(type) {
                 break;
         }
 
-        Accessory[ID] = Value;
+        Package[ID] = Value;
     })
+}
+
+// Save Accessory
+function SaveNewAccessory(type) {
+
+    let Accessory = {
+        name: $("#ACC_Name").val(),
+        manufacturer: $("#ACC_MAN").val(),
+        model: $("#ACC_MODEL").val(),
+        serialNumber: $("#ACC_SN").val(),
+        route: $("#ACC_Route").val(),
+        bridged: ($("#ACC_PublishMode").val() === 'Attached'),
+        type:type
+    }
+
+    if(Accessory.manufacturer.length < 1){
+        delete Accessory.manufacturer;
+    }
+    if(Accessory.model.length < 1){
+        delete Accessory.model;
+    }
+    if(Accessory.serialNumber.length < 1){
+        delete Accessory.serialNumber;
+    }
+
+  
+    GetParams(Accessory)
 
     
     $.ajax({
@@ -157,6 +163,46 @@ function AddAccessoryDone(data) {
     }
    
     
+}
+
+function SaveAccessoryChanges(ID){
+
+    let Accessory = {
+        name: $("#ACC_Name").val(),
+        manufacturer: $("#ACC_MAN").val(),
+        model: $("#ACC_MODEL").val(),
+        serialNumber: $("#ACC_SN").val(),
+        route: $("#ACC_Route").val(),
+    }
+
+    if(Accessory.manufacturer.length < 1){
+        delete Accessory.manufacturer;
+    }
+    if(Accessory.model.length < 1){
+        delete Accessory.model;
+    }
+    if(Accessory.serialNumber.length < 1){
+        delete Accessory.serialNumber;
+    }
+
+    GetParams(Accessory)
+    
+    $.ajax({
+        type: "POST",
+        data: JSON.stringify(Accessory),
+        contentType: "application/json",
+        url: "../../../ui/editaccessory/"+ID,
+        dataType: "json",
+        success: EditAccessoryDone
+    });
+}
+
+function EditAccessoryDone(data){
+
+    if(data.success){
+        location.href = '../../../ui/accessories'
+    }
+      
 }
 
 
