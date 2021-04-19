@@ -14,17 +14,17 @@ const QRCODE = require('qrcode');
 const HAPPackage = require('hap-nodejs/package.json');
 const RouterPackage = require("../package.json");
 
-const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSetup, PairEvent) {
+const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
     // Vars
     let _Paired = false;
     const _ConfiguredAccessories = Accesories
-    const _ChangeEvent = ChangeEvent;
-    const _IdentifyEvent = IdentifyEvent
     const _Bridge = Bridge;
     const _RouteSetup = RouteSetup
-    const _PairEvent = PairEvent;
+    const _AccessoryInitializer = AccessoryIniter;
+
     let _RestartRequired = false;
+
 
     // Template Files
     const Templates = {
@@ -96,33 +96,6 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         app.get('/ui/editaccessory/:id', _EditAccessory)
         app.post('/ui/editaccessory/:id', _DoEditAccessory)
 
-
-        /*
-        app.get('/ui/setup', _Setup);
-        app.get('/ui/getroutemeta/:module_name', _GetRouteMeta);
-        
-        app.get('/ui/createaccessory/:type', _CreateAccessory);
-        app.get('/ui/editaccessory/:type/:id', _EditAccessory);
-        app.get('/ui/pairstatus', _PairStatus);
-        app.get('/ui/pairstatus/:id', _PairStatus);
-        app.get('/ui/backup', _Backup);
-        
-        app.post('/ui/deleteroute', _DoDeleteRoute);
-        app.post('/ui/setconfig', _DoSaveConfig);
-        app.post('/ui/deleteaccessory', _DoDeleteAccessory);
-        app.post('/ui/restore', _DoRestore);
-        app.post('/ui/createroute', _DoCreateRoute);
-        app.post('/ui/connect', _DoConnect);
-        app.post('/ui/disconnect', _DoDisconnect);
-        app.post('/ui/createaccessory', _DoCreateAccessory);
-        app.post('/ui/editaccessory', _DoEditAccessory);
-
-        // API
-        app.get('/:pwd/accessories/', _processAccessoriesGet);
-        app.get('/:pwd/accessories/:id', _processAccessoryGet);
-        app.put('/:pwd/accessories/:id', _processAccessorySet);
-        */
-
         try {
             if (CONFIG.webInterfaceAddress === 'ALL') {
                 app.listen(CONFIG.webInterfacePort)
@@ -137,6 +110,42 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
 
         CB();
     }
+
+    // Delete Accessory
+    function DeleteAccessory(ID, Destroy) {
+
+        let Acc = _ConfiguredAccessories[ID]
+        let AccCFG = Acc.getConfig();
+
+        if (AccCFG.bridged) {
+
+            _Bridge.removeAccessory(Acc.getAccessory())
+
+        } else {
+
+            if (Destroy) {
+
+                Acc.unpublish(true);
+            }
+            else {
+
+                Acc.unpublish(false);
+            }
+
+        }
+
+        delete _ConfiguredAccessories[ID];
+
+        if(Destroy){
+
+            let WithoutThis = CONFIG.accessories.filter((A) => A.accessoryID !== ID)
+            CONFIG.accessories = WithoutThis;
+            UTIL.deleteAccessory(ID);
+        }
+
+    }
+
+
 
     // Set Pair Status
     this.setBridgePaired = function(IsPaired) {
@@ -354,7 +363,7 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
 
             let AccessoryCFG = _ConfiguredAccessories[AID].getConfig();
 
-            AccessoryCFG.typedisplay = ACCESSORY.Types[AccessoryCFG.type].Label
+            AccessoryCFG.typeDisplay = ACCESSORY.Types[AccessoryCFG.type].Label
             AccessoryCFG.isPaired = checkPairStatus(AccessoryCFG.accessoryID)
 
             let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
@@ -448,27 +457,14 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         }
 
         UTIL.appendAccessoryToConfig(NewAccessoryOBJ)
-
-        NewAccessoryOBJ.accessoryID = NewAccessoryOBJ.username.replace(/:/g, "");
         CONFIG.accessories.push(NewAccessoryOBJ)
 
-        let Type = ACCESSORY.Types[NewAccessoryOBJ.type];
-
-        let Acc = new Type.Class(NewAccessoryOBJ);
-        Acc.on('STATE_CHANGE', (PL, O) => _ChangeEvent(PL, NewAccessoryOBJ, O))
-        Acc.on('IDENTIFY', (P) => _IdentifyEvent(P, NewAccessoryOBJ))
-        _ConfiguredAccessories[NewAccessoryOBJ.accessoryID] = Acc;
-        if (NewAccessoryOBJ.bridged) {
-            _Bridge.addAccessory(Acc.getAccessory())
-        } else {
-            Acc.on('PAIR_CHANGE', (P) => _PairEvent(P, NewAccessoryOBJ))
-            Acc.publish();
-        }
+        let QR = _AccessoryInitializer(NewAccessoryOBJ);
 
         res.contentType('application/json')
         res.send({
             success:true,
-            SetupURI:Acc.getAccessory().setupURI(),
+            SetupURI:QR,
             AID:NewAccessoryOBJ.accessoryID,
             SN:NewAccessoryOBJ.serialNumber,
             Name:NewAccessoryOBJ.name,
@@ -509,23 +505,32 @@ const Server = function (Accesories, ChangeEvent, IdentifyEvent, Bridge, RouteSe
         if (!_CheckAuth(req, res)) {
             return;
         }
-
         let AID = req.params.id;
 
-        let AccCFG = _ConfiguredAccessories[AID].getConfig();
-        let Acc = _ConfiguredAccessories[AID]
+        DeleteAccessory(AID,false)
 
-        if(AccCFG.bridged){
-            _Bridge.removeAccessory(Acc.getAccessory())
-        }else{
-            Acc.unpublish(false);
+        let CurrentCFG = CONFIG.accessories.filter((A) => A.accessoryID === AID)[0];
+
+        delete CurrentCFG.accessoryID;
+        delete CurrentCFG.typeDisplay;
+        delete CurrentCFG.isPaired;
+        delete CurrentCFG.manufacturer
+        delete CurrentCFG.model
+        delete CurrentCFG.serialNumber;
+
+        let NewCFG = req.body;
+
+        Object.keys(NewCFG).forEach((OK) =>{
+            CurrentCFG[OK] = NewCFG[OK];
+        })
+
+        if(CurrentCFG.serialNumber === undefined){
+            CurrentCFG.serialNumber = UTIL.makeID(12);
         }
-
-        delete _ConfiguredAccessories[AID];
-
-
-
-    
+        
+        UTIL.updateAccessory(CurrentCFG,AID)
+        _AccessoryInitializer(CurrentCFG);
+        
         res.contentType('application/json')
         res.send({success:true})
     }

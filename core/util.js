@@ -14,9 +14,6 @@ const PKG = require('../package.json');
 const CACHEPATH = PATH.join(ROOTPATH, "characteristic_cache.json");
 const ROUTING = require("./routing");
 
-const RestoreMin = "4.0.0";
-const RestoreMax = "4.0.0";
-
 const saveCharacteristicCache = function (Cache) {
 
     try {
@@ -38,72 +35,7 @@ const getCharacteristicCache = function () {
     return undefined;
 }
 
-// TODO
-const restore = function (data) {
-    try {
-        let buff = Buffer.from(data.content, 'base64');
-        let text = buff.toString('utf8');
-        const JS = JSON.parse(text);
 
-        if (JS.sourceVersion < RestoreMin || JS.sourceVersion > RestoreMax) {
-            return "Version"
-        } else {
-            // Delete, restore config
-            FS.unlinkSync(CONFIGPATH);
-            saveConfig(JS.config);
-
-            // Delete Cache Files
-            FS.readdirSync(HOMEKITPATH).forEach(function (file, index) {
-                FS.unlinkSync(PATH.join(HOMEKITPATH, file));
-            });
-
-            // Restore Cache Files
-            for (let i = 0; i < JS.homekitCache.length; i++) {
-                FS.writeFileSync(PATH.join(HOMEKITPATH, JS.homekitCache[i].file), JSON.stringify(JS.homekitCache[i].content), 'utf8', function (err) {
-                    if (err) {
-                        console.log(" Could not right to cache file.");
-                        process.exit(0);
-                    }
-                })
-            }
-
-            return true;
-
-        }
-    } catch (err) {
-        return "Invalid"
-    }
-
-}
-
-// TODO
-const generateBackup = function () {
-    let BU = {};
-
-    // Min Version
-    BU.sourceVersion = PKG.version;
-
-    // Config
-    const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
-    const ConfigOBJ = JSON.parse(CFF);
-    BU.config = ConfigOBJ
-
-    // Cache
-    BU.homekitCache = []
-    FS.readdirSync(HOMEKITPATH).forEach(function (file, index) {
-        const FC = FS.readFileSync(PATH.join(HOMEKITPATH, file), 'utf8');
-        const FCP = JSON.parse(FC);
-        BU.homekitCache.push({
-            "file": file,
-            "content": FCP
-        });
-    });
-
-    const JS = JSON.stringify(BU);
-
-    return Buffer.from(JS).toString('base64');
-
-}
 
 // new install check
 const checkNewEV = function () {
@@ -175,13 +107,10 @@ const appendAccessoryToConfig = function (Accessory) {
     saveConfig(ConfigOBJ);
 }
 
-// Update Device Route
-const routeAccessory = function (AccessoryID, RouteName) {
-    const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
-    const ConfigOBJ = JSON.parse(CFF);
-    const TargetAc = ConfigOBJ.accessories.filter(a => a.username.replace(/:/g, "") == AccessoryID)[0]
-    TargetAc.route = RouteName;
-    saveConfig(ConfigOBJ);
+const updateAccessory = function(AccessoryConfig, ID){
+
+        deleteAccessory(ID);
+        appendAccessoryToConfig(AccessoryConfig);
 }
 
 // Save new bridge
@@ -246,9 +175,10 @@ const checkInstallRequest = function () {
 
 // Delete Accessory
 const deleteAccessory = function (AccessoryID) {
+
     const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
     const ConfigOBJ = JSON.parse(CFF);
-    const NA = ConfigOBJ.accessories.filter(a => a.username.replace(/:/g, "") != AccessoryID)
+    const NA = ConfigOBJ.accessories.filter(a => a.username.replace(/:/g, "") !== AccessoryID)
     ConfigOBJ.accessories = NA;
     saveConfig(ConfigOBJ);
 }
@@ -316,7 +246,6 @@ module.exports = {
     getRndInteger: getRndInteger,
     genMAC: genMAC,
     makeID: makeID,
-    routeAccessory: routeAccessory,
     saveConfig: saveConfig,
     appendAccessoryToConfig: appendAccessoryToConfig,
     checkReset: checkReset,
@@ -330,10 +259,9 @@ module.exports = {
     RootPath: ROOTPATH,
     RootAppPath: ROOTAPPPATH,
     checkNewEV: checkNewEV,
-    generateBackup: generateBackup,
-    restore: restore,
     saveCharacteristicCache: saveCharacteristicCache,
     getCharacteristicCache: getCharacteristicCache,
-    checkInstallRequest: checkInstallRequest
+    checkInstallRequest: checkInstallRequest,
+    updateAccessory:updateAccessory
 
 }

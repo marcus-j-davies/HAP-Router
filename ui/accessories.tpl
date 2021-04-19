@@ -33,7 +33,7 @@
                            <td style="font-size: 16px;"><strong>{{AccessoryCFG.name}}</strong> <span style="cursor: pointer;" onclick="location = '../../../ui/editaccessory/{{AccessoryCFG.accessoryID}}'">&#9998;</span></td>
                            <td rowspan="4" style="text-align: right; vertical-align: top;"><img class="RouteIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
                         </tr>
-                        <tr><td>{{AccessoryCFG.typedisplay}}</td></tr>
+                        <tr><td>{{AccessoryCFG.typeDisplay}}</td></tr>
                         <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
                         <tr><td>&nbsp</td></tr>
 
@@ -63,7 +63,7 @@
                            <td style="font-size: 16px;"><strong>{{AccessoryCFG.name}}</strong> <span style="cursor: pointer;" onclick="location = '../../../ui/editaccessory/{{AccessoryCFG.accessoryID}}'">&#9998;</span></td>
                            <td rowspan="4" style="text-align: right; vertical-align: top;"><span class="PincodeHint" {{#if AccessoryCFG.isPaired}}enrolled{{/if}}>{{AccessoryCFG.pincode}}</span> <img class="RouteIcon" src="../../../ui/resources/routeicon/?type={{RouteCFG.type}}"> </td>
                         </tr>
-                        <tr><td>{{AccessoryCFG.typedisplay}}</td></tr>
+                        <tr><td>{{AccessoryCFG.typeDisplay}}</td></tr>
                         <tr><td>AID: {{AccessoryCFG.accessoryID}}, SN: {{AccessoryCFG.serialNumber}}</td></tr>
                         <tr><td>&nbsp</td></tr>
                   {{/UNBridgedAccessories}}

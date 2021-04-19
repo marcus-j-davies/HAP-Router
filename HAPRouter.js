@@ -5,7 +5,7 @@ UTIL.checkNewEV();
 
 const FS = require('fs');
 const CHALK = require('chalk');
-const SERVER = require('./core/server');
+const { Server } = require('./core/server');
 const ACCESSORY = require('./core/accessories/Types');
 const CONFIG = require(UTIL.ConfigPath);
 const IP = require("ip");
@@ -163,40 +163,49 @@ setupRoutes();
 // Load up cache (if available)
 var Cache = UTIL.getCharacteristicCache();
 
+// Main Accessory Initializer
+function initAccessory(Config){
+
+    console.log(" Configuring Accessory : " + Config.name + " (" + Config.type + ")")
+
+    let TypeMetadata = ACCESSORY.Types[Config.type];
+    Config.accessoryID = Config.username.replace(/:/g, "");
+    let Acc = new TypeMetadata.Class(Config);
+
+    if (Cache !== undefined) {
+        if (Cache.hasOwnProperty(Config.accessoryID)) {
+            console.log(" Restoring Characteristics...")
+            Acc.setCharacteristics(Cache[Config.accessoryID]);
+        }
+    }
+
+    Acc.on('STATE_CHANGE', (PL, O) => Change(PL, Config, O))
+    Acc.on('IDENTIFY', (P) => Identify(P, Config))
+
+    Accesories[Config.accessoryID] = Acc;
+
+    if (!Config.bridged) {
+
+        Acc.on('PAIR_CHANGE', (P) => Pair(P, Config))
+        console.log("       Pin Code  " + Config.pincode)
+        console.log("       Publishing Accessory (Unbridged)")
+        Acc.publish();
+
+    } else {
+
+        Bridge.addAccessory(Acc.getAccessory())
+    }
+
+    return Acc.getAccessory().setupURI();
+}
+
 // Configure Our Accessories 
 const Accesories = {}
 for (let i = 0; i < CONFIG.accessories.length; i++) {
 
     let AccessoryOBJ = CONFIG.accessories[i]
-    let TypeMetadata = ACCESSORY.Types[AccessoryOBJ.type];
+    initAccessory(AccessoryOBJ);
 
-    console.log(" Configuring Accessory : " + AccessoryOBJ.name + " (" + AccessoryOBJ.type + ")")
-
-    AccessoryOBJ.accessoryID = AccessoryOBJ.username.replace(/:/g, "");
-
-    let Acc = new TypeMetadata.Class(AccessoryOBJ);
-
-    if (Cache !== undefined) {
-        if (Cache.hasOwnProperty(AccessoryOBJ.accessoryID)) {
-            console.log(" Restoring Characteristics...")
-            Acc.setCharacteristics(Cache[AccessoryOBJ.accessoryID]);
-        }
-    }
-
-    Acc.on('STATE_CHANGE', (PL, O) => Change(PL, AccessoryOBJ, O))
-    Acc.on('IDENTIFY', (P) => Identify(P, AccessoryOBJ))
-
-    Accesories[AccessoryOBJ.accessoryID] = Acc;
-
-    if (!AccessoryOBJ.bridged) {
-
-        Acc.on('PAIR_CHANGE', (P) => Pair(P, AccessoryOBJ))
-        console.log("       Pin Code  " + AccessoryOBJ.pincode)
-        console.log("       Publishing Accessory (Unbridged)")
-        Acc.publish();
-    } else {
-        Bridge.addAccessory(Acc.getAccessory())
-    }
 }
 
 // Publish Bridge
@@ -206,7 +215,7 @@ Bridge.publish();
 console.log(" Starting Client Services")
 
 // Web Server (started later)
-const UIServer = new SERVER.Server(Accesories, Change, Identify, Bridge, setupRoutes, Pair);
+const UIServer = new Server(Accesories, Bridge, setupRoutes, initAccessory);
 
 // MQTT Client (+ Start Server)
 let MQTTC = new MQTT.MQTT(Accesories, MQTTDone)
