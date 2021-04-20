@@ -77,7 +77,7 @@ let Types = {
         Class: LightBulb,
         ConfigProperties: [
             {id:"colorMode", label:"Color Mode", type:"select", options:["hue","temperature","none"], default:"hue"},
-            {id:"supportsBrightness", label:"Supports Brightness", type:"checkbox", default:false}
+            {id:"supportsBrightness", label:"Supports Brightness", type:"checkbox", default:true}
         ]
     },
     "TELEVISION": {

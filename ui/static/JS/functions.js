@@ -1,4 +1,8 @@
-﻿let EndPoints = []
+﻿$( document ).ready(function() {
+    lc_switch('input[type=checkbox]',{on_color:'#F36B08',compact_mode: true});
+ });
+
+let EndPoints = []
 let Connectors = []
 
 // Login

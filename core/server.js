@@ -36,6 +36,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         "AccessorTypes": PATH.join(UTIL.RootAppPath, "/ui/accessorytypes.tpl"),
         "NewAccessory": PATH.join(UTIL.RootAppPath, "/ui/createaccessory.tpl"),
         "EditAccessory": PATH.join(UTIL.RootAppPath, "/ui/editaccessory.tpl"),
+        "Bridge": PATH.join(UTIL.RootAppPath, "/ui/bridge.tpl"),
 
        // "Setup": PATH.join(UTIL.RootAppPath, "ui/setup.tpl"),
       //  "Create": PATH.join(UTIL.RootAppPath, "ui/create.tpl"),
@@ -95,6 +96,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.post('/ui/createaccessory/:type', _DoCreateAccessory)
         app.get('/ui/editaccessory/:id', _EditAccessory)
         app.post('/ui/editaccessory/:id', _DoEditAccessory)
+
+        app.get('/ui/bridge', _BridgeWEB)
 
         try {
             if (CONFIG.webInterfaceAddress === 'ALL') {
@@ -533,6 +536,48 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         
         res.contentType('application/json')
         res.send({success:true})
+    }
+
+    function _BridgeWEB(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let AccessoryIDs = Object.keys(_ConfiguredAccessories);
+        let BridgedAccessories = []
+
+        AccessoryIDs.forEach((AID) => {
+
+            let AccessoryCFG = _ConfiguredAccessories[AID].getConfig();
+            if(!AccessoryCFG.bridged) {
+                return;
+            }
+
+            AccessoryCFG.typeDisplay = ACCESSORY.Types[AccessoryCFG.type].Label
+            AccessoryCFG.isPaired = checkPairStatus(AccessoryCFG.accessoryID)
+
+            let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
+
+            let Element = {
+                AccessoryCFG:AccessoryCFG,
+                RouteCFG:{
+                    name:AccessoryCFG.route,
+                    type:ConfiguredRoute.type
+                }
+            }
+
+            BridgedAccessories.push(Element)
+
+           
+        })
+
+        let HTML = CompiledTemplates['Bridge']({
+            BridgedAccessories:BridgedAccessories
+        });
+
+        res.contentType('text/html')
+        res.send(HTML)
     }
 
     /*

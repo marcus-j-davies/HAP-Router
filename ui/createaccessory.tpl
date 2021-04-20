@@ -8,15 +8,16 @@
    <link rel="stylesheet" href="../../../ui/static/Style/style.css" />
    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-   <script src="../../../ui/static/JS/functions.js"></script>
    <script src="../../../ui/static/JS/qrcode.min.js"></script>
+   <script src="../../../ui/static/JS/lc_switch.min.js"></script>
+   <script src="../../../ui/static/JS/functions.js"></script>
 </head>
 
 <body>
    <blockquote class="ContentSection">
       <div class="ContentTitle"> <img class="AccessoryIcon" style="margin-bottom: 5px;width: unset;" src="../../../ui/resources/accessoryicon/?type={{Specification.type}}" invert> Create a new {{Specification.Label}}
          <span style="float: right;">
-         <input type="button" value="Back" class="StyledButton" onclick="location.href='../../../ui/availableactypes'">
+         <input type="button" value="Back" class="StyledButton" onclick="window.history.back();">
          </span>
       </div>
 

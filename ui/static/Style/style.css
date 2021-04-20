@@ -259,6 +259,7 @@ textarea{
 }
 select{
     height: 25px;
+    width: 223px;
 }
 
 div.PopupCurtain{

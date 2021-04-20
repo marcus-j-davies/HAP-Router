@@ -8,8 +8,9 @@
    <link rel="stylesheet" href="../../../ui/static/Style/style.css" />
    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-   <script src="../../../ui/static/JS/functions.js"></script>
    <script src="../../../ui/static/JS/qrcode.min.js"></script>
+   <script src="../../../ui/static/JS/lc_switch.min.js"></script>
+   <script src="../../../ui/static/JS/functions.js"></script>
 </head>
 
 <body>
