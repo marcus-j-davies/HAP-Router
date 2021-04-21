@@ -1,5 +1,13 @@
 ﻿$( document ).ready(function() {
-    lc_switch('input[type=checkbox]',{on_color:'#F36B08',compact_mode: true});
+
+    lc_switch('input[type=checkbox]',{on_color:'#F36B08',compact_mode: true})
+
+    $('input[type=checkbox]').each((I,E)=>{
+        let Event = $(E).attr('event')
+        if(Event !== undefined){
+            $(E).on('lcs-statuschange',window[Event])
+        }
+    })
  });
 
 let EndPoints = []
@@ -207,6 +215,23 @@ function EditAccessoryDone(data){
         location.href = '../../../ui/accessories'
     }
       
+}
+
+function ChangeBridgeStatus(){
+
+    let Enabled = $(this).is(":checked");
+
+    let Data = {
+        "enableBridge": Enabled
+    }
+    $.ajax({
+        type: "POST",
+        url: "../../../ui/bridge",
+        data: JSON.stringify(Data),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json"
+    });
+
 }
 
 

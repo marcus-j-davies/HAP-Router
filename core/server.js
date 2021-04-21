@@ -98,6 +98,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.post('/ui/editaccessory/:id', _DoEditAccessory)
 
         app.get('/ui/bridge', _BridgeWEB)
+        app.post('/ui/bridge', _DoBridgeConfig)
 
         try {
             if (CONFIG.webInterfaceAddress === 'ALL') {
@@ -573,11 +574,27 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         })
 
         let HTML = CompiledTemplates['Bridge']({
-            BridgedAccessories:BridgedAccessories
+            BridgedAccessories:BridgedAccessories,
+            bridgeEnabled:CONFIG.bridgeEnabled
         });
 
         res.contentType('text/html')
         res.send(HTML)
+    }
+
+    function _DoBridgeConfig(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        if(req.body.enableBridge){
+            console.log(" Publishing Bridge")
+            _Bridge.publish()
+        }
+        else{
+            _Bridge.unpublish(false);
+        }
     }
 
     /*

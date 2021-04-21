@@ -208,9 +208,13 @@ for (let i = 0; i < CONFIG.accessories.length; i++) {
 
 }
 
-// Publish Bridge
-console.log(" Publishing Bridge")
-Bridge.publish();
+if (CONFIG.bridgeEnabled) {
+
+    // Publish Bridge
+    console.log(" Publishing Bridge")
+    Bridge.publish();
+}
+
 
 console.log(" Starting Client Services")
 

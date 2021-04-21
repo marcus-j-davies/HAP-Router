@@ -23,7 +23,7 @@
             <table style="width: 100%;">
              <tr>
                 <td style="width: 200px;">Bridge Functionality (Enables/Disables the Bridge)</td>
-                <td> <input type="checkbox" checked></td>
+                <td> <input event="ChangeBridgeStatus" type="checkbox" {{#if bridgeEnabled}}checked{{/if}}></td>
              </tr>
              <tr>
                <td style="width: 200px;">Bridge Enrollment</td>

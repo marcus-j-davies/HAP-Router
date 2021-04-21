@@ -1,6 +1,7 @@
 {
     "advertiser": "ciao",
     "interface": "ALL",
+    "bridgeEnabled": true,
     "loginUsername": "admin",
     "loginPassword": "21232f297a57a5a743894a0e4a801fc3",
     "webInterfacePort": 7989,
@@ -12,8 +13,7 @@
         "username": "",
         "password": ""
     },
-    "bridgeConfig": {
-    },
+    "bridgeConfig": {},
     "routes": {
         "Node Red": {
             "type": "@marcus-j-davies/haprouter-route-http",
@@ -33,9 +33,9 @@
         },
         "MQTT Broker": {
             "type": "@marcus-j-davies/haprouter-route-mqtt",
-            "mqttbroker":"mqtt://broker.mqttdashboard.com",
-            "mqttusername":"",
-            "mqttpassword":"",
+            "mqttbroker": "mqtt://broker.mqttdashboard.com",
+            "mqttusername": "",
+            "mqttpassword": "",
             "topic": "HAPRouter/OUT/{{accessoryID}}"
         },
         "Websocket": {
