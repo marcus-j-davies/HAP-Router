@@ -472,7 +472,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
             AID:NewAccessoryOBJ.accessoryID,
             SN:NewAccessoryOBJ.serialNumber,
             Name:NewAccessoryOBJ.name,
-            Pincode:NewAccessoryOBJ.pincode
+            Pincode:NewAccessoryOBJ.pincode,
+            type:NewAccessoryOBJ.type
 
         })
 
@@ -575,7 +576,14 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         let HTML = CompiledTemplates['Bridge']({
             BridgedAccessories:BridgedAccessories,
-            bridgeEnabled:CONFIG.bridgeEnabled
+            bridgeEnabled:CONFIG.bridgeEnabled,
+            bridgeInfo:{
+                pinCode:CONFIG.bridgeConfig.pincode,
+                serialNumber:CONFIG.bridgeConfig.serialNumber,
+                setupURI:_Bridge.getAccessory().setupURI(),
+                isPaired: checkPairStatus(CONFIG.bridgeConfig.username.replace(/:/g,'')),
+                accessoryID:CONFIG.bridgeConfig.username.replace(/:/g,'')
+            }
         });
 
         res.contentType('text/html')

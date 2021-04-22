@@ -133,7 +133,7 @@ BaseAccessory.prototype.publish = function () {
 }
 
 BaseAccessory.prototype.unpublish = function (destroy) {
-
+    
     if (destroy) {
         this._accessory.destroy();
     } else {

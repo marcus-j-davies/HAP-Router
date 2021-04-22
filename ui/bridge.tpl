@@ -21,13 +21,15 @@
             <legend>Bridge Settings</legend>
            
             <table style="width: 100%;">
+            <!--
              <tr>
-                <td style="width: 200px;">Bridge Functionality (Enables/Disables the Bridge)</td>
-                <td> <input event="ChangeBridgeStatus" type="checkbox" {{#if bridgeEnabled}}checked{{/if}}></td>
+                td style="width: 200px;">Bridge Functionality</td>
+                <td> <input event="ChangeBridgeStatus" type="checkbox" {{#if bridgeEnabled}}checked{{/if}} disabled></td>
              </tr>
+            -->
              <tr>
                <td style="width: 200px;">Bridge Enrollment</td>
-               <td><input type="button" class="StyledButton" value="Enroll Bridge" onclick=""></td>
+               <td><input type="button" class="StyledButton" value="Enroll Bridge" onclick="ShowBridgePair('{{bridgeInfo.setupURI}}','{{bridgeInfo.serialNumber}}','{{bridgeInfo.pinCode}}','{{bridgeInfo.accessoryID}}')" {{#if bridgeInfo.isPaired}}disabled{{/if}}></td>
             </tr>
             </table>
 
@@ -55,17 +57,10 @@
 
          </fieldset>
 
-        
-
-         
-        
-
 
       </blockquote>
 
-      {{#if RestartRequired}}
-      <script>$("#Message").text("A restart is required to apply some recent changes.")</script>
-      {{/if}}
+      
 
 </body>
 

@@ -157,24 +157,32 @@ function AddAccessoryDone(data) {
 
     if(data.success){
 
-        
-
         if(($("#ACC_PublishMode").val() === 'Attached')){
             location.href = '../../../ui/accessories'
         }
         else{
-
-            $("#AC_QRImage").attr("src","../../../ui/qrcode/?data="+data.SetupURI+"&width=170");
-            $("#AC_Name").text(data.Name);
-            $("#AC_AID").text(data.AID);
-            $("#AC_SN").text(data.SN);
-            $("#AC_Code").text(data.Pincode);
-
-            $("#EnrollDiv").css("display","block")
+            let ICON = '../../../ui/resources/accessoryicon/?type='+data.type
+            let Return = '../../../ui/accessories'
+            ShowPairWindow(data.SetupURI,data.Name,data.AID,data.SN,ICON,data.Pincode,Return)
         }
     }
    
-    
+}
+
+function ShowPairWindow(SetupURI, Name, AID, SN, IconURL, Pincode, returnURL){
+
+    $("#AC_QRImage",window.top.document).attr("src","../../../ui/qrcode/?data="+SetupURI+"&width=170");
+    $("#AC_Name",window.top.document).text(Name);
+    $("#AC_AID",window.top.document).text(AID);
+    $("#AC_SN",window.top.document).text(SN);
+    $("#AC_Code",window.top.document).text(Pincode);
+    $("#PairIcon",window.top.document).attr('src',IconURL);
+    $("#ReturnLink",window.top.document).attr('href',returnURL);
+
+
+
+    $('#EnrollDiv',window.top.document).css("display","block")
+
 }
 
 function SaveAccessoryChanges(ID){
@@ -232,6 +240,19 @@ function ChangeBridgeStatus(){
         dataType: "json"
     });
 
+}
+
+function ShowBridgePair(SetupURI,SN,Pincode,UN){
+ 
+    let Icon = '../../../ui/static/Images/baseline_dns_white_24dp.png'
+    let Return = '../../../ui/bridge'
+
+
+    ShowPairWindow(SetupURI,'HAP Router Bridge',UN,SN,Icon,Pincode,Return)
+}
+
+function CloseEnroll(){
+    $('#EnrollDiv',window.top.document).css("display","none")
 }
 
 

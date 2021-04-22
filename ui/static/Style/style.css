@@ -236,6 +236,10 @@ img.RouteIcon[Invert]{
     vertical-align: middle;
 }
 
+.StyledButton[disabled]{
+    opacity: 0.3;
+}
+
 select{
     -moz-appearance: none; 
 	-webkit-appearance: none; 
@@ -272,7 +276,7 @@ div.PopupCurtain{
     display: none;
 }
 
-div.PopupCurtain > div.Content{ 
+div.PopupCurtain > div.PopupContent{ 
    
     position: relative;
     margin-top: 10%;

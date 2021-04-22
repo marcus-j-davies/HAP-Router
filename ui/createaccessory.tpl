@@ -133,49 +133,7 @@
 
       </blockquote>
 
-      <div id="EnrollDiv" class="PopupCurtain">
-         <div class="Content" style="width: 500px; height: 300px;">
-         <table style="width: 100%;padding: 10px;font-size: 14px;">
-            <tr>
-               <td colspan="2" style="text-align: left;vertical-align: top;">
-                 <img class="AccessoryIcon" style="width:unset;" src="../../../ui/resources/accessoryicon/?type={{Specification.type}}" Invert> 
-               </td>
-               <td rowspan="10" style="text-align: right;vertical-align: top;">
-                  <img id="AC_QRImage" src=""><br />
-                  <span class="PincodeHint" id="AC_Code" style="font-size: 26px;margin-right: 13px;"></span>
-               </td>
-            </tr>
-            <tr>
-               <td colspan="2" style="font-weight: bold;text-align: left;vertical-align: top;font-size: 18px;" id="AC_Name"></td>
-            </tr>
-            
-            <tr>
-               <td style="text-align: left;vertical-align: top;">Accessory ID</td>
-               <td style="text-align: left;vertical-align: top;" id="AC_AID"></td>
-            </tr>
-            <tr>
-               <td style="text-align: left;vertical-align: top;">Serial Number</td>
-               <td style="text-align: left;vertical-align: top;" id="AC_SN"></td>
-            </tr>
-            <tr>
-               <td colspan="2">&nbsp</td>
-            </tr>
-            <tr>
-               <td colspan="2" style="text-align: left;vertical-align: top;">
-                  Proceed to adding an Accessory in HomeKit, and when prompted, scan this QR Code.<br />
-                  If you're having trouble scanning the code, You can use the Pin Code displayed.
-               </td>
-            </tr>
-            <tr>
-               <td colspan="2">&nbsp</td>
-            </tr>
-            <tr>
-               <td colspan="2"><a href="../../../ui/accessories">Enroll Later</a></td>
-            </tr>
-         </table>
-         </div>
-            
-      </div>
+      
 
 </body>
 
