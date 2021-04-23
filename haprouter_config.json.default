@@ -15,32 +15,8 @@
     },
     "bridgeConfig": {},
     "routes": {
-        "Node Red": {
-            "type": "@marcus-j-davies/haprouter-route-http",
-            "destinationURI": "http://192.168.0.2:1880/HAPRouter/{{accessoryID}}"
-        },
         "Output To Console": {
             "type": "@marcus-j-davies/haprouter-route-console"
-        },
-        "UDP Broadcast": {
-            "type": "@marcus-j-davies/haprouter-route-udp",
-            "address": "255.255.255.255",
-            "port": 34322
-        },
-        "File Output": {
-            "type": "@marcus-j-davies/haprouter-route-file",
-            "directory": "/accessory-events/{{accessoryID}}"
-        },
-        "MQTT Broker": {
-            "type": "@marcus-j-davies/haprouter-route-mqtt",
-            "mqttbroker": "mqtt://broker.mqttdashboard.com",
-            "mqttusername": "",
-            "mqttpassword": "",
-            "topic": "HAPRouter/OUT/{{accessoryID}}"
-        },
-        "Websocket": {
-            "type": "@marcus-j-davies/haprouter-route-websocket",
-            "uri": "ws://server.com:9999/path/to/websocket"
         }
     },
     "accessories": []

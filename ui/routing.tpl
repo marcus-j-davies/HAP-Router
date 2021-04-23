@@ -23,7 +23,7 @@
 
 
          <fieldset>
-            <legend>Routes</legend>
+      
 
             <table style="width: 100%;">
                {{#Routes}}

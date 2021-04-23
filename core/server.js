@@ -38,6 +38,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         "EditAccessory": PATH.join(UTIL.RootAppPath, "/ui/editaccessory.tpl"),
         "Bridge": PATH.join(UTIL.RootAppPath, "/ui/bridge.tpl"),
         "Routes": PATH.join(UTIL.RootAppPath, "/ui/routing.tpl"),
+        "RouteTypes": PATH.join(UTIL.RootAppPath, "/ui/routetypes.tpl"),
+        "CreateRoute": PATH.join(UTIL.RootAppPath, "/ui/createroute.tpl"),
 
     }
 
@@ -79,24 +81,20 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.get('/ui/resources/accessoryicon/',_DoAccessoryIcon)
         app.get('/ui/resources/routeicon/',_DoRouteIcon)
         app.get('/ui/pairstatus/:ID',_DoCheckPair)
-
         app.get('/ui/login', _Login);
         app.post('/ui/login', _DoLogin);
-
         app.get('/ui/main', _Main);
-
         app.get('/ui/settings', _Settings);
         app.post('/ui/settings', _DoSettings);
-
         app.get('/ui/accessories', _Accessories);
         app.get('/ui/availableactypes', _ListAccessoryesTypes)
         app.get('/ui/createaccessory/:type', _CreateAccessory)
         app.post('/ui/createaccessory/:type', _DoCreateAccessory)
         app.get('/ui/editaccessory/:id', _EditAccessory)
         app.post('/ui/editaccessory/:id', _DoEditAccessory)
-
         app.get('/ui/routing', _Routes)
-
+        app.get('/ui/routetypes', _RouteTypes)
+        app.get('./ui/createroute',_CreateRoute)
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
 
@@ -115,6 +113,42 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         CB();
     }
 
+    function _CreateRoute(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let HTML = CompiledTemplates["CreateRoute"]({
+            type:req.query.type
+        });
+    }
+
+    // Route Types
+    function _RouteTypes(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let Types = []
+        let RouteTypeKeys = Object.keys(ROUTING.Routes);
+        RouteTypeKeys.forEach((RTK) =>{
+
+            let Type = {
+                type:RTK,
+                label:ROUTING.Routes[RTK].Name
+            }
+            Types.push(Type);
+        })
+
+        let HTML = CompiledTemplates["RouteTypes"]({
+            Types:Types
+        });
+
+        res.contentType('text/html')
+        res.send(HTML)
+    } 
 
      // Check Pair (web)
      function _DoCheckPair(req,res){
