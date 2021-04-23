@@ -37,6 +37,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         "NewAccessory": PATH.join(UTIL.RootAppPath, "/ui/createaccessory.tpl"),
         "EditAccessory": PATH.join(UTIL.RootAppPath, "/ui/editaccessory.tpl"),
         "Bridge": PATH.join(UTIL.RootAppPath, "/ui/bridge.tpl"),
+        "Routes": PATH.join(UTIL.RootAppPath, "/ui/routing.tpl"),
 
     }
 
@@ -93,6 +94,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.post('/ui/createaccessory/:type', _DoCreateAccessory)
         app.get('/ui/editaccessory/:id', _EditAccessory)
         app.post('/ui/editaccessory/:id', _DoEditAccessory)
+
+        app.get('/ui/routing', _Routes)
 
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
@@ -242,6 +245,42 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         let Icon = ROUTING.Routes[req.query.type].Icon
         res.sendFile(Icon);
      
+    }
+
+      /* Routes */
+    function _Routes(req, res) {
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let RouteList = [];
+        let RouteNames = Object.keys(CONFIG.routes);
+
+        RouteNames.forEach((RN) =>{
+
+            let R = CONFIG.routes[RN];
+            let RS = ROUTING.Routes[R.type];
+
+            let UseCount = CONFIG.accessories.filter((A) => A.route === RN).length;
+
+            let CR = {
+                name:RN,
+                type:RS.Type,
+                typeName:RS.Name,
+                useCount:(UseCount === 1 ? UseCount+" Accessory" : UseCount+" Accessories")
+            }
+            RouteList.push(CR);
+
+        })
+
+        let HTML = CompiledTemplates['Routes']({
+            Routes:RouteList
+        });
+
+        res.contentType('text/html')
+        res.send(HTML)
+
     }
 
     /* Login Page */

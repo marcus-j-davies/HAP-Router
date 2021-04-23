@@ -41,11 +41,7 @@
                   {{/BridgedAccessories}}
                </table>
 
-               <script>
-                  
-
-                  
-               </script>
+          
 
             </fieldset>
          {{/if}}
