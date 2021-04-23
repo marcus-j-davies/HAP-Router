@@ -154,6 +154,7 @@ let Types = {
             {id:"enableAudio", label:"Enable Audio Streaming", type:"checkbox", default:false},
             {id:"mapAudio", label:"Audio Map", type:"text", default:"0:1"},
             {id:"audioEncoder", label:"Audio Encoder", type:"text", default:"libfdk_aac"},
+            {id:"audioProfile", label:"Audio Profile", type:"text", default:"aac_eld"},
             {id:"additionalCommandline", label:"Additional Processor Args", type:"text", default:"-tune zerolatency -preset ultrafast"},
         ]
     }

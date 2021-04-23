@@ -139,7 +139,7 @@ const checkPassword = function () {
 
     if (process.argv.length > 3) {
 
-        if (process.argv[2] == "passwd") {
+        if (process.argv[2] === "passwd") {
 
             const NUSR = process.argv[3];
             const NPWD = process.argv[4];
@@ -161,7 +161,7 @@ const checkInstallRequest = function () {
 
     if (process.argv.length > 3) {
 
-        if (process.argv[2] == "installmodule") {
+        if (process.argv[2] === "installmodule") {
             const Module = process.argv[3];
 
             ROUTING.install(Module)
@@ -188,7 +188,7 @@ const checkReset = function () {
 
     if (process.argv.length > 2) {
 
-        if (process.argv[2] == "reset") {
+        if (process.argv[2] === "reset") {
 
             const rl = READLINE.createInterface({
                 input: process.stdin,
@@ -211,7 +211,7 @@ const checkReset = function () {
             console.log('')
 
             rl.question(" Continue? (y/n) :: ", function (value) {
-                if (value.toUpperCase() == 'Y') {
+                if (value.toUpperCase() === 'Y') {
                     console.log('')
                     reset();
                     console.log(' HAP Router has been reset.');

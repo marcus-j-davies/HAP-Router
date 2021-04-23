@@ -240,11 +240,15 @@ CameraSource.prototype.handleStreamRequest = async function (request, callback) 
                     CMD.push('srtp://' + targetAddress + ':' + targetVideoPort + '?rtcpport=' + targetVideoPort + '&pkt_size=' + MaxPaketSize)
 
                     // Audio ?
-                    if (this.config.enableAudio == 'true') {
+                    if (this.config.enableAudio === true) {
                         // Input
                         CMD.push('-map ' + this.config.mapAudio)
                         CMD.push('-acodec ' + this.config.audioEncoder)
-                        CMD.push('-profile:a aac_eld')
+
+                        if(this.config.audioProfile.length > 0){
+                            CMD.push('-profile:a '+ this.config.audioProfile)
+                        }
+                        
                         CMD.push('-flags +global_header')
                         CMD.push('-f null');
                         CMD.push('-ar ' + aSampleRate + 'k')
@@ -310,7 +314,7 @@ CameraSource.prototype.handleStreamRequest = async function (request, callback) 
                             if (!live) {
 
                                 if (!CBCalled) {
-                                    callback(new Error("Return Code: " + C + ", SIGNAL:" + s));
+                                    callback(new Error("Return Code: " + c + ", SIGNAL:" + s));
                                     CBCalled = true;
                                 }
 
