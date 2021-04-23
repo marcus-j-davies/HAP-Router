@@ -38,10 +38,6 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         "EditAccessory": PATH.join(UTIL.RootAppPath, "/ui/editaccessory.tpl"),
         "Bridge": PATH.join(UTIL.RootAppPath, "/ui/bridge.tpl"),
 
-       // "Setup": PATH.join(UTIL.RootAppPath, "ui/setup.tpl"),
-      //  "Create": PATH.join(UTIL.RootAppPath, "ui/create.tpl"),
-      //  "Edit": PATH.join(UTIL.RootAppPath, "ui/edit.tpl")
-
     }
 
     HANDLEBARS.registerHelper('eq', function (a, b, options) {
@@ -81,6 +77,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.get('/', _Redirect);
         app.get('/ui/resources/accessoryicon/',_DoAccessoryIcon)
         app.get('/ui/resources/routeicon/',_DoRouteIcon)
+        app.get('/ui/pairstatus/:ID',_DoCheckPair)
 
         app.get('/ui/login', _Login);
         app.post('/ui/login', _DoLogin);
@@ -114,6 +111,22 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         CB();
     }
+
+
+     // Check Pair (web)
+     function _DoCheckPair(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let Result = checkPairStatus(req.params.ID);
+
+        res.contentType('application/json')
+        res.send({paired:Result});
+
+    }
+   
 
     // Delete Accessory
     function DeleteAccessory(ID, Destroy) {
