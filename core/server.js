@@ -40,6 +40,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         "Routes": PATH.join(UTIL.RootAppPath, "/ui/routing.tpl"),
         "RouteTypes": PATH.join(UTIL.RootAppPath, "/ui/routetypes.tpl"),
         "CreateRoute": PATH.join(UTIL.RootAppPath, "/ui/createroute.tpl"),
+        "EditRoute":PATH.join(UTIL.RootAppPath, "/ui/editroute.tpl")
 
     }
 
@@ -96,6 +97,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.get('/ui/routetypes', _RouteTypes)
         app.get('/ui/createroute',_CreateRoute)
         app.post('/ui/createroute',_DoCreateRoute)
+        app.get('/ui/editroute', _EditRoute)
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
 
@@ -112,6 +114,37 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         }
 
         CB();
+    }
+
+    // edit Route
+    function _EditRoute(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let ID = req.query.name;
+        let RC = CONFIG.routes[ID];
+        let Type = ROUTING.Routes[RC.type];
+
+        let Settings = [];
+        Type.Inputs.forEach((RI) =>{
+            let I = {
+                label:RI.label,
+                id:RI.id,
+                value:RC[RI.id]
+            }
+            Settings.push(I);
+        })
+
+        let HTML = CompiledTemplates["EditRoute"]({
+            Settings:Settings,
+            name:ID,
+            type:RC.type
+        });
+
+        res.contentType('text/html')
+        res.send(HTML)
     }
 
     // Create Route

@@ -33,7 +33,7 @@
                   <td rowspan="3" style="width: 70px; vertical-align: top; text-align: center;">
                      <img class="AccessoryIcon" src="../../../ui/resources/routeicon/?type={{type}}"> 
                   </td>
-                  <td style="font-size: 16px;"><strong>{{name}}</strong> <span style="cursor: pointer;" onclick="location = '../../../ui/editaccessory/{{AccessoryCFG.accessoryID}}'">&#9998;</span></td>
+                  <td style="font-size: 16px;"><strong>{{name}}</strong> <span style="cursor: pointer;" onclick="location = '../../../ui/editroute/?name={{name}}'">&#9998;</span></td>
                   <td rowspan="3" style="text-align: right; vertical-align: top;">{{useCount}}</td>
                </tr>
                <tr><td>{{typeName}}</td></tr>
