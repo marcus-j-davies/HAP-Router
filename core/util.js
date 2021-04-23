@@ -71,10 +71,11 @@ const makeID = function (length) {
 }
 
 // Flash Route COnfig
-const updateRouteConfig = function (Config) {
+const updateRouteConfig = function (Name,Route) {
+
     const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
     const ConfigOBJ = JSON.parse(CFF);
-    ConfigOBJ.routes = Config;
+    ConfigOBJ.routes[Name] = Route
     saveConfig(ConfigOBJ);
 }
 

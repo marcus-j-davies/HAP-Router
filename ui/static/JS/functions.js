@@ -283,6 +283,38 @@ function StartPairCheck(Return, ID){
     },5000)
 }
 
+function SaveNewRoute(Type){
+
+    let Data =  {
+        name:$("#RT_Name").val(),
+        type:Type
+    }
+
+    let ParamElements = $(".RouteParam");
+
+    ParamElements.each((index,element) => {
+
+        let EL = $(element)
+        Data[EL.attr('data-param')] = EL.val();
+
+    });
+
+
+    $.ajax({
+        type: "POST",
+        url: "../../../ui/createroute",
+        data: JSON.stringify(Data),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+
+            if(data.success){
+               location.href = '../../../ui/routing'
+            }
+        }
+    });
+}
+
 
 /******************************************* */
 

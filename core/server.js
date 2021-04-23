@@ -94,7 +94,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.post('/ui/editaccessory/:id', _DoEditAccessory)
         app.get('/ui/routing', _Routes)
         app.get('/ui/routetypes', _RouteTypes)
-        app.get('./ui/createroute',_CreateRoute)
+        app.get('/ui/createroute',_CreateRoute)
+        app.post('/ui/createroute',_DoCreateRoute)
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
 
@@ -113,15 +114,57 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         CB();
     }
 
+    // Create Route
     function _CreateRoute(req,res){
 
         if (!_CheckAuth(req, res)) {
             return;
         }
 
+        let Settings = [];
+        let RP = ROUTING.Routes[req.query.type];
+        RP.Inputs.forEach((RI) =>{
+            let I = {
+                label:RI.label,
+                id:RI.id
+            }
+            Settings.push(I);
+        })
+
         let HTML = CompiledTemplates["CreateRoute"]({
-            type:req.query.type
+            type:req.query.type,
+            Settings:Settings
         });
+
+        res.contentType('text/html')
+        res.send(HTML)
+    }
+
+    // Do Create Route
+    function _DoCreateRoute(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let RI = req.body
+
+        let Route = {
+            type:RI.type
+        }
+
+        let ParamKeys = Object.keys(RI).filter((K) => K !== 'name' && K !== 'type');
+        ParamKeys.forEach((PK) =>{
+            Route[PK] = RI[PK];
+        })
+
+        CONFIG.routes[RI.name] = Route;
+        UTIL.updateRouteConfig(RI.name,Route)
+
+        _RouteSetup();
+
+        res.contentType('application/json')
+        res.send({success:true})
     }
 
     // Route Types
