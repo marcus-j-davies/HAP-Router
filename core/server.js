@@ -77,7 +77,6 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         // UI
         app.use('/ui/static', EXPRESS.static(PATH.join(UTIL.RootAppPath, "ui/static")))
         app.get('/ui/qrcode/', _DOQRCode)
-
         app.get('/', _Redirect);
         app.get('/ui/resources/accessoryicon/',_DoAccessoryIcon)
         app.get('/ui/resources/routeicon/',_DoRouteIcon)
@@ -101,6 +100,11 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.post('/ui/editroute', _DoEditRoute)
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
+
+        // API
+        app.get('/api/accessories', _APIAccessories)
+        app.get('/api/accessories/:ID', _APIAccessory)
+        app.post('/api/accessories/:ID', _APIAccessorySet)
 
         try {
             if (CONFIG.webInterfaceAddress === 'ALL') {
