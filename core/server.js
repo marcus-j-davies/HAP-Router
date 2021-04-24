@@ -29,18 +29,18 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     // Template Files
     const Templates = {
 
-        "Login": PATH.join(UTIL.RootAppPath, "ui/login.tpl"),
-        "Main": PATH.join(UTIL.RootAppPath, "ui/main.tpl"),
-        "Settings": PATH.join(UTIL.RootAppPath, "/ui/settings.tpl"),
-        "Accessories": PATH.join(UTIL.RootAppPath, "/ui/accessories.tpl"),
-        "AccessorTypes": PATH.join(UTIL.RootAppPath, "/ui/accessorytypes.tpl"),
-        "NewAccessory": PATH.join(UTIL.RootAppPath, "/ui/createaccessory.tpl"),
-        "EditAccessory": PATH.join(UTIL.RootAppPath, "/ui/editaccessory.tpl"),
-        "Bridge": PATH.join(UTIL.RootAppPath, "/ui/bridge.tpl"),
-        "Routes": PATH.join(UTIL.RootAppPath, "/ui/routing.tpl"),
-        "RouteTypes": PATH.join(UTIL.RootAppPath, "/ui/routetypes.tpl"),
-        "CreateRoute": PATH.join(UTIL.RootAppPath, "/ui/createroute.tpl"),
-        "EditRoute":PATH.join(UTIL.RootAppPath, "/ui/editroute.tpl")
+        "Login": PATH.join(UTIL.RootAppPath, "ui/login.html"),
+        "Main": PATH.join(UTIL.RootAppPath, "ui/main.html"),
+        "Settings": PATH.join(UTIL.RootAppPath, "/ui/settings.html"),
+        "Accessories": PATH.join(UTIL.RootAppPath, "/ui/accessories.html"),
+        "AccessorTypes": PATH.join(UTIL.RootAppPath, "/ui/accessorytypes.html"),
+        "NewAccessory": PATH.join(UTIL.RootAppPath, "/ui/createaccessory.html"),
+        "EditAccessory": PATH.join(UTIL.RootAppPath, "/ui/editaccessory.html"),
+        "Bridge": PATH.join(UTIL.RootAppPath, "/ui/bridge.html"),
+        "Routes": PATH.join(UTIL.RootAppPath, "/ui/routing.html"),
+        "RouteTypes": PATH.join(UTIL.RootAppPath, "/ui/routetypes.html"),
+        "CreateRoute": PATH.join(UTIL.RootAppPath, "/ui/createroute.html"),
+        "EditRoute":PATH.join(UTIL.RootAppPath, "/ui/editroute.html")
 
     }
 
