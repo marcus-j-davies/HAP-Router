@@ -1,5 +1,6 @@
 'use strict'
 const EXPRESS = require('express')
+const BASICAUTH = require('express-basic-auth')
 const CRYPTO = require('crypto')
 const HANDLEBARS = require('handlebars')
 const FS = require('fs');
@@ -17,7 +18,6 @@ const RouterPackage = require("../package.json");
 const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
     // Vars
-    let _Paired = false;
     const _ConfiguredAccessories = Accesories
     const _Bridge = Bridge;
     const _RouteSetup = RouteSetup
@@ -40,7 +40,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         "Routes": PATH.join(UTIL.RootAppPath, "/ui/routing.html"),
         "RouteTypes": PATH.join(UTIL.RootAppPath, "/ui/routetypes.html"),
         "CreateRoute": PATH.join(UTIL.RootAppPath, "/ui/createroute.html"),
-        "EditRoute":PATH.join(UTIL.RootAppPath, "/ui/editroute.html")
+        "EditRoute": PATH.join(UTIL.RootAppPath, "/ui/editroute.html")
 
     }
 
@@ -78,9 +78,9 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.use('/ui/static', EXPRESS.static(PATH.join(UTIL.RootAppPath, "ui/static")))
         app.get('/ui/qrcode/', _DOQRCode)
         app.get('/', _Redirect);
-        app.get('/ui/resources/accessoryicon/',_DoAccessoryIcon)
-        app.get('/ui/resources/routeicon/',_DoRouteIcon)
-        app.get('/ui/pairstatus/:ID',_DoCheckPair)
+        app.get('/ui/resources/accessoryicon/', _DoAccessoryIcon)
+        app.get('/ui/resources/routeicon/', _DoRouteIcon)
+        app.get('/ui/pairstatus/:ID', _DoCheckPair)
         app.get('/ui/login', _Login);
         app.post('/ui/login', _DoLogin);
         app.get('/ui/main', _Main);
@@ -94,17 +94,17 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.post('/ui/editaccessory/:id', _DoEditAccessory)
         app.get('/ui/routing', _Routes)
         app.get('/ui/routetypes', _RouteTypes)
-        app.get('/ui/createroute',_CreateRoute)
-        app.post('/ui/createroute',_DoCreateRoute)
+        app.get('/ui/createroute', _CreateRoute)
+        app.post('/ui/createroute', _DoCreateRoute)
         app.get('/ui/editroute', _EditRoute)
         app.post('/ui/editroute', _DoEditRoute)
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
 
         // API
-        app.get('/api/accessories', _APIAccessories)
-        app.get('/api/accessories/:ID', _APIAccessory)
-        app.post('/api/accessories/:ID', _APIAccessorySet)
+        app.get('/api/accessories', BASICAUTH({ authorizer: Authorizer,challenge: true,realm: 'HAP Router API',}), _APIAccessories)
+        app.get('/api/accessories/:ID', BASICAUTH({ authorizer: Authorizer,challenge: true,realm: 'HAP Router API',}), _APIAccessory)
+        app.post('/api/accessories/:ID', BASICAUTH({ authorizer: Authorizer,challenge: true,realm: 'HAP Router API',}), _APIAccessorySet)
 
         try {
             if (CONFIG.webInterfaceAddress === 'ALL') {
@@ -121,17 +121,90 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         CB();
     }
 
+    function Authorizer(username, password) {
+
+        return CONFIG.loginUsername === username && CRYPTO.createHash('md5').update(password).digest("hex") === CONFIG.loginPassword;
+    }
 
     // API - All Accessories
-    function _APIAccessories(req,res){
+    function _APIAccessories(req, res) {
 
+        let Response = []
 
+        CONFIG.accessories.forEach((AC) =>{
+
+            let Accessory = {
+                AccessoryID:AC.username.replace(/:/g,''),
+                AccessoryType:AC.type,
+                AccessoryName:AC.name,
+                AccessorySerialNumber:AC.serialNumber,
+                Manufacturer:AC.manufacturer,
+                Model:AC.model,
+                Bridged:AC.bridged,
+                Characteristics:_ConfiguredAccessories[AC.username.replace(/:/g,'')].getProperties()
+            }
+
+            Response.push(Accessory)
+        })
+
+        res.contentType('application/json')
+        res.send(Response)
+    }
+
+    // API -  Accessory
+    function _APIAccessory(req, res) {
+
+        let Response = []
+
+        CONFIG.accessories.filter((AC) => AC.username.replace(/:/g,'') === req.params.ID).forEach((AC) =>{
+
+            let Accessory = {
+                AccessoryID:AC.username.replace(/:/g,''),
+                AccessoryType:AC.type,
+                AccessoryName:AC.name,
+                AccessorySerialNumber:AC.serialNumber,
+                Manufacturer:AC.manufacturer,
+                Model:AC.model,
+                Bridged:AC.bridged,
+                Characteristics:_ConfiguredAccessories[AC.username.replace(/:/g,'')].getProperties()
+            }
+
+            Response.push(Accessory)
+        })
+
+        res.contentType('application/json')
+        res.send(Response)
+    }
+
+    // API -  Accessory Set
+    function _APIAccessorySet(req, res) {
+
+        let Accessory = _ConfiguredAccessories[req.params.ID];
+
+        if(Accessory === undefined){
+
+            res.contentType('application/json')
+            res.send({success:false})
+
+        }else{
+
+            try{
+                Accessory.setCharacteristics(req.body);
+                res.contentType('application/json')
+                res.send({success:true})
+            }
+            catch(Er){
+                res.contentType('application/json')
+                res.send({success:false})
+            }
+            
+        }
 
     }
-  
+
 
     // edit Route
-    function _EditRoute(req,res){
+    function _EditRoute(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -142,20 +215,20 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         let Type = ROUTING.Routes[RC.type];
 
         let Settings = [];
-        Type.Inputs.forEach((RI) =>{
+        Type.Inputs.forEach((RI) => {
             let I = {
-                label:RI.label,
-                id:RI.id,
-                value:RC[RI.id]
+                label: RI.label,
+                id: RI.id,
+                value: RC[RI.id]
             }
             Settings.push(I);
         })
 
         let HTML = CompiledTemplates["EditRoute"]({
-            Settings:Settings,
-            name:ID,
-            type:RC.type,
-            inUse:(CONFIG.accessories.filter((AC) => AC.route === ID).length >0)
+            Settings: Settings,
+            name: ID,
+            type: RC.type,
+            inUse: (CONFIG.accessories.filter((AC) => AC.route === ID).length > 0)
         });
 
         res.contentType('text/html')
@@ -163,7 +236,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     }
 
     // Do edit route
-    function _DoEditRoute(req,res){
+    function _DoEditRoute(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -177,18 +250,18 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         NRD.type = ORD.type;
 
         CONFIG.routes[Name] = NRD;
-        UTIL.updateRouteConfig(Name,NRD)
+        UTIL.updateRouteConfig(Name, NRD)
 
         _RouteSetup();
 
         res.contentType('application/json')
-        res.send({success:true})
+        res.send({ success: true })
 
 
     }
 
     // Create Route
-    function _CreateRoute(req,res){
+    function _CreateRoute(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -196,17 +269,17 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         let Settings = [];
         let RP = ROUTING.Routes[req.query.type];
-        RP.Inputs.forEach((RI) =>{
+        RP.Inputs.forEach((RI) => {
             let I = {
-                label:RI.label,
-                id:RI.id
+                label: RI.label,
+                id: RI.id
             }
             Settings.push(I);
         })
 
         let HTML = CompiledTemplates["CreateRoute"]({
-            type:req.query.type,
-            Settings:Settings
+            type: req.query.type,
+            Settings: Settings
         });
 
         res.contentType('text/html')
@@ -214,7 +287,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     }
 
     // Do Create Route
-    function _DoCreateRoute(req,res){
+    function _DoCreateRoute(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -223,25 +296,25 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         let RI = req.body
 
         let Route = {
-            type:RI.type
+            type: RI.type
         }
 
         let ParamKeys = Object.keys(RI).filter((K) => K !== 'name' && K !== 'type');
-        ParamKeys.forEach((PK) =>{
+        ParamKeys.forEach((PK) => {
             Route[PK] = RI[PK];
         })
 
         CONFIG.routes[RI.name] = Route;
-        UTIL.updateRouteConfig(RI.name,Route)
+        UTIL.updateRouteConfig(RI.name, Route)
 
         _RouteSetup();
 
         res.contentType('application/json')
-        res.send({success:true})
+        res.send({ success: true })
     }
 
     // Route Types
-    function _RouteTypes(req,res){
+    function _RouteTypes(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -249,25 +322,25 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         let Types = []
         let RouteTypeKeys = Object.keys(ROUTING.Routes);
-        RouteTypeKeys.forEach((RTK) =>{
+        RouteTypeKeys.forEach((RTK) => {
 
             let Type = {
-                type:RTK,
-                label:ROUTING.Routes[RTK].Name
+                type: RTK,
+                label: ROUTING.Routes[RTK].Name
             }
             Types.push(Type);
         })
 
         let HTML = CompiledTemplates["RouteTypes"]({
-            Types:Types
+            Types: Types
         });
 
         res.contentType('text/html')
         res.send(HTML)
-    } 
+    }
 
-     // Check Pair (web)
-     function _DoCheckPair(req,res){
+    // Check Pair (web)
+    function _DoCheckPair(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -276,10 +349,10 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         let Result = checkPairStatus(req.params.ID);
 
         res.contentType('application/json')
-        res.send({paired:Result});
+        res.send({ paired: Result });
 
     }
-   
+
 
     // Delete Accessory
     function DeleteAccessory(ID, Destroy) {
@@ -306,20 +379,13 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         delete _ConfiguredAccessories[ID];
 
-        if(Destroy){
+        if (Destroy) {
 
             let WithoutThis = CONFIG.accessories.filter((A) => A.accessoryID !== ID)
             CONFIG.accessories = WithoutThis;
             UTIL.deleteAccessory(ID);
         }
 
-    }
-
-
-
-    // Set Pair Status
-    this.setBridgePaired = function(IsPaired) {
-        _Paired = IsPaired;
     }
 
     /* Check PairStatus */
@@ -341,8 +407,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
     }
 
-     /* Check Auth */
-     function _CheckAuth(req, res) {
+    /* Check Auth */
+    function _CheckAuth(req, res) {
         if (req.signedCookies.Authentication === undefined || req.signedCookies.Authentication !== 'Success') {
             res.redirect("../../../ui/login");
             return false;
@@ -351,12 +417,12 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     }
 
     /* QR Code */
-    async function  _DOQRCode(req,res){
+    async function _DOQRCode(req, res) {
 
         let Text = req.query.data;
         let Width = req.query.width
 
-        let BUF = await QRCODE.toBuffer(Text,{margin:2,width:Width,type:'png'})
+        let BUF = await QRCODE.toBuffer(Text, { margin: 2, width: Width, type: 'png' })
 
         res.contentType('image/png')
         res.send(BUF);
@@ -370,7 +436,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     }
 
     /* Accessory Icon */
-    function _DoAccessoryIcon(req,res){
+    function _DoAccessoryIcon(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -379,12 +445,12 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         res.contentType('image/png')
 
         let Icon = ACCESSORY.Types[req.query.type].Icon
-        res.sendFile(PATH.join(UTIL.RootAppPath,"core","accessories","Icons",Icon));
-     
+        res.sendFile(PATH.join(UTIL.RootAppPath, "core", "accessories", "Icons", Icon));
+
     }
 
     /* Route Icon */
-    function _DoRouteIcon(req,res){
+    function _DoRouteIcon(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -394,10 +460,10 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         let Icon = ROUTING.Routes[req.query.type].Icon
         res.sendFile(Icon);
-     
+
     }
 
-      /* Routes */
+    /* Routes */
     function _Routes(req, res) {
 
         if (!_CheckAuth(req, res)) {
@@ -407,7 +473,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         let RouteList = [];
         let RouteNames = Object.keys(CONFIG.routes);
 
-        RouteNames.forEach((RN) =>{
+        RouteNames.forEach((RN) => {
 
             let R = CONFIG.routes[RN];
             let RS = ROUTING.Routes[R.type];
@@ -415,17 +481,17 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
             let UseCount = CONFIG.accessories.filter((A) => A.route === RN).length;
 
             let CR = {
-                name:RN,
-                type:RS.Type,
-                typeName:RS.Name,
-                useCount:(UseCount === 1 ? UseCount+" Accessory" : UseCount+" Accessories")
+                name: RN,
+                type: RS.Type,
+                typeName: RS.Name,
+                useCount: (UseCount === 1 ? UseCount + " Accessory" : UseCount + " Accessories")
             }
             RouteList.push(CR);
 
         })
 
         let HTML = CompiledTemplates['Routes']({
-            Routes:RouteList
+            Routes: RouteList
         });
 
         res.contentType('text/html')
@@ -437,7 +503,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     function _Login(req, res) {
 
         let HTML = CompiledTemplates['Login']({
-            "RouterPackage":RouterPackage
+            "RouterPackage": RouterPackage
         });
         res.contentType('text/html')
         res.send(HTML)
@@ -486,8 +552,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         }
 
         let HTML = CompiledTemplates['Main']({
-            "HAPPackage":HAPPackage,
-            "RouterPackage":RouterPackage
+            "HAPPackage": HAPPackage,
+            "RouterPackage": RouterPackage
         });
         res.contentType('text/html')
         res.send(HTML)
@@ -515,7 +581,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         }
 
         let HTML = CompiledTemplates['Settings']({
-            "Config": CONFIG, "Interfaces": IPs, "RestartRequired":_RestartRequired
+            "Config": CONFIG, "Interfaces": IPs, "RestartRequired": _RestartRequired
         });
 
         res.contentType('text/html')
@@ -551,16 +617,16 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         }
         res.contentType('application/json')
         res.send(JSON.stringify(Response))
-       
+
     }
 
     /* Accessories */
-    function _Accessories(req,res) {
+    function _Accessories(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
         }
-        
+
         let BridgedAccessories = []
         let UNBridgedAccessories = []
         let AccessoryIDs = Object.keys(_ConfiguredAccessories);
@@ -569,7 +635,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
             let AC = _ConfiguredAccessories[AID]
             let AccessoryCFG = AC.getConfig();
-            
+
 
             AccessoryCFG.typeDisplay = ACCESSORY.Types[AccessoryCFG.type].Label
             AccessoryCFG.isPaired = checkPairStatus(AccessoryCFG.accessoryID)
@@ -578,24 +644,24 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
             let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
 
             let Element = {
-                AccessoryCFG:AccessoryCFG,
-                RouteCFG:{
-                    name:AccessoryCFG.route,
-                    type:ConfiguredRoute.type
+                AccessoryCFG: AccessoryCFG,
+                RouteCFG: {
+                    name: AccessoryCFG.route,
+                    type: ConfiguredRoute.type
                 }
             }
 
-            if(AccessoryCFG.bridged){
+            if (AccessoryCFG.bridged) {
                 BridgedAccessories.push(Element)
             }
-            else{
+            else {
                 UNBridgedAccessories.push(Element)
             }
         })
 
         let HTML = CompiledTemplates['Accessories']({
-            BridgedAccessories:BridgedAccessories,
-            UNBridgedAccessories:UNBridgedAccessories
+            BridgedAccessories: BridgedAccessories,
+            UNBridgedAccessories: UNBridgedAccessories
         });
 
         res.contentType('text/html')
@@ -604,25 +670,25 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     }
 
     /* List Accessory Type */
-    function _ListAccessoryesTypes(req,res){
+    function _ListAccessoryesTypes(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
         }
-      
+
         let Available = []
         let Types = Object.keys(ACCESSORY.Types);
-        Types.forEach((T)=>{
+        Types.forEach((T) => {
 
             Available.push({
-                type:T,
-                label:ACCESSORY.Types[T].Label
+                type: T,
+                label: ACCESSORY.Types[T].Label
             })
         })
 
-       
+
         let HTML = CompiledTemplates['AccessorTypes']({
-            Types:Available
+            Types: Available
         });
 
         res.contentType('text/html')
@@ -630,16 +696,16 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     }
 
     /* Create Accessory */
-    function _CreateAccessory(req,res){
+    function _CreateAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
         }
 
-        
+
         let PL = {
-            Specification:ACCESSORY.Types[req.params.type],
-            Routes:Object.keys(CONFIG.routes)
+            Specification: ACCESSORY.Types[req.params.type],
+            Routes: Object.keys(CONFIG.routes)
         }
         PL.Specification.type = req.params.type;
 
@@ -650,18 +716,18 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     }
 
     /* DO Create Accessory */
-    function _DoCreateAccessory(req,res){
+    function _DoCreateAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
         }
-        
+
         let NewAccessoryOBJ = req.body;
 
         NewAccessoryOBJ.pincode = UTIL.getRndInteger(100, 999) + "-" + UTIL.getRndInteger(10, 99) + "-" + UTIL.getRndInteger(100, 999)
-        NewAccessoryOBJ.username =  UTIL.genMAC()
-        NewAccessoryOBJ.setupID =  UTIL.makeID(4)
-        if(NewAccessoryOBJ.serialNumber === undefined){
+        NewAccessoryOBJ.username = UTIL.genMAC()
+        NewAccessoryOBJ.setupID = UTIL.makeID(4)
+        if (NewAccessoryOBJ.serialNumber === undefined) {
             NewAccessoryOBJ.serialNumber = UTIL.makeID(12);
         }
 
@@ -672,21 +738,21 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         res.contentType('application/json')
         res.send({
-            success:true,
-            SetupURI:QR,
-            AID:NewAccessoryOBJ.accessoryID,
-            SN:NewAccessoryOBJ.serialNumber,
-            Name:NewAccessoryOBJ.name,
-            Pincode:NewAccessoryOBJ.pincode,
-            type:NewAccessoryOBJ.type
+            success: true,
+            SetupURI: QR,
+            AID: NewAccessoryOBJ.accessoryID,
+            SN: NewAccessoryOBJ.serialNumber,
+            Name: NewAccessoryOBJ.name,
+            Pincode: NewAccessoryOBJ.pincode,
+            type: NewAccessoryOBJ.type
 
         })
 
-       
+
     }
 
     /* Edit Accessory */
-    function _EditAccessory(req,res){
+    function _EditAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -697,9 +763,9 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         let AccessoryCFG = _ConfiguredAccessories[ID].getConfig();
 
         let PL = {
-            AccessoryCFG:AccessoryCFG,
-            Specification:ACCESSORY.Types[AccessoryCFG.type],
-            Routes:Object.keys(CONFIG.routes)
+            AccessoryCFG: AccessoryCFG,
+            Specification: ACCESSORY.Types[AccessoryCFG.type],
+            Routes: Object.keys(CONFIG.routes)
         }
         PL.Specification.type = AccessoryCFG.type
 
@@ -710,14 +776,14 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
     }
 
     /* Do Edit Accessory */
-    function _DoEditAccessory(req,res){
+    function _DoEditAccessory(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
         }
         let AID = req.params.id;
 
-        DeleteAccessory(AID,false)
+        DeleteAccessory(AID, false)
 
         let CurrentCFG = CONFIG.accessories.filter((A) => A.accessoryID === AID)[0];
         delete CurrentCFG.manufacturer;
@@ -726,22 +792,22 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         let NewCFG = req.body;
 
-        Object.keys(NewCFG).forEach((OK) =>{
+        Object.keys(NewCFG).forEach((OK) => {
             CurrentCFG[OK] = NewCFG[OK];
         })
 
-        if(CurrentCFG.serialNumber === undefined){
+        if (CurrentCFG.serialNumber === undefined) {
             CurrentCFG.serialNumber = UTIL.makeID(12);
         }
-        
-        UTIL.updateAccessory(CurrentCFG,AID)
+
+        UTIL.updateAccessory(CurrentCFG, AID)
         _AccessoryInitializer(CurrentCFG);
-        
+
         res.contentType('application/json')
-        res.send({success:true})
+        res.send({ success: true })
     }
 
-    function _BridgeWEB(req,res){
+    function _BridgeWEB(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
@@ -753,7 +819,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         AccessoryIDs.forEach((AID) => {
 
             let AccessoryCFG = _ConfiguredAccessories[AID].getConfig();
-            if(!AccessoryCFG.bridged) {
+            if (!AccessoryCFG.bridged) {
                 return;
             }
 
@@ -763,27 +829,27 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
             let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
 
             let Element = {
-                AccessoryCFG:AccessoryCFG,
-                RouteCFG:{
-                    name:AccessoryCFG.route,
-                    type:ConfiguredRoute.type
+                AccessoryCFG: AccessoryCFG,
+                RouteCFG: {
+                    name: AccessoryCFG.route,
+                    type: ConfiguredRoute.type
                 }
             }
 
             BridgedAccessories.push(Element)
 
-           
+
         })
 
         let HTML = CompiledTemplates['Bridge']({
-            BridgedAccessories:BridgedAccessories,
-            bridgeEnabled:CONFIG.bridgeEnabled,
-            bridgeInfo:{
-                pinCode:CONFIG.bridgeConfig.pincode,
-                serialNumber:CONFIG.bridgeConfig.serialNumber,
-                setupURI:_Bridge.getAccessory().setupURI(),
-                isPaired: checkPairStatus(CONFIG.bridgeConfig.username.replace(/:/g,'')),
-                accessoryID:CONFIG.bridgeConfig.username.replace(/:/g,'')
+            BridgedAccessories: BridgedAccessories,
+            bridgeEnabled: CONFIG.bridgeEnabled,
+            bridgeInfo: {
+                pinCode: CONFIG.bridgeConfig.pincode,
+                serialNumber: CONFIG.bridgeConfig.serialNumber,
+                setupURI: _Bridge.getAccessory().setupURI(),
+                isPaired: checkPairStatus(CONFIG.bridgeConfig.username.replace(/:/g, '')),
+                accessoryID: CONFIG.bridgeConfig.username.replace(/:/g, '')
             }
         });
 
@@ -791,17 +857,17 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         res.send(HTML)
     }
 
-    function _DoBridgeConfig(req,res){
+    function _DoBridgeConfig(req, res) {
 
         if (!_CheckAuth(req, res)) {
             return;
         }
 
-        if(req.body.enableBridge){
+        if (req.body.enableBridge) {
             console.log(" Publishing Bridge")
             _Bridge.publish()
         }
-        else{
+        else {
             _Bridge.unpublish(false);
         }
     }

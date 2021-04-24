@@ -1,6 +1,6 @@
 'use strict'
 
-const { Service, Characteristic, Categories} = require("hap-nodejs");
+const { Categories} = require("hap-nodejs");
 const {BaseAccessory} = require("./BaseAccessory")
 
 class Bridge extends BaseAccessory {

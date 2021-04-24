@@ -5,32 +5,32 @@ const {BaseAccessory} = require("./BaseAccessory")
 
  const Set = function(payload) {
 
-    const Props = Object.keys(payload);
+    Object.keys(payload).forEach((K) =>{
 
-    for (let i = 0; i < Props.length; i++) {
-
-        this._Properties[Props[i]] = payload[Props[i]];
-
-        switch(Props[i]){
+        switch(K){
 
             case "Active":
-                this._service.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
-                this._Speaker.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
-                break
-
-            case "ActiveIdentifier":
-            case "RemoteKey":
-            case "PowerModeSelection":
-                this._service.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
-                break
+                this._Properties[K] = payload[K];
+                this._service.setCharacteristic(Characteristic[K], payload[K])
+                this._Speaker.setCharacteristic(Characteristic[K], payload[K])
+                break;
 
             case "VolumeSelector":
-                this._Speaker.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
-                break
+                this._Speaker.setCharacteristic(Characteristic[K], payload[K])
+                break;
+
+            case "RemoteKey":
+            case "PowerModeSelection":
+                this._service.setCharacteristic(Characteristic[K], payload[K])
+                break;
+
+            case "ActiveIdentifier":
+                this._Properties[K] = payload[K];
+                this._service.setCharacteristic(Characteristic[K], payload[K])
+                break;
 
         }
-
-    }
+    })
 }
 
 class TV extends BaseAccessory {
@@ -84,7 +84,7 @@ class TV extends BaseAccessory {
             Input.setCharacteristic(Characteristic.TargetVisibilityState, 0);
 
             Input.getCharacteristic(Characteristic.TargetVisibilityState)
-                .on(CharacteristicEventTypes.SET, function(value, callback, hap) {
+                .on(CharacteristicEventTypes.SET, function(value, callback, ctx, connection) {
                     Input.setCharacteristic(Characteristic.CurrentVisibilityState, value);
                     callback(null);
                 })

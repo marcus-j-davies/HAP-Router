@@ -6,27 +6,25 @@ const { CameraSource } = require("./CameraSource")
 
 const Set = function (payload) {
 
-    const Props = Object.keys(payload);
+    Object.keys(payload).forEach((K) =>{
 
-    for (let i = 0; i < Props.length; i++) {
-
-        this._Properties[Props[i]] = payload[Props[i]];
-
-        switch (Props[i]) {
+        switch(K){
 
             case "MotionDetected":
             case "StatusActive":
             case "StatusFault":
             case "StatusTampered":
-                this._MDService.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
+                this._Properties[K] = payload[K];
+                this._MDService.setCharacteristic(Characteristic[K], payload[K])
                 break;
 
             case "ProgrammableSwitchEvent":
-                this._VDBService.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
+                this._VDBService.setCharacteristic(Characteristic[K], payload[K])
                 break;
 
         }
-    }
+
+    })
 }
 
 class Camera extends BaseAccessory {
@@ -40,7 +38,6 @@ class Camera extends BaseAccessory {
 
             this._VDBService = new Service.Doorbell('', '');
             this._VDBService.setCharacteristic(Characteristic.ProgrammableSwitchEvent, undefined);
-            this._Properties["ProgrammableSwitchEvent"] = undefined;
 
             const _VDBService_ES = {
                 "Get": ["ProgrammableSwitchEvent"],

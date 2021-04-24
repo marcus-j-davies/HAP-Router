@@ -11,8 +11,8 @@ class Fan extends BaseAccessory {
         this._service = new Service.Fan(Config.name, Config.name)
 
         this._service.setCharacteristic(Characteristic.On, false);
-        this._Properties["On"] = false;
         this._service.setCharacteristic(Characteristic.RotationSpeed, 100);
+        this._Properties["On"] = false;
         this._Properties["RotationSpeed"] = 100;
 
         const EventStruct = {

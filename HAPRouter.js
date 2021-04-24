@@ -128,8 +128,6 @@ HAPStorage.setCustomStoragePath(UTIL.HomeKitPath);
 
 // Configure Our Bridge
 const Bridge = new ACCESSORY.Bridge(CONFIG.bridgeConfig)
-Bridge.on('PAIR_CHANGE', Paired)
-Bridge.on('LISTENING', getsetupURI)
 
 // Routes
 const Routes = {}
@@ -179,14 +177,14 @@ function initAccessory(Config){
         }
     }
 
-    Acc.on('STATE_CHANGE', (PL, O) => Change(PL, Config, O))
-    Acc.on('IDENTIFY', (P) => Identify(P, Config))
+    Acc.on('STATE_CHANGE', (Payload, Originator) => Change(Payload, Config, Originator))
+    Acc.on('IDENTIFY', (Paired) => Identify(Paired, Config))
 
     Accesories[Config.accessoryID] = Acc;
 
     if (!Config.bridged) {
 
-        Acc.on('PAIR_CHANGE', (P) => Pair(P, Config))
+        Acc.on('PAIR_CHANGE', (Paired) => Pair(Paired, Config))
         console.log("       Pin Code  " + Config.pincode)
         console.log("       Publishing Accessory (Unbridged)")
         Acc.publish();
@@ -230,13 +228,6 @@ function MQTTDone() {
 
 // Server Started
 function UIServerDone() {
-    const BridgeFileName = PATH.join(UTIL.HomeKitPath, "AccessoryInfo." + CONFIG.bridgeConfig.username.replace(/:/g, "") + ".json");
-    if (FS.existsSync(BridgeFileName)) {
-        const IsPaired = Object.keys(require(BridgeFileName).pairedClients)
-        UIServer.setBridgePaired(IsPaired.length > 0);
-    } else {
-        UIServer.setBridgePaired(false);
-    }
 
     // All done.
 
@@ -252,28 +243,30 @@ function UIServerDone() {
     console.log(" " + CHALK.black.bgWhite("└─────────────────────────────────────────────────────────────────────────────┘"))
 }
 
-// Called when bridge is listenting and online
-function getsetupURI(port) {
-    CONFIG.bridgeConfig.QRData = Bridge.getAccessory().setupURI();
-}
 
-// Bridge Pair Change
-function Paired(IsPaired) {
-    UIServer.setBridgePaired(IsPaired);
-}
 
 // Device Change
-function Change(PL, Object, Originator) {
-    if (Object.hasOwnProperty("route") && Object.route.length > 0) {
+function Change(ChangePayload, AccessoryCFG, Originator) {
+
+    if (AccessoryCFG.hasOwnProperty("route") && AccessoryCFG.route.length > 0) {
+
         const Payload = {
-            "accessory": Object,
+            "accessory": {
+                AccessoryID:AccessoryCFG.username.replace(/:/g,''),
+                AccessoryType:AccessoryCFG.type,
+                AccessoryName:AccessoryCFG.name,
+                AccessorySerialNumber:AccessoryCFG.serialNumber,
+                Manufacturer:AccessoryCFG.manufacturer,
+                Model:AccessoryCFG.model,
+                Bridged:AccessoryCFG.bridged,
+            },
             "type": "change",
-            "change": PL,
+            "change": ChangePayload,
             "source": Originator
         }
 
-        if (Routes.hasOwnProperty(Object.route)) {
-            const R = Routes[Object.route];
+        if (Routes.hasOwnProperty(AccessoryCFG.route)) {
+            const R = Routes[AccessoryCFG.route];
             R.process(Payload);
         }
 
@@ -281,32 +274,52 @@ function Change(PL, Object, Originator) {
 }
 
 // Device Pair
-function Pair(paired, Object) {
-    if (Object.hasOwnProperty("route") && Object.route.length > 0) {
+function Pair(paired, AccessoryCFG) {
+
+    if (AccessoryCFG.hasOwnProperty("route") && AccessoryCFG.route.length > 0) {
+
         const Payload = {
-            "accessory": Object,
+            "accessory": {
+                AccessoryID:AccessoryCFG.username.replace(/:/g,''),
+                AccessoryType:AccessoryCFG.type,
+                AccessoryName:AccessoryCFG.name,
+                AccessorySerialNumber:AccessoryCFG.serialNumber,
+                Manufacturer:AccessoryCFG.manufacturer,
+                Model:AccessoryCFG.model,
+                Bridged:AccessoryCFG.bridged,
+            },
             "type": "pair",
             "isPaired": paired,
         }
 
-        if (Routes.hasOwnProperty(Object.route)) {
-            const R = Routes[Object.route];
+        if (Routes.hasOwnProperty(AccessoryCFG.route)) {
+            const R = Routes[AccessoryCFG.route];
             R.process(Payload);
         }
     }
 }
 
 // Device Identify
-function Identify(paired, Object) {
-    if (Object.hasOwnProperty("route") && Object.route.length > 0) {
+function Identify(paired, AccessoryCFG) {
+
+    if (AccessoryCFG.hasOwnProperty("route") && AccessoryCFG.route.length > 0) {
+
         const Payload = {
-            "accessory": Object,
+             "accessory": {
+                AccessoryID:AccessoryCFG.username.replace(/:/g,''),
+                AccessoryType:AccessoryCFG.type,
+                AccessoryName:AccessoryCFG.name,
+                AccessorySerialNumber:AccessoryCFG.serialNumber,
+                Manufacturer:AccessoryCFG.manufacturer,
+                Model:AccessoryCFG.model,
+                Bridged:AccessoryCFG.bridged,
+            },
             "type": "identify",
             "isPaired": paired,
         }
 
-        if (Routes.hasOwnProperty(Object.route)) {
-            const R = Routes[Object.route];
+        if (Routes.hasOwnProperty(AccessoryCFG.route)) {
+            const R = Routes[AccessoryCFG.route];
             R.process(Payload);
         }
     }

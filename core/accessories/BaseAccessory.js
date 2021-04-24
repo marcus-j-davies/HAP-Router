@@ -84,7 +84,10 @@ BaseAccessory.prototype._wireUpEvents = function (targetService, EventStruct) {
 
 BaseAccessory.prototype._set = async function (property, value, callback, connection) {
 
-    this._Properties[property] = value;
+    if(this._Properties.hasOwnProperty(property)){
+        this._Properties[property] = value;
+    }
+    
     callback(undefined);
 
     const PL = {
@@ -190,37 +193,30 @@ BaseAccessory.prototype._createBatteryService = function () {
 
 const BasicSet = function(payload) {
 
-    const Props = Object.keys(payload);
-
-    for (let i = 0; i < Props.length; i++) {
-        this._Properties[Props[i]] = payload[Props[i]];
-        this._service.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
-
-    }
+    Object.keys(payload).forEach((K) =>{
+        this._Properties[K] = payload[K];
+        this._service.setCharacteristic(Characteristic[K], payload[K])
+    });
 }
 
 const SetWithBattery = function(payload) {
 
-    const Props = Object.keys(payload);
+    Object.keys(payload).forEach((K) =>{
 
-    for (let i = 0; i < Props.length; i++) {
-
-        this._Properties[Props[i]] = payload[Props[i]];
-
-        switch(Props[i])
+        this._Properties[K] = payload[K];
+        switch(K)
         {
             case "BatteryLevel":
             case "StatusLowBattery":
             case "ChargingState":
-                this._batteryService.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
+                this._batteryService.setCharacteristic(Characteristic[K], payload[K])
                 break;
             
             default:
-                this._service.setCharacteristic(Characteristic[Props[i]], payload[Props[i]])
+                this._service.setCharacteristic(Characteristic[K], payload[K])
                 break;
         }
-
-    }
+    });
 }
 
 module.exports = {
