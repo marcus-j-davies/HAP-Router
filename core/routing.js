@@ -4,7 +4,7 @@ const PATH = require('path');
 const FS = require('fs');
 const MATCHER = require("matcher")
 const { spawnSync } = require('child_process');
-const { dependencies } = require("../package-lock.json")
+const { dependencies } = require("../package.json")
 
 var RootPath;
 
