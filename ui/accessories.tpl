@@ -15,7 +15,7 @@
 
 <body>
    <blockquote class="ContentSection">
-         <div class="ContentTitle">Configured Accessories
+         <div class="ContentTitle"><img class="AccessoryIcon" style="margin-bottom: 5px;width: unset;" src="../../../ui/static/Images/Accessories-Big.png" invert> Configured Accessories
             <span style="float: right;">
             <input type="button" value="Add New Accessory" class="StyledButton" onclick="location.href='../../../ui/availableactypes'">
             </span>

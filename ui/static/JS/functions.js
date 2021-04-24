@@ -248,7 +248,7 @@ function ChangeBridgeStatus(){
 
 function ShowBridgePair(SetupURI,SN,Pincode,UN){
  
-    let Icon = '../../../ui/static/Images/baseline_dns_white_24dp.png'
+    let Icon = '../../../ui/static/Images/Bridge-Big.png'
     let Return = '../../../ui/bridge'
 
 

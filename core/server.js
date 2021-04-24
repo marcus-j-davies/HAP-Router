@@ -141,7 +141,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         let HTML = CompiledTemplates["EditRoute"]({
             Settings:Settings,
             name:ID,
-            type:RC.type
+            type:RC.type,
+            inUse:(CONFIG.accessories.filter((AC) => AC.route === ID).length >0)
         });
 
         res.contentType('text/html')

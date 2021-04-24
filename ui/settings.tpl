@@ -15,7 +15,7 @@
 
 <body>
       <blockquote class="ContentSection">
-         <div class="ContentTitle">HAP Router Settings</div>
+         <div class="ContentTitle"><img class="AccessoryIcon" style="margin-bottom: 5px;width: unset;" src="../../../ui/static/Images/Settings-Big.png" invert> HAP Router Settings</div>
 
          <!-- MQTT-->
          <fieldset>

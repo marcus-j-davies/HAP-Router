@@ -15,7 +15,7 @@
 
 <body>
    <blockquote class="ContentSection">
-         <div class="ContentTitle">Configured Routes
+         <div class="ContentTitle"><img class="AccessoryIcon" style="margin-bottom: 5px;width: unset;" src="../../../ui/static/Images/Routing-Big.png" invert> Configured Routes
             <span style="float: right;">
             <input type="button" value="Add New Route" class="StyledButton" onclick="location.href='../../../ui/routetypes'">
             </span>
