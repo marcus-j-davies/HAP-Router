@@ -121,6 +121,13 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         CB();
     }
 
+
+    // API - All Accessories
+    function _APIAccessories(req,res){
+
+
+
+    }
   
 
     // edit Route
