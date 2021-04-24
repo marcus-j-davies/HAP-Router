@@ -136,7 +136,6 @@ fieldset table{
 }
 
 .PincodeHint{
-    font-size: 12px;
     background-color: rgb(243,107,8);
     color: rgb(255,255,255);
     text-align: center;
@@ -149,12 +148,12 @@ fieldset table{
     padding: 5px;
     width: 80px;
     vertical-align: sub;
-    margin-right: 10px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
 }
 
-.PincodeHint[enrolled]{
-    opacity: 0.3;
-}
+
 
 .VersionDiv{
 

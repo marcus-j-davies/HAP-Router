@@ -117,6 +117,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         CB();
     }
 
+  
+
     // edit Route
     function _EditRoute(req,res){
 
@@ -554,10 +556,13 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         AccessoryIDs.forEach((AID) => {
 
-            let AccessoryCFG = _ConfiguredAccessories[AID].getConfig();
+            let AC = _ConfiguredAccessories[AID]
+            let AccessoryCFG = AC.getConfig();
+            
 
             AccessoryCFG.typeDisplay = ACCESSORY.Types[AccessoryCFG.type].Label
             AccessoryCFG.isPaired = checkPairStatus(AccessoryCFG.accessoryID)
+            AccessoryCFG.SetupURI = AC.getAccessory().setupURI();
 
             let ConfiguredRoute = CONFIG.routes[AccessoryCFG.route]
 
@@ -704,12 +709,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         DeleteAccessory(AID,false)
 
         let CurrentCFG = CONFIG.accessories.filter((A) => A.accessoryID === AID)[0];
-
-        delete CurrentCFG.accessoryID;
-        delete CurrentCFG.typeDisplay;
-        delete CurrentCFG.isPaired;
-        delete CurrentCFG.manufacturer
-        delete CurrentCFG.model
+        delete CurrentCFG.manufacturer;
+        delete CurrentCFG.model;
         delete CurrentCFG.serialNumber;
 
         let NewCFG = req.body;

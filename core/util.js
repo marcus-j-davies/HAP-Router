@@ -100,8 +100,20 @@ const updateOptions = function (Config) {
     saveConfig(ConfigOBJ);
 }
 
+  // removeExtraData
+  function RemoveExtraData(CFG){
+
+    delete CFG.accessoryID;
+    delete CFG.typeDisplay;
+    delete CFG.isPaired;
+    delete CFG.SetupURI;
+}
+
 // Add Accessory
 const appendAccessoryToConfig = function (Accessory) {
+
+    RemoveExtraData(Accessory);
+
     const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
     const ConfigOBJ = JSON.parse(CFF);
     ConfigOBJ.accessories.push(Accessory);

@@ -163,12 +163,17 @@ function AddAccessoryDone(data) {
             location.href = '../../../ui/accessories'
         }
         else{
-            let ICON = '../../../ui/resources/accessoryicon/?type='+data.type
-            let Return = '../../../ui/accessories'
-            ShowPairWindow(data.SetupURI,data.Name,data.AID,data.SN,ICON,data.Pincode,Return)
+            ShowAccessoryPair(data.SetupURI,data.Name,data.AID,data.SN,data.type,data.Pincode)
         }
     }
    
+}
+
+function ShowAccessoryPair(SetupURI,Name,AID,SN,Type,Pincode){
+
+    let ICON = '../../../ui/resources/accessoryicon/?type='+Type
+
+    ShowPairWindow(SetupURI,Name,AID,SN,ICON,Pincode,'../../../ui/accessories')
 }
 
 function ShowPairWindow(SetupURI, Name, AID, SN, IconURL, Pincode, returnURL){
