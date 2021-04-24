@@ -98,6 +98,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.get('/ui/createroute',_CreateRoute)
         app.post('/ui/createroute',_DoCreateRoute)
         app.get('/ui/editroute', _EditRoute)
+        app.post('/ui/editroute', _DoEditRoute)
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
 
@@ -145,6 +146,31 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         res.contentType('text/html')
         res.send(HTML)
+    }
+
+    // Do edit route
+    function _DoEditRoute(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let NRD = req.body;
+        let Name = NRD.name;
+        let ORD = CONFIG.routes[Name];
+
+        delete NRD.name;
+        NRD.type = ORD.type;
+
+        CONFIG.routes[Name] = NRD;
+        UTIL.updateRouteConfig(Name,NRD)
+
+        _RouteSetup();
+
+        res.contentType('application/json')
+        res.send({success:true})
+
+
     }
 
     // Create Route

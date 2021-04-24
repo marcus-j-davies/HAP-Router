@@ -315,6 +315,36 @@ function SaveNewRoute(Type){
     });
 }
 
+function SaveRouteChanges(ID){
+
+
+    let ParamElements = $(".RouteParam");
+    
+    let Data =  {
+        name:ID,
+    }
+    ParamElements.each((index,element) => {
+
+        let EL = $(element)
+        Data[EL.attr('data-param')] = EL.val();
+
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "../../../ui/editroute",
+        data: JSON.stringify(Data),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+
+            if(data.success){
+               location.href = '../../../ui/routing'
+            }
+        }
+    });
+}
+
 
 /******************************************* */
 
