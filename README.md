@@ -141,6 +141,10 @@ By default the subscribed topic is **HAPRouter/IN/+**
 | installmodule {{Name}}            | Installs the specified route module from NPM     |    
 | passwd {{Username}} {{Password}}  | Set the UI and API login information             |    
 
+## Intsalling and running
+Simply install via NPM ```npm install hap-router```  
+to run the server just call ```node HAPRouter.js``` 
+
 ## Credits
 HAP Router is based on the awesome [HAP-NodeJS](https://github.com/homebridge/HAP-NodeJS)
 library, without it, projects like this one are not possible.
