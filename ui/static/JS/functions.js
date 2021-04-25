@@ -120,6 +120,19 @@ function GetParams(Package){
 // Save Accessory
 function SaveNewAccessory(type) {
 
+
+    if($("#ACC_Route").val() === 'N'){
+        $("#ACC_Route").css('background-color','#F36B08')
+        $("#ACC_Route").css('color','rgb(255,255,255)')
+        return;
+    }
+
+    if($("#ACC_Name").val().length < 1){
+        $("#ACC_Name").css('background-color','#F36B08')
+        $("#ACC_Name").css('color','rgb(255,255,255)')
+        return;
+    }
+
     let Accessory = {
         name: $("#ACC_Name").val(),
         manufacturer: $("#ACC_MAN").val(),
@@ -195,6 +208,18 @@ function ShowPairWindow(SetupURI, Name, AID, SN, IconURL, Pincode, returnURL){
 }
 
 function SaveAccessoryChanges(ID){
+
+    if($("#ACC_Route").val() === 'N'){
+        $("#ACC_Route").css('background-color','#F36B08')
+        $("#ACC_Route").css('color','rgb(255,255,255)')
+        return;
+    }
+
+    if($("#ACC_Name").val().length < 1){
+        $("#ACC_Name").css('background-color','#F36B08')
+        $("#ACC_Name").css('color','rgb(255,255,255)')
+        return;
+    }
 
     let Accessory = {
         name: $("#ACC_Name").val(),
@@ -289,6 +314,12 @@ function StartPairCheck(Return, ID){
 }
 
 function SaveNewRoute(Type){
+
+    if($("#RT_Name").val().length < 1){
+        $("#RT_Name").css('background-color','#F36B08')
+        $("#RT_Name").css('color','rgb(255,255,255)')
+        return;
+    }
 
     let Data =  {
         name:$("#RT_Name").val(),
