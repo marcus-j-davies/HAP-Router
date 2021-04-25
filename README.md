@@ -130,7 +130,7 @@ And include the following POST body (with a type of **application/json**)
 ```
 
 If you have enabled the MQTT client in the UI, the same message will be sent.  
-Just ensure the the topic of the message ends with the Accessory ID.  
+Just ensure the topic of the message ends with the Accessory ID.  
 By default the subscribed topic is **HAPRouter/IN/+**
 
 
