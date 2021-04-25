@@ -122,6 +122,10 @@ And inlcude the following POST body
 }
 ```
 
+If you have enabled the MQTT client in the UI, the same message will be sent.  
+Just ensure the the topic of the message ends with the Accessory ID.  
+By default the subscribed topic is **HAPRouter/IN/+**
+
 
 
 ## Command line arguments
