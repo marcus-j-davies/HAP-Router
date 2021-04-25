@@ -10,6 +10,9 @@ This is achieved by creating simple, software based accessories, that can be enr
 The difference however, compared to most implementations of this kind, is that the events that occur on them are directed (or routed) to a transport of your choice.  
 These transports can be a UDP broadcast, a message sent to an MQTT broker, sent to Node Red or anything other automation platform.  
 
+The accessories have also been created for you, and you simply select the type of accessory you wish to create  
+and set their associated information. 
+
 Transports are the medium, in which the event is travelled. By default, the following transports (or routes) are available:
 
   - HTTP
@@ -87,7 +90,7 @@ There are 3 event types: **characteristicUpdate**, **pairStatusUpdate**, **ident
 
 If you're a Home Automation Enthusiast, or just a tinkerer, Hap Router allows you to explore Homekit, and build with it.
 
-## So! how do I get started
+## Nice! how do I get started
 The server is managed by a gorgeous looking Web User Interface (if the above images haven't already suggested so), It is a brease to use, and at the basic level you:
  - Create a Route
  - Create an Accessory (16 different accessory type thus far)
