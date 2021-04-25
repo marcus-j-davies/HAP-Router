@@ -103,7 +103,7 @@ Devices can be 'published' in 2 ways:
  - Attached to a bridge (HAP Router can also act as a Bridge)  
  - Exposed as a seperate device.
 
- If you have Enrolled HAP Router in your HomeKit environment as a bridge, then any devices attached to this Bridge, will be seen when published.
+ If you have Enrolled HAP Router in your HomeKit environment as a bridge, then any accessories attached to this Bridge, will be seen when published.
  else, you enroll the accessory as a separate entity.
 
 ## Manipulating accessories using non apple devices.  
