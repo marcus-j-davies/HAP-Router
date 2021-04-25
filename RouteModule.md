@@ -104,7 +104,7 @@ The class must expose 2 prototype  methods: **process** and **close**
 | Method                   | What it's for                                                                                  |
 |--------------------------|------------------------------------------------------------------------------------------------|
 | async process(payload)   | This is called when an accessory is sending an event, **payload** will contain the event data  |
-| close(reason)            | This is called when the route is being destroyed (iether **reconfgiure** or **appclose**)      |
+| close(reason)            | This is called when the route is being destroyed (iether **reconfigure** or **appclose**)      |
 
 The **Inputs** object must be an array of input objects, it allows settings to be passed to the route during its constructor.  
 
