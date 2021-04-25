@@ -1,25 +1,6 @@
 'use strict'
 const mqtt = require('mqtt')
 
-/* Clean Payload */
-const CleanPayload = function (Payload, Type) {
-
-    const Copy = JSON.parse(JSON.stringify(Payload));
-
-    Copy["route_type"] = Type;
-    Copy["route_name"] = Payload.accessory.route
-
-    delete Copy.accessory.pincode;
-    delete Copy.accessory.username;
-    delete Copy.accessory.setupID;
-    delete Copy.accessory.route;
-    delete Copy.accessory.description;
-    delete Copy.accessory.serialNumber;
-
-    return Copy;
-
-}
-
 /* UI Params */
 const Params = [
     {
@@ -64,11 +45,8 @@ class MQTTRoute {
 }
 
 MQTTRoute.prototype.process = async function (payload) {
-
-    payload = CleanPayload(payload, "MQTT")
     let JSONs = JSON.stringify(payload);
-
-    let T = this.Route.mqtttopic.replace("{{accessoryID}}", payload.accessory.accessoryID)
+    let T = this.Route.mqtttopic.replace("{{AccessoryID}}", payload.accessory.AccessoryID)
     this.MQTTBroker.publish(T, JSONs, null, () => { });
 }
 

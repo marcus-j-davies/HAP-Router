@@ -2,25 +2,6 @@
 const path = require("path");
 const fs = require("fs");
 
-/* Clean Payload */
-const CleanPayload = function (Payload, Type) {
-
-    const Copy = JSON.parse(JSON.stringify(Payload));
-
-    Copy["route_type"] = Type;
-    Copy["route_name"] = Payload.accessory.route
-
-    delete Copy.accessory.pincode;
-    delete Copy.accessory.username;
-    delete Copy.accessory.setupID;
-    delete Copy.accessory.route;
-    delete Copy.accessory.description;
-    delete Copy.accessory.serialNumber;
-
-    return Copy;
-
-}
-
 /* UI Params */
 const Params = [
     {
@@ -45,10 +26,9 @@ class File {
 
 File.prototype.process = async function (payload) {
 
-    payload = CleanPayload(payload, "FILE")
     let JSONs = JSON.stringify(payload);
 
-    let Directory = this.Route.directory.replace("{{accessoryID}}", payload.accessory.accessoryID)
+    let Directory = this.Route.directory.replace("{{AccessoryID}}", payload.accessory.AccessoryID)
 
     if (!fs.existsSync(Directory)) {
         try {
@@ -61,7 +41,7 @@ File.prototype.process = async function (payload) {
     }
 
     let DT = new Date().getTime();
-    let FileName = DT + '_' + payload.accessory.accessoryID + ".json"
+    let FileName = DT + '_' + payload.accessory.AccessoryID + ".json"
 
     let _Path = path.join(Directory, FileName);
 

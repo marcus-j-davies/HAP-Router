@@ -253,16 +253,21 @@ function Change(ChangePayload, AccessoryCFG, Originator) {
         const Payload = {
             "accessory": {
                 AccessoryID:AccessoryCFG.username.replace(/:/g,''),
-                AccessoryType:AccessoryCFG.type,
+                AccessoryType:ACCESSORY.Types[AccessoryCFG.type].Label,
                 AccessoryName:AccessoryCFG.name,
                 AccessorySerialNumber:AccessoryCFG.serialNumber,
                 Manufacturer:AccessoryCFG.manufacturer,
                 Model:AccessoryCFG.model,
                 Bridged:AccessoryCFG.bridged,
             },
-            "type": "change",
-            "change": ChangePayload,
-            "source": Originator
+            "route":{
+                Name:AccessoryCFG.route,
+                Type:ROUTING.Routes[CONFIG.routes[AccessoryCFG.route].type].Name
+            },
+            "eventType": "characteristicUpdate",
+            "eventSource": Originator,
+            "eventData": ChangePayload,
+            
         }
 
         if (Routes.hasOwnProperty(AccessoryCFG.route)) {
@@ -281,15 +286,19 @@ function Pair(paired, AccessoryCFG) {
         const Payload = {
             "accessory": {
                 AccessoryID:AccessoryCFG.username.replace(/:/g,''),
-                AccessoryType:AccessoryCFG.type,
+                AccessoryType:ACCESSORY.Types[AccessoryCFG.type].Label,
                 AccessoryName:AccessoryCFG.name,
                 AccessorySerialNumber:AccessoryCFG.serialNumber,
                 Manufacturer:AccessoryCFG.manufacturer,
                 Model:AccessoryCFG.model,
                 Bridged:AccessoryCFG.bridged,
             },
-            "type": "pair",
-            "isPaired": paired,
+            "route":{
+                Name:AccessoryCFG.route,
+                Type:ROUTING.Routes[CONFIG.routes[AccessoryCFG.route].type].Name
+            },
+            "eventType": "pairStatusUpdate",
+            "eventData": paired,
         }
 
         if (Routes.hasOwnProperty(AccessoryCFG.route)) {
@@ -307,15 +316,19 @@ function Identify(paired, AccessoryCFG) {
         const Payload = {
              "accessory": {
                 AccessoryID:AccessoryCFG.username.replace(/:/g,''),
-                AccessoryType:AccessoryCFG.type,
+                AccessoryType:ACCESSORY.Types[AccessoryCFG.type].Label,
                 AccessoryName:AccessoryCFG.name,
                 AccessorySerialNumber:AccessoryCFG.serialNumber,
                 Manufacturer:AccessoryCFG.manufacturer,
                 Model:AccessoryCFG.model,
                 Bridged:AccessoryCFG.bridged,
             },
-            "type": "identify",
-            "isPaired": paired,
+            "route":{
+                Name:AccessoryCFG.route,
+                Type:ROUTING.Routes[CONFIG.routes[AccessoryCFG.route].type].Name
+            },
+            "eventType": "identifyAccessory",
+            "eventData": paired,
         }
 
         if (Routes.hasOwnProperty(AccessoryCFG.route)) {
