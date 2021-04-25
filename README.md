@@ -7,10 +7,10 @@ A Middleware HAP Router for bringing HomeKit functionality to your Home Automati
 HAP Router is a middleware server that allows you to take advantage of Apples HomeKit technology, and bring it in to your automation ecosystem.  
 This is achieved by creating simple, software based accessories, that can be enrolled into HomeKit.  
 
-The difference however, with most implementations of this kind, is that the events that occur on them are directed (or routed) to a transport of your choice.  
+The difference however, compared to most implementations of this kind, is that the events that occur on them are directed (or routed) to a transport of your choice.  
 These transports can be a UDP broadcast, a message sent to an MQTT broker, sent to Node Red or anything other automation platform.  
 
-Transports are the medium, in which the event is travelled. By default the following transports (or routes) are available:  
+Transports are the medium, in which the event is travelled. By default, the following transports (or routes) are available:  
 When I say 'by default' - what I mean here, is that you can [develop your own](./RouteModule.md) route modules.
 
   - HTTP
