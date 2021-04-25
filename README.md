@@ -143,7 +143,7 @@ By default the subscribed topic is **HAPRouter/IN/+**
 | installmodule {{Name}}            | Installs the specified route module from NPM     |    
 | passwd {{Username}} {{Password}}  | Set the UI and API login information             |    
 
-## Intsalling and running
+## Installing and Running
 Simply install via NPM ```npm install hap-router```  
 to run the server just call ```node HAPRouter.js``` 
 
