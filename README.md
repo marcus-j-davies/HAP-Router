@@ -2,9 +2,9 @@
 # HAP Router  
 ![Image](./Logo.png)  
 
-A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.  
-
 ![Image](./Screenshot.png)  
+
+A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.  
 
 HAP Router is a middleware NodeJS server that allows you to take advantage of Apples HomeKit technology, and bring it in to your automation ecosystem.  
 This is achieved by creating simple, software based accessories, that can be enrolled into HomeKit.  
