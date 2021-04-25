@@ -98,7 +98,7 @@ The Icon file MUST meet the following spec.
 **Size:** 50x50  
 **Color:** White (Transparency is ok - in fact, encouraged, as to not look ugly)  
 
-Your class (Exported as **Route**) must have a constructor that accepts an object representing the route settings, as confgiured in the UI.
+Your class (Exported as **Route**) must have a constructor that accepts an object representing the route settings, as configured in the UI.
 The class must expose 2 prototype  methods: **process** and **close**
 
 | Method                   | What it's for                                                                                  |
