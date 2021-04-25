@@ -350,6 +350,42 @@ function SaveRouteChanges(ID){
     });
 }
 
+function DeleteRoute(Name){
+
+    if(confirm('Are you sure, you wish to delete this Route?')){
+        $.ajax({
+            type: "GET",
+            url: "../../../ui/delete/?what=route&id="+Name,
+            dataType: "json",
+            success: function(data){
+    
+                if(data.success){
+                   location.href = '../../../ui/routing'
+                }
+            }
+        });
+    }
+   
+}
+
+function DeleteAccessory(ID){
+    
+    if(confirm('Are you sure, you wish to delete this Accessory?')){
+        $.ajax({
+            type: "GET",
+            url: "../../../ui/delete/?what=accessory&id="+ID,
+            dataType: "json",
+            success: function(data){
+    
+                if(data.success){
+                   location.href = '../../../ui/accessories'
+                }
+            }
+        });
+    }
+   
+}
+
 
 /******************************************* */
 

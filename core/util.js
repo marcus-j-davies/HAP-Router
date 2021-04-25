@@ -70,12 +70,22 @@ const makeID = function (length) {
     return result;
 }
 
-// Flash Route COnfig
+//  Route COnfig
 const updateRouteConfig = function (Name,Route) {
 
     const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
     const ConfigOBJ = JSON.parse(CFF);
     ConfigOBJ.routes[Name] = Route
+    saveConfig(ConfigOBJ);
+}
+
+
+//  delete Route
+const deleteRoute = function (Name) {
+
+    const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
+    const ConfigOBJ = JSON.parse(CFF);
+    delete ConfigOBJ.routes[Name]
     saveConfig(ConfigOBJ);
 }
 
@@ -275,6 +285,7 @@ module.exports = {
     saveCharacteristicCache: saveCharacteristicCache,
     getCharacteristicCache: getCharacteristicCache,
     checkInstallRequest: checkInstallRequest,
-    updateAccessory:updateAccessory
+    updateAccessory:updateAccessory,
+    deleteRoute:deleteRoute
 
 }

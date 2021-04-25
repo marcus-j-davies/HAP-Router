@@ -100,6 +100,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.post('/ui/editroute', _DoEditRoute)
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
+        app.get('/ui/delete', _DoDeletion)
 
         // API
         app.get('/api/accessories', BASICAUTH({ authorizer: Authorizer,challenge: true,realm: 'HAP Router API',}), _APIAccessories)
@@ -125,6 +126,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         return CONFIG.loginUsername === username && CRYPTO.createHash('md5').update(password).digest("hex") === CONFIG.loginPassword;
     }
+
+
 
     // API - All Accessories
     function _APIAccessories(req, res) {
@@ -202,6 +205,34 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
     }
 
+    function _DoDeletion(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let Type = req.query.what
+        let ID = req.query.id
+
+
+        switch(Type){
+
+            case "accessory":
+                DeleteAccessory(ID,true);
+                res.contentType('application/json')
+                res.send({ success: true })
+                break;
+
+            case "route":
+                res.contentType('application/json')
+                delete CONFIG.routes[ID];
+                UTIL.deleteRoute(ID);
+                _RouteSetup();
+                res.send({ success: true })
+                break;
+
+        }
+    }
 
     // edit Route
     function _EditRoute(req, res) {
