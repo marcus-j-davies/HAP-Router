@@ -1,6 +1,9 @@
 # Developing a Route Module
 In its basic form, a route module is nothing more than a nodejs module, with an index.js and package.json file.  
-like any other module in nodejs - your route can require other modules, just add them as a dependency in your package file
+like any other module in nodejs - your route can require other modules, just add them as a dependency in your package file.
+
+There is one requirement that you MUST follow for the module to work:  
+the name must match **haprouter-route-\***. Its also fine to scope the package, so **@*/haprouter-route-\*** will work.
 
 ## Lets have a look at the HTTP Post Route
 The **package.json** file is needed by all nodejs modules.  
