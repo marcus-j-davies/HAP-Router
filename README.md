@@ -1,5 +1,7 @@
 
-# HAP Router
+# HAP Router  
+![Image](./Logo.png)  
+
 A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.  
 
 ![Image](./Screenshot.png)  
