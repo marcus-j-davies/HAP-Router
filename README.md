@@ -94,7 +94,7 @@ If you're a Home Automation Enthusiast, or just a tinkerer, Hap Router allows yo
 
 ## Nice! how do I get started
 The server is managed by a gorgeous looking Web User Interface (if the above images haven't already suggested so), It is a breeze to use, and at the basic level you:
- - Create a Route
+ - Create a Route (Routes can be used by more than 1 accessory)
  - Create an Accessory (16 different accessory type thus far)
  - Enroll the device in HomeKit.
  - Have Fun.
