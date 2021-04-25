@@ -20,7 +20,7 @@ When I say 'by default' - what I mean here, is that you can [develop your own](.
   - Websocket
   - Console (Mainly for testing)
 
-The transport/route will receieve the following JSON payload.
+The transport/route will receieve the following JSON payload.  
 There are 3 evenst: **characteristicUpdate**, **pairStatusUpdate**, **identifyAccessory**
 
 **pairStatusUpdate**
