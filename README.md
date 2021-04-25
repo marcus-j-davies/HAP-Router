@@ -153,7 +153,7 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
-  - **1.0.0**
+  - **1.1.0**
     - Initial Release
 
 ## To Do
