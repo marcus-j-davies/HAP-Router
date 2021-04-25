@@ -12,7 +12,7 @@ This is achieved by creating simple, software based accessories, that can be enr
 
 The difference however, compared to most implementations of this kind, is that the events that occur on them are directed (or routed) to a transport of your choice.  
 
-These transports can be a UDP broadcast, a message sent to an MQTT broker, sent to Node Red or anything other automation platform.  
+These transports can be a UDP broadcast, a message sent to an MQTT broker, sent to Node Red or any other automation platform.  
 
 The accessories have also been created for you, and you simply select the type of accessory you wish to create  
 and set their associated information. 
