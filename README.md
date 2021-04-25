@@ -22,7 +22,7 @@ When I say 'by default' - what I mean here, is that you can [develop your own](.
 
 If you're a Home Automation Enthusiast, or just a tinkerer, Hap Router allows you to explore Homekit, and build with it.
 
-## So! how do get started
+## So! how do I get started
 The server is managed by a gorgeous looking Web User Interface (if the above images haven't already suggested so), It is a brease to use, and at the basic level you:
  - Create a Route
  - Create an Accessory (16 different accessory type thus far)
