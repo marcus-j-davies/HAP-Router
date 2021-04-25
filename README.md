@@ -33,7 +33,9 @@ There are 3 evenst: **characteristicUpdate**, **pairStatusUpdate**, **identifyAc
     AccessorySerialNumber: '2ND2PB12EQO3',
     Bridged: false
   },
-  route: {Name: 'Output To Console', Type: 'Console Output'
+  route: {
+    Name: 'Output To Console',
+    Type: 'Console Output'
   },
   eventType: 'pairStatusUpdate',
   eventData: true
@@ -50,7 +52,10 @@ There are 3 evenst: **characteristicUpdate**, **pairStatusUpdate**, **identifyAc
     AccessorySerialNumber: '2ND2PB12EQO3',
     Bridged: false
   },
-  route: { Name: 'Output To Console', Type: 'Console Output' },
+  route: {
+    Name: 'Output To Console',
+    Type: 'Console Output'
+  },
   eventType: 'identifyAccessory',
   eventData: true
 }
@@ -66,10 +71,16 @@ There are 3 evenst: **characteristicUpdate**, **pairStatusUpdate**, **identifyAc
     AccessorySerialNumber: '2ND2PB12EQO3',
     Bridged: false
   },
-  route: { Name: 'Output To Console', Type: 'Console Output' },
+  route: {
+    Name: 'Output To Console',
+    Type: 'Console Output'
+  },
   eventType: 'characteristicUpdate',
   eventSource: 'iOS_DEVICE',
-  eventData: { characteristic: 'On', value: true }
+  eventData: {
+    characteristic: 'RotationSpeed',
+    value: 62
+  }
 }
 ```
 
