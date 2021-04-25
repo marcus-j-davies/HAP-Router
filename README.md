@@ -112,7 +112,7 @@ The web API uses BASIC HTTP Authentication, and the login details are the same a
 | POST   | /api/accessories/{{AccessoryID}}  | Sets characteristics for the identified accessory       |    
 
 To turn the fan accessory on at full speed, using the web API, you will:  
-Send a post request to (Using BASIC Authentication): **http://{{IP ADDRESS}}:7989/api/accessories/8D6497BC70A1**  
+Send a post request to: **http://{{IP ADDRESS}}:7989/api/accessories/8D6497BC70A1**  
 And inlcude the following POST body
 
 ```javascript
