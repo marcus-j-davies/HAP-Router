@@ -8,14 +8,11 @@ the name must match **haprouter-route-\***. Its also fine to scope the package, 
 ## Lets have a look at the HTTP Post Route
 The **package.json** file is needed by all nodejs modules.  
 
-**NOTE:**
-Your module name **MUST** begin with **hkds-route-**, if it is not, it will not get loaded. 
-
-```json
+```javascript
 {
-  "name": "hkds-route-http",
-  "description": "The stock Homekit Device Stack HTTP route",
-  "version": "1.0.0",
+  "name": "@marcus-j-davies/haprouter-route-http",
+  "description": "The stock HAP Router HTTP route",
+  "version": "1.2.0",
   "main": "index.js",
   "author": {
     "name": "Marcus Davies",
@@ -25,6 +22,7 @@ Your module name **MUST** begin with **hkds-route-**, if it is not, it will not 
     "axios": "0.21.1"
   }
 }
+
 ```
 
 And the all important **index.js** file  
@@ -41,8 +39,8 @@ const Params = [
     }
 ]
 
-/* Metadata */
-const Name = "HTTP Post Output";
+/*  Metadata */
+const Name = "HTTP POST Output";
 const Icon = "icon.png";
 
 /* Route Class */
@@ -59,19 +57,20 @@ HTTPRoute.prototype.process = async function (payload) {
     let CFG = {
         headers: {
             'Content-Type': 'application/json',
-            'User-Agent': 'Homekit Device Stack'
+            'User-Agent': 'HAP Router'
         },
         method: 'post',
-        url: this.Route.destinationURI.replace('{{accessoryID}}', payload.accessory.accessoryID),
+        url: this.Route.destinationURI.replace('{{AccessoryID}}', payload.accessory.AccessoryID),
         data: payload
     }
-
+    
     try{
-        let Res = await axios.request(CFG);
+        let Res = await axios.request(CFG)
     }
     catch(err){
-        console.log(" HTTP Route Error: "+err)
+        console.log(" HTTP Route error: "+err)
     }
+    
 }
 
 HTTPRoute.prototype.close = function (reason) {
@@ -87,20 +86,25 @@ module.exports = {
 
 Your module file (it doesn't have to be called **index.js**), must export 4 objects.
 
-| Property | What it's for                                                                 |
-|----------|-------------------------------------------------------------------------------|
-|Route     | A pointer to your modules main class.                                         |
-|Inputs    | An array of input objects                                                     |
-|Name      | The name as displayed in the UI                                               |
-|Icon      | An icon file, relative to the root of your module.                            |
+| Property  | What it's for                                                                 |
+|-----------|-------------------------------------------------------------------------------|
+| Route     | A pointer to your modules main class.                                         |
+| Inputs    | An array of input objects                                                     |
+| Name      | The name as displayed in the UI                                               |
+| Icon      | An icon file, relative to the root of your module.                            |
+
+The Icon file MUST meet the following spec.
+Type: PNG
+Size: 50x50
+Color: White (Transparency is ok - in fact encouraged, as to not look ugly)
 
 Your class (Exported as **Route**) must have a constructor that accepts an object representing the route settings, as confgiured in the UI.
 The class must expose 2 prototype  methods: **process** and **close**
 
-| Method                  | What it's for                                                                                  |
-|-------------------------|------------------------------------------------------------------------------------------------|
-|async process(payload)   | This is called when an accessory is sending an event, **payload** will contain the event data  |
-|close(reason)            | This is called when the route is being destroyed (iether **reconfgiure** or **appclose**)      |
+| Method                   | What it's for                                                                                  |
+|--------------------------|------------------------------------------------------------------------------------------------|
+| async process(payload)   | This is called when an accessory is sending an event, **payload** will contain the event data  |
+| close(reason)            | This is called when the route is being destroyed (iether **reconfgiure** or **appclose**)      |
 
 The **Inputs** object must be an array of input objects, it allows settings to be passed to the route during its constructor.  
 
@@ -115,21 +119,9 @@ The **Inputs** object must be an array of input objects, it allows settings to b
 
 ## Installing your route module.
 
-**Manual Install**
-  - Bundle everything up in a folder with a name that matches your module name, and copy this folder to **/%Home%/HKDS/node_modules**
-  - Go into your folder, now in **/%Home%/HKDS/node_modules**, and run ```npm install``` to install any dependencies your route module may need. 
-  - Restart HomeKit Device Stack.
+Publish your module to NPM
 
-**Using NPM**  
-If your route module has been published to NPM, you can install it with the ```installmodule``` command  
-this will also allow you to install 3rd party route modules. A Restart of HomeKit Device Stack will be required in any case.
+Then you can install it with the ```installmodule``` command  
+This will also allow you to install 3rd party route modules. A Restart of HAP Router will be required in any case.
 
-```node app.js installmodule {name_of_module}```
-
-Or use NPM directly (you will need to specify a --prefix that points to the root config directory of HKDS)
-
-```npm install {name_of_module} --prefix "/%Home%/HKDS"```
-
-
-
-
+```node HAPRouter.js installmodule {{Name}}```
