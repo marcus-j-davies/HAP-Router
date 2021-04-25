@@ -4,14 +4,13 @@ A Middleware HAP Router for bringing HomeKit functionality to your Home Automati
 
 ![Image](./Screenshot.png)  
 
-HAP Router is a middleware server that allows you to take advantage of Apples HomeKit technology, and bring it in to your automation ecosystem.  
+HAP Router is a middleware NodeJS server that allows you to take advantage of Apples HomeKit technology, and bring it in to your automation ecosystem.  
 This is achieved by creating simple, software based accessories, that can be enrolled into HomeKit.  
 
 The difference however, compared to most implementations of this kind, is that the events that occur on them are directed (or routed) to a transport of your choice.  
 These transports can be a UDP broadcast, a message sent to an MQTT broker, sent to Node Red or anything other automation platform.  
 
-Transports are the medium, in which the event is travelled. By default, the following transports (or routes) are available:  
-When I say 'by default' - what I mean here, is that you can [develop your own](./RouteModule.md) route modules.
+Transports are the medium, in which the event is travelled. By default, the following transports (or routes) are available:
 
   - HTTP
   - UDP Broadcast
@@ -20,8 +19,10 @@ When I say 'by default' - what I mean here, is that you can [develop your own](.
   - Websocket
   - Console (Mainly for testing)
 
-The transport/route will receieve the following JSON payload.  
-There are 3 evenst: **characteristicUpdate**, **pairStatusUpdate**, **identifyAccessory**
+When I say 'by default' - what I mean here, is that you can [develop your own](./RouteModule.md) route modules.  
+
+The transport/route will receive the following JSON payload.  
+There are 3 event types: **characteristicUpdate**, **pairStatusUpdate**, **identifyAccessory**
 
 **pairStatusUpdate**
 ```javascript
@@ -100,7 +101,9 @@ Devices can be 'published' in 2 ways:
  If you have Enrolled HAP Router in your HomeKit environment as a bridge, then any devices attached to this Bridge, will be seen when published.
  else, you enroll the accessory as a separate entity.
 
-
+## Manipulating accessories using non apple devices.  
+HAP Router has a web based API, as well as an MQTT client built in.  
+The web API uses BASIC HTTP Authentication, and the login details are the same for the managemnt UI
 
 
 
