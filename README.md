@@ -20,6 +20,59 @@ When I say 'by default' - what I mean here, is that you can [develop your own](.
   - Websocket
   - Console (Mainly for testing)
 
+The transport/route will receieve the following JSON payload.
+There are 3 evenst: **characteristicUpdate**, **pairStatusUpdate**, **identifyAccessory**
+
+**pairStatusUpdate**
+```javascript
+{
+  accessory: {
+    AccessoryID: '8D6497BC70A1',
+    AccessoryType: 'Fan',
+    AccessoryName: 'My Fan',
+    AccessorySerialNumber: '2ND2PB12EQO3',
+    Bridged: false
+  },
+  route: {Name: 'Output To Console', Type: 'Console Output'
+  },
+  eventType: 'pairStatusUpdate',
+  eventData: true
+}
+```
+
+**identifyAccessory**
+```javascript
+{
+  accessory: {
+    AccessoryID: '8D6497BC70A1',
+    AccessoryType: 'Fan',
+    AccessoryName: 'My Fan',
+    AccessorySerialNumber: '2ND2PB12EQO3',
+    Bridged: false
+  },
+  route: { Name: 'Output To Console', Type: 'Console Output' },
+  eventType: 'identifyAccessory',
+  eventData: true
+}
+```
+
+**characteristicUpdate**
+```javascript
+{
+  accessory: {
+    AccessoryID: '8D6497BC70A1',
+    AccessoryType: 'Fan',
+    AccessoryName: 'My Fan',
+    AccessorySerialNumber: '2ND2PB12EQO3',
+    Bridged: false
+  },
+  route: { Name: 'Output To Console', Type: 'Console Output' },
+  eventType: 'characteristicUpdate',
+  eventSource: 'iOS_DEVICE',
+  eventData: { characteristic: 'On', value: true }
+}
+```
+
 If you're a Home Automation Enthusiast, or just a tinkerer, Hap Router allows you to explore Homekit, and build with it.
 
 ## So! how do I get started
@@ -30,7 +83,7 @@ The server is managed by a gorgeous looking Web User Interface (if the above ima
  - Have Fun.
 
 Devices can be 'published' in 2 ways:  
- - Attached to a bridge (HAP Router also acts as a Bridge)  
+ - Attached to a bridge (HAP Router can also act as a Bridge)  
  - Exposed as a seperate device.
 
  If you have Enrolled HAP Router in your HomeKit environment as a bridge, then any devices attached to this Bridge, will be seen when published.
