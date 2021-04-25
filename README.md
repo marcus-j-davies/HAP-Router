@@ -93,7 +93,7 @@ There are 3 event types: **characteristicUpdate**, **pairStatusUpdate**, **ident
 If you're a Home Automation Enthusiast, or just a tinkerer, Hap Router allows you to explore Homekit, and build with it.
 
 ## Nice! how do I get started
-The server is managed by a gorgeous looking Web User Interface (if the above images haven't already suggested so), It is a brease to use, and at the basic level you:
+The server is managed by a gorgeous looking Web User Interface (if the above images haven't already suggested so), It is a breeze to use, and at the basic level you:
  - Create a Route
  - Create an Accessory (16 different accessory type thus far)
  - Enroll the device in HomeKit.
