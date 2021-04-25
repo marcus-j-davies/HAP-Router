@@ -45,7 +45,7 @@ const MQTTMessageReceved = function (topic, message) {
             Ac.setCharacteristics(PL)
         }
     } catch (e) {
-        console.log(" MQTT input could not be actioned -> MSG: " + sPL + ", Accessory ID: " + TargetAccessory + "");
+        console.log(" MQTT input could not be actioned -> MSG: " + message.toString() + ", Topic: " + topic + "");
     }
 
 }
