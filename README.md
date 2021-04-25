@@ -118,7 +118,7 @@ The web API uses BASIC HTTP Authentication, and the login details are the same a
 
 To turn the fan accessory on at full speed, using the web API, you will:  
 Send a post request to: **http://{{IP ADDRESS}}:7989/api/accessories/8D6497BC70A1**  
-And inlcude the following POST body
+And inlcude the following POST body (with a type of **application/json**)
 
 ```javascript
 {
@@ -135,11 +135,11 @@ By default the subscribed topic is **HAPRouter/IN/+**
 
 ## Command line arguments
 
-| Argument                          | Description                                     |
-| --------------------------------- | ----------------------------------------------- | 
-| reset                             | Complete resets HAP ROuter to a default state   |      
-| installmodule {{Name}}            | Installs the specified route module from NPM    |    
-| passwd {{Username}} {{Password}}  | Set the UI and API login information            |    
+| Argument                          | Description                                      |
+| --------------------------------- | ------------------------------------------------ | 
+| reset                             | Completely resets HAP Router to a default state  |      
+| installmodule {{Name}}            | Installs the specified route module from NPM     |    
+| passwd {{Username}} {{Password}}  | Set the UI and API login information             |    
 
 ## Credits
 HAP Router is based on the awesome [HAP-NodeJS](https://github.com/homebridge/HAP-NodeJS)
