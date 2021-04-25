@@ -1,6 +1,6 @@
 {
   "name": "hap-router",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.",
   "main": "HAPRouter.js",
   "keywords": [
@@ -45,10 +45,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marcus-j-davies/Homekit-Device-Stack.git"
+    "url": "git+https://github.com/marcus-j-davies/hap-router.git"
   },
   "bugs": {
-    "url": "https://github.com/marcus-j-davies/Homekit-Device-Stack/issues"
+    "url": "https://github.com/marcus-j-davies/hap-router/issues"
   },
-  "homepage": "https://github.com/marcus-j-davies/Homekit-Device-Stack#readme"
+  "homepage": "https://github.com/marcus-j-davies/hap-router#readme"
 }
