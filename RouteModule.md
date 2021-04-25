@@ -93,10 +93,10 @@ Your module file (it doesn't have to be called **index.js**), must export 4 obje
 | Name      | The name as displayed in the UI                                               |
 | Icon      | An icon file, relative to the root of your module.                            |
 
-The Icon file MUST meet the following spec.
-Type: PNG
-Size: 50x50
-Color: White (Transparency is ok - in fact encouraged, as to not look ugly)
+The Icon file MUST meet the following spec.  
+**Type:** PNG  
+**Size:** 50x50  
+**Color:** White (Transparency is ok - in fact, encouraged, as to not look ugly)  
 
 Your class (Exported as **Route**) must have a constructor that accepts an object representing the route settings, as confgiured in the UI.
 The class must expose 2 prototype  methods: **process** and **close**
