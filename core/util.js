@@ -10,9 +10,9 @@ const ROOTPATH = PATH.join(OS.homedir(), "HAPRouter");
 const ROOTAPPPATH = PATH.join(__dirname, "../")
 const CONFIGPATH = PATH.join(ROOTPATH, "haprouter_config.json");
 const HOMEKITPATH = PATH.join(ROOTPATH, "HomeKitPersist");
-const PKG = require('../package.json');
 const CACHEPATH = PATH.join(ROOTPATH, "characteristic_cache.json");
 const ROUTING = require("./routing");
+const DEL = require("del")
 
 const saveCharacteristicCache = function (Cache) {
 
@@ -254,7 +254,7 @@ const checkReset = function () {
 // The acrtual reset script
 const reset = function () {
 
-    FS.rmdirSync(ROOTPATH, { recursive: true })
+    DEL.sync(ROOTPATH,{force:true})
     FS.mkdirSync(ROOTPATH, { recursive: true })
 
     let DefaultFile = PATH.join(ROOTAPPPATH, "haprouter_config.json.default")

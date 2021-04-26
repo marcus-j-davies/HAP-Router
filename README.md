@@ -143,7 +143,9 @@ By default the subscribed topic is **HAPRouter/IN/+**
 | installmodule {{Name}}            | Installs the specified route module from NPM     |    
 | passwd {{Username}} {{Password}}  | Set the UI and API login information             |    
 
-## Installing and Running
+## Installing and Running  
+Make sure you have Node >= 10.12.0 installed  
+
 Simply install via NPM ```npm install hap-router```  
 to run the server just call ```node HAPRouter.js``` 
 
@@ -152,6 +154,12 @@ HAP Router is based on the awesome [HAP-NodeJS](https://github.com/homebridge/HA
 library, without it, projects like this one are not possible.
 
 ## Version History  
+
+  - **1.2.1**
+    - Moved purging/clearing configuration to the **del** package  
+      for better cross platform support.  
+    - Fixed potential exception when creating **node_modules** directory on start up  
+    - Bump Chalk package
 
   - **1.2.0**
     - Initial Release

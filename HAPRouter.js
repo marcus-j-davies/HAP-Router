@@ -3,14 +3,12 @@
 const UTIL = require('./core/util');
 UTIL.checkNewEV();
 
-const FS = require('fs');
 const CHALK = require('chalk');
 const { Server } = require('./core/server');
 const ACCESSORY = require('./core/accessories/Types');
 const CONFIG = require(UTIL.ConfigPath);
 const IP = require("ip");
 const MQTT = require('./core/mqtt');
-const PATH = require('path');
 const NODECLEANUP = require('node-cleanup');
 const ROUTING = require('./core/routing');
 const { HAPStorage } = require("hap-nodejs");

@@ -1,6 +1,6 @@
 {
   "name": "hap-router",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.",
   "main": "HAPRouter.js",
   "keywords": [
@@ -22,7 +22,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalk": "4.1.0",
+    "chalk": "4.1.1",
     "child_process": "1.0.2",
     "cookie-parser": "1.4.5",
     "events": "3.3.0",
@@ -36,6 +36,7 @@
     "node-cleanup": "2.1.2",
     "matcher":"4.0.0",
     "qrcode":"1.4.4",
+    "del":"6.0.0",
     "@marcus-j-davies/haprouter-route-http": "^1.0.0",
     "@marcus-j-davies/haprouter-route-udp": "^1.0.0",
     "@marcus-j-davies/haprouter-route-websocket": "^1.0.0",

@@ -14,7 +14,10 @@ const Routes = {
 const setPath = function (Path) {
 
     RootPath = Path;
-    FS.mkdirSync(PATH.join(RootPath, "node_modules"), { recursive: true })
+
+    if(!FS.existsSync(PATH.join(RootPath, "node_modules"))){
+        FS.mkdirSync(PATH.join(RootPath, "node_modules"), { recursive: true })
+    }
     module.paths.push(PATH.join(RootPath, "node_modules"))
 }
 
