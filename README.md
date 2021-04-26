@@ -155,6 +155,9 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
+  - **1.2.2**
+    - Added **.github** and **.gitattributes** to package exclusion  
+
   - **1.2.1**
     - Moved purging/clearing configuration to the **del** package  
       for better cross platform support.  
