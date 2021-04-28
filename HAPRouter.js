@@ -41,7 +41,6 @@ function cleanEV() {
             }
         }
 
-        console.info(' Saving current Characteristics...');
         const CharacteristicCache = {};
 
         for (let i = 0; i < AccessoryIDs.length; i++) {

@@ -21,6 +21,18 @@ const CameraSource = function (Config) {
 
 }
 
+CameraSource.prototype.KillStreams = function(){
+
+    Object.keys(this.ongoingSessions).forEach((SI) =>{
+
+        let OS = this.ongoingSessions[SI];
+        this.controller.forceStopStreamingSession(OS.SessionID);
+        OS.FFMPEG.kill('SIGKILL');
+        delete this.ongoingSessions[SI]
+        
+    })
+}
+
 CameraSource.prototype.attachController = function (Controller) {
     this.controller = Controller;
 }
@@ -31,7 +43,7 @@ CameraSource.prototype.handleSnapshotRequest = async function (request, callback
         const Now = new Date().getTime();
         const Diff = (Now - this.lastSnapshotTime) / 1000;
 
-        // 1 Minute snapshot cache
+        //  snapshot cache life
         if (parseInt(Diff) < this.config.snapshotCacheTime) {
             callback(undefined, this.imageCache)
             return;
@@ -40,6 +52,7 @@ CameraSource.prototype.handleSnapshotRequest = async function (request, callback
     }
 
     let imageBuffer = Buffer.alloc(0);
+    var CB = callback;
 
     const CMD = [];
     CMD.push('-analyzeduration 1')
@@ -49,23 +62,39 @@ CameraSource.prototype.handleSnapshotRequest = async function (request, callback
     CMD.push('-f image2')
     CMD.push('-')
 
-    const ffmpeg = spawn(this.config.processor, CMD.join(' ').split(' '), {
-        env: process.env
-    })
+    const ffmpeg = spawn(this.config.processor, CMD.join(' ').split(' '), {env: process.env, stderr:'ignore' })
 
     ffmpeg.stdout.on('data', function (data) {
         imageBuffer = Buffer.concat([imageBuffer, data])
     })
 
-    ffmpeg.on('close', (c) => {
-
-        this.lastSnapshotTime = new Date().getTime();
-        this.imageCache = undefined;
-        this.imageCache = imageBuffer
-        callback(undefined, this.imageCache)
-
+    ffmpeg.on('error', (error) => {
+        if(CB){
+            CB(new Error('Snapshot failed'));
+            CB = undefined
+        }
     })
 
+    ffmpeg.on('exit',(Code, Signal) =>{
+        
+        let _Error = ExitDueToError(Code, Signal);
+
+        if(!_Error){
+
+            this.lastSnapshotTime = new Date().getTime();
+            this.imageCache = undefined;
+            this.imageCache = imageBuffer
+            if(CB){
+                CB(undefined, this.imageCache)
+                CB = undefined
+            }
+        }else{
+            if(CB){
+                CB(new Error("Return Code: " + Code + ", SIGNAL:" + Signal));
+                CB = undefined
+            }
+        }
+    })
 }
 
 CameraSource.prototype.prepareStream = async function (request, callback) {
@@ -115,7 +144,6 @@ CameraSource.prototype.prepareStream = async function (request, callback) {
     const currentAddress = IP.address()
 
     const addressResp = {
-
         address: currentAddress,
     }
 
@@ -131,6 +159,14 @@ CameraSource.prototype.prepareStream = async function (request, callback) {
     callback(null, response);
 }
 
+function ExitDueToError(Code, Signal){
+
+    if(Code == null && Signal === 'SIGKILL') {return false}
+    if(Code === 255 && Signal == null) {return false}
+    if(Code > 0 && Code < 255 && Signal == null) {return true}
+
+}
+
 CameraSource.prototype.handleStreamRequest = async function (request, callback) {
 
     const sessionID = request['sessionID']
@@ -141,20 +177,22 @@ CameraSource.prototype.handleStreamRequest = async function (request, callback) 
         switch (requestType) {
 
             case "reconfigure":
-                // to do
+                console.info(' CameraSource: HomeKit requested Stream to reconfigure');
                 callback(undefined);
                 break;
 
             case "stop":
-                const ffmpegProcess = this.ongoingSessions[sessionIdentifier]
-                if (ffmpegProcess) {
-                    ffmpegProcess.kill('SIGKILL')
+                console.info(' CameraSource: HomeKit requested Stream to stop');
+                const OS = this.ongoingSessions[sessionIdentifier]
+                if (OS) {
+                    OS.FFMPEG.kill('SIGKILL')
                 }
                 delete this.ongoingSessions[sessionIdentifier]
                 callback(undefined);
                 break;
 
             case "start":
+                console.info(' CameraSource: HomeKit requested Stream to start');
                 const sessionInfo = this.pendingSessions[sessionIdentifier]
 
                 if (sessionInfo) {
@@ -265,69 +303,66 @@ CameraSource.prototype.handleStreamRequest = async function (request, callback) 
                         CMD.push('srtp://' + targetAddress + ':' + targetAudioPort + '?rtcpport=' + targetAudioPort + '&pkt_size=' + MaxPaketSize)
                     }
 
-                    const ffmpeg = spawn(this.config.processor, CMD.join(' ').split(' '), {
-                        env: process.env,
-                        stdout: 'ignore'
+                    var CB = callback;
+
+                    const ffmpeg = spawn(this.config.processor, CMD.join(' ').split(' '), { env: process.env, stdout:'ignore' })
+
+                    // up and running
+                    ffmpeg.stderr.on('data', (data) => {
+                        if(data.toString().includes('frame=')){
+
+                            if(CB){
+                                console.info(' CameraSource: Stream is now running');
+                                CB(undefined)
+                                CB = undefined;
+                                this.ongoingSessions[sessionIdentifier] = {FFMPEG:ffmpeg,SessionID:sessionID}
+                                delete this.pendingSessions[sessionIdentifier]
+                            }
+                            
+                        }
                     })
 
-                    let live = false;
-                    let CBCalled = false;
+                    // error before start
+                    ffmpeg.on('error',(error)=>{
 
-                    ffmpeg.stderr.on('data', data => {
-                        if (!live) {
-
-                            if (data.toString().includes('frame=')) {
-
-                                live = true;
-                                CBCalled = true;
-                                callback(undefined);
-
-                                this.ongoingSessions[sessionIdentifier] = ffmpeg
-                                delete this.pendingSessions[sessionIdentifier]
-                            }
-                        }
-                    });
-
-                    ffmpeg.on('error', error => {
-
-                        if (!live) {
-
-                            if (!CBCalled) {
-
-                                callback(error);
-                                CBCalled = true;
-                            }
-
+                        console.info(' CameraSource: Stream failed to start');
+                        if (CB) {
+                            CB(new Error('Streaming failed'));
+                            CB = undefined
                             delete this.pendingSessions[sessionIdentifier]
-                        } else {
-                            this.controller.forceStopStreamingSession(sessionID);
-                            if (this.ongoingSessions.hasOwnProperty(sessionIdentifier)) {
+                        }
+                       
+                    })
+
+                    // process exit (error or expected)
+                    ffmpeg.on('exit', (Code, Signal) =>{
+
+                        let _Error = ExitDueToError(Code, Signal);
+
+                        if(_Error){
+
+                            console.info(' CameraSource: Stream process terminated due to error');
+                            if(CB){
+                                CB(new Error("Return Code: " + Code + ", SIGNAL:" + Signal));
+                                CB = undefined
+                                delete this.pendingSessions[sessionIdentifier]
+                            }else{
+                                this.controller.forceStopStreamingSession(sessionID);
                                 delete this.ongoingSessions[sessionIdentifier]
                             }
-                        }
 
-                    });
+                        }else{
 
-                    ffmpeg.on('exit', (c, s) => {
-                        if (c !== undefined && c !== 255) {
-
-                            if (!live) {
-
-                                if (!CBCalled) {
-                                    callback(new Error("Return Code: " + c + ", SIGNAL:" + s));
-                                    CBCalled = true;
-                                }
-
-                                delete this.pendingSessions[sessionIdentifier]
-                            } else {
+                            if(!ffmpeg.killed){
+                                console.info(' CameraSource: Stream process terminated unexpectedly');
                                 this.controller.forceStopStreamingSession(sessionID);
-                                if (this.ongoingSessions.hasOwnProperty(sessionIdentifier)) {
-                                    delete this.ongoingSessions[sessionIdentifier]
-                                }
+                                delete this.ongoingSessions[sessionIdentifier]
+                            }
+                            else{
+                                console.info(' CameraSource: Stream process terminated as per request');
                             }
                         }
-                    });
-
+                    })
                 }
                 break;
         }

@@ -155,6 +155,12 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
+  - **1.3.0**
+    - AccessoryType in the API response now matches the AccessoryType in events.  
+    - Exposed accessory specific actions in the accessory info UI  
+    - Improvements to Camera code.  
+    - Added Backup/Restore features
+
   - **1.2.2**
     - Added **.github** and **.gitattributes** to package exclusion  
 

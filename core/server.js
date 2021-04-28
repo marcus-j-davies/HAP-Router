@@ -14,6 +14,7 @@ const ROUTING = require('./routing');
 const QRCODE = require('qrcode');
 const HAPPackage = require('hap-nodejs/package.json');
 const RouterPackage = require("../package.json");
+const util = require('./util')
 
 const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
@@ -101,6 +102,10 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         app.get('/ui/bridge', _BridgeWEB)
         app.post('/ui/bridge', _DoBridgeConfig)
         app.get('/ui/delete', _DoDeletion)
+        app.get('/ui/accessoryaction',_DoAccessoryAction)
+
+        app.get('/ui/backup', _DoBackup)
+        app.post('/ui/restore', _DoRestore)
 
         // API
         app.get('/api/accessories', BASICAUTH({ authorizer: Authorizer,challenge: true,realm: 'HAP Router API',}), _APIAccessories)
@@ -127,6 +132,53 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
         return CONFIG.loginUsername === username && CRYPTO.createHash('md5').update(password).digest("hex") === CONFIG.loginPassword;
     }
 
+    function _DoBackup(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let DATA = util.performBackup();
+
+        res.contentType('application/json')
+        res.setHeader('Content-Disposition','attachment; filename=HAPRouter.backup.json');
+        res.send(DATA)
+    }
+
+    function _DoRestore(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        if(util.restoreBackup(req.body)){
+
+            res.contentType('application/json')
+            res.send({success:true});
+            process.exit(0);
+        }
+        else{
+            res.contentType('application/json')
+            res.send({success:false});
+        }
+
+       
+    }
+
+    function _DoAccessoryAction(req,res){
+
+        if (!_CheckAuth(req, res)) {
+            return;
+        }
+
+        let ID = req.query.aid;
+        let Method = req.query.method;
+
+        _ConfiguredAccessories[ID][Method]();
+
+        res.contentType('application/json')
+        res.send({success:true})
+    }
 
 
     // API - All Accessories
@@ -138,7 +190,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
             let Accessory = {
                 AccessoryID:AC.username.replace(/:/g,''),
-                AccessoryType:AC.type,
+                AccessoryType:ACCESSORY.Types[AC.type].Label,
                 AccessoryName:AC.name,
                 AccessorySerialNumber:AC.serialNumber,
                 Manufacturer:AC.manufacturer,
@@ -163,7 +215,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
             let Accessory = {
                 AccessoryID:AC.username.replace(/:/g,''),
-                AccessoryType:AC.type,
+                AccessoryType:ACCESSORY.Types[AC.type].Label,
                 AccessoryName:AC.name,
                 AccessorySerialNumber:AC.serialNumber,
                 Manufacturer:AC.manufacturer,

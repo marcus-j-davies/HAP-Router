@@ -417,6 +417,56 @@ function DeleteAccessory(ID){
    
 }
 
+function AccessoryAction(ID, Method){
+
+    $.ajax({
+        type: "GET",
+        url: "../../../ui/accessoryaction/?aid="+ID+"&method="+Method,
+        dataType: "json",
+        success: function(data){
+
+            if(data.success){
+               $("#ActionMessage").text("Action performed successfully!")
+            }
+        }
+    });
+}
+
+function RestoreConfig()
+{
+
+    let Input = $('#RestoreFile');
+    Input.on("change",()=>{
+
+        let FILE = Input[0].files[0];
+        let FR = new FileReader();
+        FR.onload = function(){
+
+            Input.off("change")
+            Input.val('')
+            let FileData = FR.result
+            $.ajax({
+                type: "POST",
+                url: "../../../ui/restore",
+                dataType: "json",
+                contentType:"application/json",
+                data:JSON.stringify(JSON.parse(FileData)),
+                success: function(data){
+                    if(data.success){
+                       alert('HAP Router has been restored. It has now been shutdown. Please start it, in order to apply the restored configuration');
+                    }
+                    else{
+                        alert('HAP Router could not be restored. Ensure the backup file is correct.');
+                    }
+                }
+            });
+           
+        }
+        FR.readAsText(FILE)
+    })
+    Input.click();
+}
+
 
 /******************************************* */
 

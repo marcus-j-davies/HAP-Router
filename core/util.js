@@ -12,17 +12,74 @@ const CONFIGPATH = PATH.join(ROOTPATH, "haprouter_config.json");
 const HOMEKITPATH = PATH.join(ROOTPATH, "HomeKitPersist");
 const CACHEPATH = PATH.join(ROOTPATH, "characteristic_cache.json");
 const ROUTING = require("./routing");
-const DEL = require("del")
+const DEL = require("del");
 
+
+
+const restoreBackup = function(Package){
+
+    try{
+
+        allowSaveCharacteristicCache = false;
+
+        reset();
+        
+        FS.writeFileSync(CONFIGPATH,JSON.stringify(Package.Config))
+    
+        if(Package.hasOwnProperty('CharacteristicCache')){
+            FS.writeFileSync(CACHEPATH,JSON.stringify(Package.CharacteristicCache))
+        }
+    
+        FS.mkdirSync(HOMEKITPATH);
+    
+        Object.keys(Package.HKData).forEach((K) =>{
+            FS.writeFileSync(PATH.join(HOMEKITPATH,K),JSON.stringify(Package.HKData[K]));
+        })
+        return true;
+    }
+    catch(err){
+        return false
+    }
+}
+
+const performBackup = function(){
+
+    let BUPackage = {
+    }
+
+    var S = FS.readFileSync(CONFIGPATH,'utf8');
+    BUPackage.Config = JSON.parse(S);
+
+    if(FS.existsSync(CACHEPATH)){
+        S = FS.readFileSync(CACHEPATH,'utf8');
+        BUPackage.CharacteristicCache = JSON.parse(S);
+    }
+    
+
+    BUPackage.HKData = {};
+    FS.readdirSync(HOMEKITPATH).forEach((F) =>{
+
+        S = FS.readFileSync(PATH.join(HOMEKITPATH,F),'utf8');
+        BUPackage.HKData[F] = JSON.parse(S);
+    })
+
+    return BUPackage;
+}
+
+let allowSaveCharacteristicCache = true;
 const saveCharacteristicCache = function (Cache) {
 
-    try {
-        FS.writeFileSync(CACHEPATH, JSON.stringify(Cache), 'utf8')
-    }
-    catch (err) {
-        console.log(" Could not right to the config file.");
-    }
+    if(allowSaveCharacteristicCache){
+        
+        console.info(' Saving current Characteristics...');
 
+        try {
+            FS.writeFileSync(CACHEPATH, JSON.stringify(Cache), 'utf8')
+        }
+        catch (err) {
+            console.log(" Could not right to the config file.");
+        }
+    }
 }
 
 const getCharacteristicCache = function () {
@@ -286,6 +343,8 @@ module.exports = {
     getCharacteristicCache: getCharacteristicCache,
     checkInstallRequest: checkInstallRequest,
     updateAccessory:updateAccessory,
-    deleteRoute:deleteRoute
+    deleteRoute:deleteRoute,
+    performBackup:performBackup,
+    restoreBackup:restoreBackup
 
 }

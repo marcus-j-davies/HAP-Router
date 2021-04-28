@@ -26,6 +26,7 @@ let Types = {
         Icon: "CONTACT_SENSOR.png",
         SupportsRouting: true,
         Class: ContactSensor,
+        Actions: [],
         ConfigProperties: []
     },
     "INTRUDER_ALARM": {
@@ -33,6 +34,7 @@ let Types = {
         Icon: "INTRUDER_ALARM.png",
         SupportsRouting: true,
         Class: Alarm,
+        Actions: [],
         ConfigProperties: []
     },
     "OUTLET": {
@@ -40,6 +42,7 @@ let Types = {
         Icon: "OUTLET.png",
         SupportsRouting: true,
         Class: Outlet,
+        Actions: [],
         ConfigProperties: []
     },
     "SWITCH": {
@@ -47,6 +50,7 @@ let Types = {
         Icon: "SWITCH.png",
         SupportsRouting: true,
         Class: Switch,
+        Actions: [],
         ConfigProperties: []
     },
     "FAN": {
@@ -54,6 +58,7 @@ let Types = {
         Icon: "FAN.png",
         SupportsRouting: true,
         Class: Fan,
+        Actions: [],
         ConfigProperties: []
     },
     "MOTION_SENSOR": {
@@ -61,6 +66,7 @@ let Types = {
         Icon: "MOTION_SENSOR.png",
         SupportsRouting: true,
         Class: MotionSensor,
+        Actions: [],
         ConfigProperties: []
     },
     "LOCK": {
@@ -68,6 +74,7 @@ let Types = {
         Icon: "LOCK.png",
         SupportsRouting: true,
         Class: Lock,
+        Actions: [],
         ConfigProperties: []
     },
     "LIGHT_BULB": {
@@ -75,6 +82,7 @@ let Types = {
         Icon: "LIGHT.png",
         SupportsRouting: true,
         Class: LightBulb,
+        Actions: [],
         ConfigProperties: [
             {id:"colorMode", label:"Color Mode", type:"select", options:["hue","temperature","none"], default:"hue"},
             {id:"supportsBrightness", label:"Supports Brightness", type:"checkbox", default:true}
@@ -85,6 +93,7 @@ let Types = {
         Icon: "TV.png",
         SupportsRouting: true,
         Class: TV,
+        Actions: [],
         ConfigProperties: [
             {id:"inputs", label:"Source Inputs", type:"array", default:["HDMI 1","HDMI 2","HDMI 3"]}
         ]
@@ -94,6 +103,7 @@ let Types = {
         Icon: "GARAGE.png",
         SupportsRouting: true,
         Class: GarageDoor,
+        Actions: [],
         ConfigProperties: []
     },
     "THERMOSTAT": {
@@ -101,6 +111,7 @@ let Types = {
         Icon: "THERMOSTAT.png",
         SupportsRouting: true,
         Class: Thermostat,
+        Actions: [],
         ConfigProperties: []
     },
     "TEMPERATURE_SENSOR": {
@@ -108,6 +119,7 @@ let Types = {
         Icon: "TEMPERATURE_SENSOR.png",
         SupportsRouting: true,
         Class: Temperature,
+        Actions: [],
         ConfigProperties: []
     },
     "SMOKE_SENSOR": {
@@ -122,6 +134,7 @@ let Types = {
         Icon: "LEAK_SENSOR.png",
         SupportsRouting: true,
         Class: Leak,
+        Actions: [],
         ConfigProperties: []
     },
     "LIGHT_SENSOR": {
@@ -129,6 +142,7 @@ let Types = {
         Icon: "LIGHT_SENSOR.png",
         SupportsRouting: true,
         Class: LightSensor,
+        Actions: [],
         ConfigProperties: []
     },
     "CAMERA": {
@@ -136,6 +150,7 @@ let Types = {
         Icon: "CAMERA.png",
         SupportsRouting: true,
         Class: Camera,
+        Actions:[{label:"Kill Streams", method:"KillStreams"}],
         ConfigProperties: [
             {id:"processor", label:"Stream Processor", type:"text", default:"ffmpeg"},
             {id:"liveStreamSource", label:"Live Stream Source", type:"text", default:"-rtsp_transport tcp -i rtsp://username:password@ip:port/StreamURI"},

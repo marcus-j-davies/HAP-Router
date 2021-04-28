@@ -161,6 +161,10 @@ class Camera extends BaseAccessory {
 }
 Camera.prototype.setCharacteristics = Set;
 
+Camera.prototype.KillStreams = function(){
+    this.CameraDelegate.KillStreams();
+}
+
 module.exports  = {
     Camera:Camera
 }
