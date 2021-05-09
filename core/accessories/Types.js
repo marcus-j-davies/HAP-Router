@@ -17,6 +17,7 @@ const { Smoke } = require("./SmokeSensor")
 const { Leak } = require("./LeakSensor")
 const { LightSensor } = require("./LightSensor")
 const { Camera } = require("./Camera/Camera")
+const { MultiSensor } = require("./MultiSensor")
 
 
 let Types = {
@@ -34,6 +35,14 @@ let Types = {
         Icon: "INTRUDER_ALARM.png",
         SupportsRouting: true,
         Class: Alarm,
+        Actions: [],
+        ConfigProperties: []
+    },
+    "MULTI_SENSOR": {
+        Label: "Multisensor",
+        Icon: "MULTI_SENSOR.png",
+        SupportsRouting: true,
+        Class: MultiSensor,
         Actions: [],
         ConfigProperties: []
     },

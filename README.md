@@ -155,6 +155,9 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
+  - **1.4.0**
+    - Added a new combined/Multsensor accessory (Motion, Light, Temp)
+
   - **1.3.0**
     - AccessoryType in the API response now matches the AccessoryType in events.  
     - Exposed accessory specific actions in the accessory info UI  
