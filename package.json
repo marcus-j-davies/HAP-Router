@@ -42,7 +42,8 @@
     "@marcus-j-davies/haprouter-route-websocket": "^1.0.0",
     "@marcus-j-davies/haprouter-route-mqtt":"^1.0.0",
     "@marcus-j-davies/haprouter-route-console":"^1.0.0",
-    "@marcus-j-davies/haprouter-route-file":"^1.0.0"
+    "@marcus-j-davies/haprouter-route-file":"^1.0.0",
+    "@marcus-j-davies/haprouter-route-null":"^1.0.0"
   },
   "repository": {
     "type": "git",

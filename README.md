@@ -157,6 +157,7 @@ library, without it, projects like this one are not possible.
 
   - **1.4.0**
     - Added a new combined/Multsensor accessory (Motion, Light, Temp)
+    - Added a new NULL output, Which can be used for switchs that are used as a state, in homekit automations.
 
   - **1.3.0**
     - AccessoryType in the API response now matches the AccessoryType in events.  
