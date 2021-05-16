@@ -152,8 +152,12 @@ function setupRoutes() {
     }
 }
 
-// This is also called externally (i.e when updating routes via the UI)
-setupRoutes();
+if(process.env.DELAY_ROUTE_SETUP !== undefined && !isNaN(process.env.DELAY_ROUTE_SETUP)){
+    setTimeout(setupRoutes,process.env.DELAY_ROUTE_SETUP)
+}
+else{
+    setupRoutes();
+}
 
 // Load up cache (if available)
 var Cache = UTIL.getCharacteristicCache();

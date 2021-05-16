@@ -155,6 +155,9 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
+  - **1.4.1**
+    - Adding an environment variable of **DELAY_ROUTE_SETUP** delays the setup of routes, for the specified milliseconds.
+
   - **1.4.0**
     - Added a new combined/Multsensor accessory (Motion, Light, Temp)
     - Added a new NULL output, Which can be used for switchs that are used as a state, in homekit automations.
