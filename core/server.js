@@ -311,7 +311,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
             Settings: Settings,
             name: ID,
             type: RC.type,
-            inUse: (CONFIG.accessories.filter((AC) => AC.route === ID).length > 0)
+            inUse: (CONFIG.accessories.filter((AC) => AC.route === ID).length > 0),
+            description: Type.Description
         });
 
         res.contentType('text/html')
@@ -362,7 +363,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
         let HTML = CompiledTemplates["CreateRoute"]({
             type: req.query.type,
-            Settings: Settings
+            Settings: Settings,
+            description: RP.Description
         });
 
         res.contentType('text/html')

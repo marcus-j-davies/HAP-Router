@@ -41,6 +41,7 @@ const loadModules = function () {
     Match1.forEach((RP) => {
 
         let Mod = require(RP);
+        let PKG = require(RP+"/package.json");
         let RouteOBJ = {}
 
         let DIR = PATH.dirname(require.resolve(RP))
@@ -50,6 +51,7 @@ const loadModules = function () {
         RouteOBJ.Name = Mod.Name;
         RouteOBJ.Class = Mod.Route;
         RouteOBJ.Inputs = Mod.Inputs;
+        RouteOBJ.Description = PKG.description;
 
         Routes[RP] = RouteOBJ;
 
@@ -64,6 +66,7 @@ const loadStockModules = function () {
     RPKGS.forEach((RP) => {
 
         let Mod = require(RP);
+        let PKG = require(RP+"/package.json");
         let RouteOBJ = {}
 
         let DIR = PATH.dirname(require.resolve(RP))
@@ -73,6 +76,7 @@ const loadStockModules = function () {
         RouteOBJ.Name = Mod.Name;
         RouteOBJ.Class = Mod.Route;
         RouteOBJ.Inputs = Mod.Inputs;
+        RouteOBJ.Description = PKG.description;
 
         Routes[RP] = RouteOBJ;
 
