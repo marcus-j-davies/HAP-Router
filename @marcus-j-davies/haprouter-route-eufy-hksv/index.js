@@ -33,32 +33,32 @@ class EUFYHK {
 EUFYHK.prototype.process = async function (payload) {
 
     // this route only works with a Basic Switch Accessory
-    if (payload.accessory.AccessoryType !== 'Basic Switch' && payload.eventType !== 'characteristicUpdate' && payload.eventData.characteristic !== 'On') {
-        return;
-    }
+    if (payload.accessory.AccessoryType === 'Basic Switch' && payload.eventType === 'characteristicUpdate' && payload.eventData.characteristic === 'On') {
 
-    let Client = new HTTPApi(this.Route.UserID, this.Route.Password);
 
-    await Client.updateDeviceInfo()
-    let Devices = Client.getDevices();
-    let Hubs = Client.getHubs();
+        let Client = new HTTPApi(this.Route.UserID, this.Route.Password);
 
-    let Targets = this.Route.SNs.trim().split(",");
+        await Client.updateDeviceInfo()
+        let Devices = Client.getDevices();
+        let Hubs = Client.getHubs();
 
-    Targets.forEach(async (TDS) => {
+        let Targets = this.Route.SNs.trim().split(",");
 
-        let _DeviceInfo = Devices[TDS]
-        let _Camera = new Camera(Client, _DeviceInfo);
-        let _Station = new Station(Client, Hubs[_Camera.getStationSerial()]);
+        Targets.forEach(async (TDS) => {
 
-        _Station.on("connect", async () => {
-            await _Station.setMotionDetection(_Camera, payload.eventData.value)
-            _Station.close();
+            let _DeviceInfo = Devices[TDS]
+            let _Camera = new Camera(Client, _DeviceInfo);
+            let _Station = new Station(Client, Hubs[_Camera.getStationSerial()]);
+
+            _Station.on("connect", async () => {
+                await _Station.setMotionDetection(_Camera, payload.eventData.value)
+                _Station.close();
+            })
+
+            await _Station.connect(P2PConnectionType.ONLY_LOCAL, false);
+
         })
-
-        await _Station.connect(P2PConnectionType.ONLY_LOCAL, false);
-
-    })
+    }
 }
 
 EUFYHK.prototype.close = function (reason) {
