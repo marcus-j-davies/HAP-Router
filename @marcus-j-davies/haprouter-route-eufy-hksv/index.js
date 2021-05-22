@@ -13,7 +13,7 @@ const Params = [
     },
     {
         id: "SNs",
-        label: "Camera Serial Numbers (xxxx,xxxx)"
+        label: "Camera Serial Numbers (xxxx, xxxx)"
     }
 ]
 
@@ -35,14 +35,13 @@ EUFYHK.prototype.process = async function (payload) {
     // this route only works with a Basic Switch Accessory
     if (payload.accessory.AccessoryType === 'Basic Switch' && payload.eventType === 'characteristicUpdate' && payload.eventData.characteristic === 'On') {
 
-
         let Client = new HTTPApi(this.Route.UserID, this.Route.Password);
 
         await Client.updateDeviceInfo()
         let Devices = Client.getDevices();
         let Hubs = Client.getHubs();
 
-        let Targets = this.Route.SNs.trim().split(",");
+        let Targets = this.Route.SNs.trim().replace(/ /g,"").split(",");
 
         Targets.forEach(async (TDS) => {
 
