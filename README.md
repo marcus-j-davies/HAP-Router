@@ -156,10 +156,10 @@ library, without it, projects like this one are not possible.
 ## Version History  
 
   - **1.5.0**
-    - Route Module status is now displayed in the Routing UI.
+    - Route Module status is now displayed in the UI.
     - Route Module description added to UI (taken from **package.json**).
-    - Custom Route Modules now contain a callback in the constructor (driving the status in the UI)  
-      Which can be used to update the the user with the status of the Module.
+    - Custom Route Modules now contain a callback in the constructor, which can be used to  
+      update the user with the status of the Module.
 
   - **1.4.1**
     - Adding an environment variable of **DELAY_ROUTE_SETUP** delays the setup of routes, for the specified milliseconds.

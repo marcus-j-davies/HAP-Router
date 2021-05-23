@@ -100,15 +100,15 @@ The Icon file MUST meet the following spec.
 **Color:** White (Transparency is ok - in fact, encouraged, as to not look ugly)  
 
 Your class (Exported as **Route**) must have a constructor that accepts an object representing the route settings, as configured in the UI,  
-and also to store a callback used to update the UI, with the current status of the module.  
+and also to store a callback used to update the user, with the current status of the module.  
 
 The callback method signature(s) are as follows:
 
 | Signature          | Meaning                                                                 |
 |--------------------|-------------------------------------------------------------------------|
 | (undefined)        | Default - Module is initialising                                        |
-| (true)             | The module (and all of its initialised internals) is ready              |
-| (false, "Message") | The module is in a faulted state, pass a breif message to explain       |
+| (true)             | The module (and all of its internals) is ready for use                  |
+| (false, "Message") | The module is in a faulted state, pass a brief message to explain       |
 
 
 The class must expose 2 prototype  methods: **process** and **close**

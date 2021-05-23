@@ -147,7 +147,6 @@ function setupRoutes() {
         console.log(" Configuring Route : " + RouteNames[i] + " (" + RouteCFG.type + ")")
 
         let RouteClass = new ROUTING.Routes[RouteCFG.type].Class(RouteCFG,(success,message) =>{
-
             if (success === undefined) {
                 RouteCFG.readyStatus = "<span style=\"color:orange\">Module is initializing...</span>"
             } else if (success) {
@@ -157,9 +156,7 @@ function setupRoutes() {
                 RouteCFG.readyStatus = "<span style=\"color:tomato\">Module Error: "+message+"</span>"
             }
         });
-
         Routes[RouteNames[i]] = RouteClass;
-
     }
 }
 
