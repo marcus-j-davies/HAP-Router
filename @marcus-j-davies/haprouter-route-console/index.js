@@ -12,7 +12,8 @@ const Icon = "icon.png";
 class ConsoleClass {
 
     /* Constructor */
-    constructor(route) {
+    constructor(route, statusnotify) {
+        statusnotify(true)
     }
 }
 

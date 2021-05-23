@@ -1,7 +1,7 @@
 {
   "name": "@marcus-j-davies/haprouter-route-websocket",
   "description": "The stock HAP Router WEB SOCKET route",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "main": "index.js",
   "author": {
     "name": "Marcus Davies",
@@ -9,6 +9,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ws":"7.4.3"
+    "ws":"7.4.5"
   }
 }

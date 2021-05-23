@@ -569,6 +569,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
                 name: RN,
                 type: RS.Type,
                 typeName: RS.Name,
+                readyStatus: R.readyStatus,
                 useCount: (UseCount === 1 ? UseCount + " Accessory" : UseCount + " Accessories")
             }
             RouteList.push(CR);

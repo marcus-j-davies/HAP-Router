@@ -17,8 +17,9 @@ const Icon = "icon.png";
 class WebsocketClass {
 
     /* Constructor */
-    constructor(route) {
+    constructor(route, statusnotify) {
 
+        this.StatusNotify = statusnotify
         this.Websocket = new WS(route.uri);
         this.Websocket.on('open', () => this.HandleWSOpen());
         this.Websocket.on('error', (e) => this.WSError(e))
@@ -37,11 +38,11 @@ WebsocketClass.prototype.close = function () {
 
 
 WebsocketClass.prototype.HandleWSOpen = function () {
-    console.log(" WEBSOCKET Route ready.");
+    this.StatusNotify(true);
 }
 
 WebsocketClass.prototype.WSError = function (err) {
-    console.log(" WEBSOCKET Route error: " + err);
+    this.StatusNotify(false, "Error: "+err.message)
 }
 
 module.exports = {

@@ -18,8 +18,9 @@ const Icon = "icon.png";
 class File {
 
     /* Constructor */
-    constructor(route) {
+    constructor(route, statusnotify) {
         this.Route = route;
+        statusnotify(true)
     }
 
 }

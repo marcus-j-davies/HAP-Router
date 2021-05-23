@@ -21,9 +21,10 @@ const Icon = "icon.png";
 class UDP {
 
     /* Constructor */
-    constructor(route) {
+    constructor(route,statusnotify) {
 
         this.Route = route;
+        this.StatusNotify = statusnotify
         this.UDPServer = dgram.createSocket("udp4");
         this.UDPServer.bind(() => this.UDPConnected())
     }
@@ -40,13 +41,10 @@ UDP.prototype.close = function (reason) {
 
 UDP.prototype.UDPConnected = function () {
     this.UDPServer.setBroadcast(true);
-    console.log(" UDP Route ready.");
+    this.StatusNotify(true);
 }
 
 UDP.prototype.UDPDone = function (e, n) {
-    if (e) {
-        console.log(" UDP Route error: " + e);
-    }
 }
 
 module.exports = {

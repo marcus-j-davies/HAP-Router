@@ -17,8 +17,9 @@ const Icon = "icon.png";
 class HTTPRoute {
 
     /* Constructor */
-    constructor(route) {
+    constructor(route, statusnotify) {
         this.Route = route
+        statusnotify(true)
     }
 }
 

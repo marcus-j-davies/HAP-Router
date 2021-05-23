@@ -12,7 +12,8 @@ const Icon = "icon.png";
 class Null {
 
     /* Constructor */
-    constructor(route) {
+    constructor(route, statusnotify) {
+        statusnotify(true)
     }
 }
 

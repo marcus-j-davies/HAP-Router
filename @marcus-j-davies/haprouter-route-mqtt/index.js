@@ -29,9 +29,10 @@ const Icon = "icon.png";
 class MQTTRoute {
 
     /* Constructor */
-    constructor(route) {
+    constructor(route, statusnotify) {
 
         this.Route = route;
+        this.StatusNotify = statusnotify
 
         let Options = {
             username: route.mqttusername,
@@ -55,11 +56,11 @@ MQTTRoute.prototype.close = function (reason) {
 }
 
 MQTTRoute.prototype.mqttConnected = function () {
-    console.log(" MQTT Route ready.");
+    this.StatusNotify(true);
 }
 
 MQTTRoute.prototype.mqttError = function (err) {
-    console.log(" MQTT Route error: " + err);
+    this.StatusNotify(false,"Error: "+err.message);
 }
 
 module.exports = {
