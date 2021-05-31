@@ -155,6 +155,12 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
+  - **1.6.1**
+    - Bump WS dependancy for **haprouter-route-websocket**
+
+  - **1.6.0**
+    - Added a Humidity Sensor Accessory.
+
   - **1.5.0**
     - Route Module status is now displayed in the UI.
     - Route Module description added to UI (taken from **package.json**).
