@@ -18,10 +18,19 @@ const { Leak } = require("./LeakSensor")
 const { LightSensor } = require("./LightSensor")
 const { Camera } = require("./Camera/Camera")
 const { MultiSensor } = require("./MultiSensor")
+const { HumiditySensor } = require("./HumiditySensor")
 
 
 let Types = {
 
+    "HUMIDITY_SENSOR": {
+        Label: "Humidity Sensor",
+        Icon: "HUMIDITY_SENSOR.png",
+        SupportsRouting: true,
+        Class: HumiditySensor,
+        Actions: [],
+        ConfigProperties: []
+    },
     "CONTACT_SENSOR": {
         Label: "Contact Sensor",
         Icon: "CONTACT_SENSOR.png",
