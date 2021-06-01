@@ -97,7 +97,7 @@ If you're a Home Automation Enthusiast, or just a tinkerer, Hap Router allows yo
 ## Nice! how do I get started
 The server is managed by a gorgeous looking Web User Interface (if the above images haven't already suggested so), It is a breeze to use, and at the basic level you:
  - Create a Route (Routes can be used by more than 1 accessory)
- - Create an Accessory (16 different accessory type thus far)
+ - Create an Accessory (20 different accessory type thus far)
  - Enroll the device in HomeKit.
  - Have Fun.
 
@@ -155,8 +155,9 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
-  - **1.6.1**
+  - **1.7.0**
     - Bump WS dependancy for **haprouter-route-websocket**
+    - Added a combined Temp and Humidty Sensor
 
   - **1.6.0**
     - Added a Humidity Sensor Accessory.

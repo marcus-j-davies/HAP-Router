@@ -19,10 +19,19 @@ const { LightSensor } = require("./LightSensor")
 const { Camera } = require("./Camera/Camera")
 const { MultiSensor } = require("./MultiSensor")
 const { HumiditySensor } = require("./HumiditySensor")
+const { TempHumidity } = require("./TempHumidity")
 
 
 let Types = {
 
+    "TEMP_HUMIDITY_SENSOR": {
+        Label: "Temp & Humidity Sensor",
+        Icon: "TEMP_HUMIDITY_SENSOR.png",
+        SupportsRouting: true,
+        Class: TempHumidity,
+        Actions: [],
+        ConfigProperties: []
+    },
     "HUMIDITY_SENSOR": {
         Label: "Humidity Sensor",
         Icon: "HUMIDITY_SENSOR.png",
