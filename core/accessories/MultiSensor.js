@@ -1,36 +1,54 @@
 'use strict'
 
-const { Service, Characteristic, Categories} = require("hap-nodejs");
-const {BaseAccessory} = require("./BaseAccessory")
+const { Service, Characteristic, Categories } = require("hap-nodejs");
+const { BaseAccessory } = require("./BaseAccessory")
+
+const ServicesEnabled = { Motion: false, Light: false, Temp: false, Humidity: false }
 
 const Set = function (payload) {
 
-    Object.keys(payload).forEach((K) =>{
+    Object.keys(payload).forEach((K) => {
 
-        switch(K){
+        switch (K) {
 
             case "MotionDetected":
-                this._Properties[K] = payload[K];
-                this._MotionService.setCharacteristic(Characteristic[K], payload[K])
-                break;
+                if (ServicesEnabled.Motion) {
+                    this._Properties[K] = payload[K];
+                    this._MotionService.setCharacteristic(Characteristic[K], payload[K])
+                    break;
+                }
 
             case "CurrentAmbientLightLevel":
-                this._Properties[K] = payload[K];
-                this._LighService.setCharacteristic(Characteristic[K], payload[K])
-                break;
+                if (ServicesEnabled.Light) {
+                    this._Properties[K] = payload[K];
+                    this._LighService.setCharacteristic(Characteristic[K], payload[K])
+                    break;
+                }
 
             case "CurrentTemperature":
-                this._Properties[K] = payload[K];
-                this._TempService.setCharacteristic(Characteristic[K], payload[K])
-                break;
+                if (ServicesEnabled.Temp) {
+                    this._Properties[K] = payload[K];
+                    this._TempService.setCharacteristic(Characteristic[K], payload[K])
+                    break;
+                }
+
+
+            case "CurrentRelativeHumidity":
+                if (ServicesEnabled.Humidity) {
+                    this._Properties[K] = payload[K];
+                    this._HumidityService.setCharacteristic(Characteristic[K], payload[K])
+                    break;
+                }
+
 
             case "StatusActive":
             case "StatusFault":
             case "StatusTampered":
                 this._Properties[K] = payload[K];
-                this._TempService.setCharacteristic(Characteristic[K], payload[K])
-                this._LighService.setCharacteristic(Characteristic[K], payload[K])
-                this._MotionService.setCharacteristic(Characteristic[K], payload[K])
+                if (ServicesEnabled.Temp) this._TempService.setCharacteristic(Characteristic[K], payload[K])
+                if (ServicesEnabled.Light) this._LighService.setCharacteristic(Characteristic[K], payload[K])
+                if (ServicesEnabled.Motion) this._MotionService.setCharacteristic(Characteristic[K], payload[K])
+                if (ServicesEnabled.Humidity) this._HumidityService.setCharacteristic(Characteristic[K], payload[K])
                 break;
 
             case "BatteryLevel":
@@ -53,68 +71,110 @@ class MultiSensor extends BaseAccessory {
         super(Config, Categories.SENSOR);
 
         // Motion
-        this._MotionService = new Service.MotionSensor("Motion Sensor", "Motion Sensor");
-        this._MotionService.setCharacteristic(Characteristic.MotionDetected, false);
-        this._MotionService.setCharacteristic(Characteristic.StatusActive, 1);
-        this._MotionService.setCharacteristic(Characteristic.StatusFault, 0);
-        this._MotionService.setCharacteristic(Characteristic.StatusTampered, 0);
-        this._Properties["MotionDetected"] = false;
-        this._Properties["StatusActive"] = 1;
-        this._Properties["StatusFault"] = 0;
-        this._Properties["StatusTampered"] = 0;
+        if (Config.enableMotionSensor) {
 
-        var EventStruct = {
-            "Get": ["MotionDetected", "StatusActive", "StatusTampered", "StatusFault"],
-            "Set": []
+            ServicesEnabled.Motion = true;
+
+            this._MotionService = new Service.MotionSensor("Motion Sensor", "Motion Sensor");
+            this._MotionService.setCharacteristic(Characteristic.MotionDetected, false);
+            this._MotionService.setCharacteristic(Characteristic.StatusActive, 1);
+            this._MotionService.setCharacteristic(Characteristic.StatusFault, 0);
+            this._MotionService.setCharacteristic(Characteristic.StatusTampered, 0);
+            this._Properties["MotionDetected"] = false;
+            this._Properties["StatusActive"] = 1;
+            this._Properties["StatusFault"] = 0;
+            this._Properties["StatusTampered"] = 0;
+
+            var EventStruct = {
+                "Get": ["MotionDetected", "StatusActive", "StatusTampered", "StatusFault"],
+                "Set": []
+            }
+
+            this._wireUpEvents(this._MotionService, EventStruct);
+            this._accessory.addService(this._MotionService);
+
         }
-
-        this._wireUpEvents(this._MotionService, EventStruct);
-        this._accessory.addService(this._MotionService);
-
-        // Light
-        this._LighService = new Service.LightSensor("Light Sensor", "Light Sensor");
-
-        this._LighService.setCharacteristic(Characteristic.CurrentAmbientLightLevel, 25);
-        this._LighService.setCharacteristic(Characteristic.StatusActive, 1);
-        this._LighService.setCharacteristic(Characteristic.StatusFault, 0);
-        this._LighService.setCharacteristic(Characteristic.StatusTampered, 0);
-        this._Properties["CurrentAmbientLightLevel"] = 25;
-        this._Properties["StatusActive"] = 1;
-        this._Properties["StatusFault"] = 0;
-        this._Properties["StatusTampered"] = 0;
-
-        EventStruct = {
-            "Get": ["CurrentAmbientLightLevel", "StatusActive", "StatusTampered", "StatusFault"],
-            "Set": []
-        }
-
-        this._wireUpEvents(this._LighService, EventStruct);
-        this._accessory.addService(this._LighService);
 
         // Temp
-        this._TempService = new Service.TemperatureSensor("Temperature Sensor", "Temperature Sensor");
-        this._TempService.setCharacteristic(Characteristic.CurrentTemperature, 21);
-        this._TempService.setCharacteristic(Characteristic.StatusActive, 1);
-        this._TempService.setCharacteristic(Characteristic.StatusFault, 0);
-        this._TempService.setCharacteristic(Characteristic.StatusTampered, 0);
-        this._Properties["CurrentTemperature"] = 21;
-        this._Properties["StatusActive"] = 1;
-        this._Properties["StatusFault"] = 0;
-        this._Properties["StatusTampered"] = 0;
+        if (Config.enableTempSensor) {
 
-        EventStruct = {
-            "Get": ["CurrentTemperature", "StatusActive", "StatusTampered", "StatusFault"],
-            "Set": []
+            ServicesEnabled.Temp = true;
+
+            this._TempService = new Service.TemperatureSensor("Temperature Sensor", "Temperature Sensor");
+            this._TempService.setCharacteristic(Characteristic.CurrentTemperature, 21);
+            this._TempService.setCharacteristic(Characteristic.StatusActive, 1);
+            this._TempService.setCharacteristic(Characteristic.StatusFault, 0);
+            this._TempService.setCharacteristic(Characteristic.StatusTampered, 0);
+            this._Properties["CurrentTemperature"] = 21;
+            this._Properties["StatusActive"] = 1;
+            this._Properties["StatusFault"] = 0;
+            this._Properties["StatusTampered"] = 0;
+
+            EventStruct = {
+                "Get": ["CurrentTemperature", "StatusActive", "StatusTampered", "StatusFault"],
+                "Set": []
+            }
+
+            this._wireUpEvents(this._TempService, EventStruct);
+            this._accessory.addService(this._TempService);
+
         }
 
-        this._wireUpEvents(this._TempService, EventStruct);
-        this._accessory.addService(this._TempService);
+        // Lux Sensor
+        if (Config.enableLuxSensor) {
+
+            ServicesEnabled.Light = true;
+
+            this._LighService = new Service.LightSensor("Light Sensor", "Light Sensor");
+            this._LighService.setCharacteristic(Characteristic.CurrentAmbientLightLevel, 25);
+            this._LighService.setCharacteristic(Characteristic.StatusActive, 1);
+            this._LighService.setCharacteristic(Characteristic.StatusFault, 0);
+            this._LighService.setCharacteristic(Characteristic.StatusTampered, 0);
+            this._Properties["CurrentAmbientLightLevel"] = 25;
+            this._Properties["StatusActive"] = 1;
+            this._Properties["StatusFault"] = 0;
+            this._Properties["StatusTampered"] = 0;
+
+            EventStruct = {
+                "Get": ["CurrentAmbientLightLevel", "StatusActive", "StatusTampered", "StatusFault"],
+                "Set": []
+            }
+
+            this._wireUpEvents(this._LighService, EventStruct);
+            this._accessory.addService(this._LighService);
+        }
+
+        // Humidity
+        if (Config.enableHumiditySensor) {
+
+            ServicesEnabled.Humidity = true;
+
+            this._HumidityService = new Service.HumiditySensor("Humidity Sensor", "Humidity Sensor");
+            this._HumidityService.setCharacteristic(Characteristic.CurrentRelativeHumidity, 25);
+            this._HumidityService.setCharacteristic(Characteristic.StatusActive, 1);
+            this._HumidityService.setCharacteristic(Characteristic.StatusFault, 0);
+            this._HumidityService.setCharacteristic(Characteristic.StatusTampered, 0);
+            this._Properties["CurrentRelativeHumidity"] = 25;
+            this._Properties["StatusActive"] = 1;
+            this._Properties["StatusFault"] = 0;
+            this._Properties["StatusTampered"] = 0;
+
+
+            const EventStruct = {
+                "Get": ["CurrentRelativeHumidity", "StatusActive", "StatusTampered", "StatusFault"],
+                "Set": []
+            }
+
+            this._wireUpEvents(this._HumidityService, EventStruct);
+            this._accessory.addService(this._HumidityService);
+        }
+
 
         this._createBatteryService();
     }
 }
 MultiSensor.prototype.setCharacteristics = Set;
 
-module.exports  = {
-    MultiSensor:MultiSensor
+module.exports = {
+    MultiSensor: MultiSensor
 }

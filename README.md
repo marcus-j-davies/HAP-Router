@@ -144,7 +144,7 @@ By default the subscribed topic is **HAPRouter/IN/+**
 | passwd {{Username}} {{Password}}  | Set the UI and API login information             |    
 
 ## Installing and Running  
-Make sure you have Node >= 10.12.0 installed  
+Make sure you have Node >= v12.22.2 installed  
 
 Simply install via NPM ```npm install hap-router```  
 to run the server just call ```node HAPRouter.js``` 
@@ -154,6 +154,14 @@ HAP Router is based on the awesome [HAP-NodeJS](https://github.com/homebridge/HA
 library, without it, projects like this one are not possible.
 
 ## Version History  
+
+  - **2.0.0 BREAKING CHANGES**
+    - The Accessories Motion, Temp, Light Sensor and Humidty Sensor have all been removed,
+      and replaced with 1 single accessory, where you select the services to enable.
+    - Added Air Quality Sensor
+    - Removed the **DELAY_ROUTE_SETUP** environment variable, and made it a setting.
+    - Minimum NodeJS is now v12.22.2
+
 
   - **1.7.0**
     - Bump WS dependancy for **haprouter-route-websocket**

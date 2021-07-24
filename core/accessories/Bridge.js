@@ -7,7 +7,7 @@ class Bridge extends BaseAccessory {
 
     constructor(Config) {
         Config.name = "HAP Router Bridge"
-        Config.model = "HAP Router v1"
+        Config.model = "HAP Router v2"
         Config.manufacturer = "Marcus Davies"
         super(Config, Categories.BRIDGE);
         
