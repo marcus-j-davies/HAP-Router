@@ -9,6 +9,7 @@
     "enableIncomingMQTT": false,
     "MQTTBroker": "mqtt://test.mosquitto.org",
     "MQTTTopic": "HAPRouter/IN/+",
+    "routeInitDelay": 0,
     "MQTTOptions": {
         "username": "",
         "password": ""

@@ -160,12 +160,7 @@ function setupRoutes() {
     }
 }
 
-if(process.env.DELAY_ROUTE_SETUP !== undefined && !isNaN(process.env.DELAY_ROUTE_SETUP)){
-    setTimeout(setupRoutes,process.env.DELAY_ROUTE_SETUP)
-}
-else{
-    setupRoutes();
-}
+setTimeout(setupRoutes,CONFIG.routeInitDelay * 1000)
 
 // Load up cache (if available)
 var Cache = UTIL.getCharacteristicCache();

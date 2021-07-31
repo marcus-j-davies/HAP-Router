@@ -22,7 +22,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalk": "4.1.1",
+    "chalk": "4.1.2",
     "child_process": "1.0.2",
     "cookie-parser": "1.4.5",
     "events": "3.3.0",
@@ -36,7 +36,6 @@
     "node-cleanup": "2.1.2",
     "matcher":"4.0.0",
     "qrcode":"1.4.4",
-    "del":"6.0.0",
     "@marcus-j-davies/haprouter-route-http": "^2.0.0",
     "@marcus-j-davies/haprouter-route-udp": "^2.0.0",
     "@marcus-j-davies/haprouter-route-websocket": "^2.0.0",
@@ -44,6 +43,10 @@
     "@marcus-j-davies/haprouter-route-console":"^2.0.0",
     "@marcus-j-davies/haprouter-route-file":"^2.0.0",
     "@marcus-j-davies/haprouter-route-null":"^2.0.0"
+  },
+  "devDependencies": {
+    "eslint":"7.32.0",
+    "prettier":"2.3.2"
   },
   "repository": {
     "type": "git",

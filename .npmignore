@@ -3,3 +3,5 @@
 .gitattributes
 BackgroundTemplate.afphoto
 @marcus-j-davies
+package-lock.json
+node_modules
