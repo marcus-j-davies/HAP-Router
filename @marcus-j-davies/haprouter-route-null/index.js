@@ -1,31 +1,27 @@
-'use strict'
+'use strict';
 
 /* UI Params */
-const Params = [
-]
+const Params = [];
 
 /*  Metadata */
-const Name = "Silent Output";
-const Icon = "icon.png";
+const Name = 'Silent Output';
+const Icon = 'icon.png';
 
 /* Route Class */
 class Null {
-
-    /* Constructor */
-    constructor(route, statusnotify) {
-        statusnotify(true)
-    }
+	/* Constructor */
+	constructor(route, statusnotify) {
+		statusnotify(true);
+	}
 }
 
-Null.prototype.process = async function (payload) {
-}
+Null.prototype.process = async function (payload) {};
 
-Null.prototype.close = function (reason) {
-}
+Null.prototype.close = function (reason) {};
 
 module.exports = {
-    "Route": Null,
-    "Inputs": Params,
-    "Name": Name,
-    "Icon": Icon
-}
+	Route: Null,
+	Inputs: Params,
+	Name: Name,
+	Icon: Icon
+};

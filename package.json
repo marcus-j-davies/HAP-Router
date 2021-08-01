@@ -36,13 +36,13 @@
     "node-cleanup": "2.1.2",
     "matcher": "4.0.0",
     "qrcode": "1.4.4",
-    "@marcus-j-davies/haprouter-route-http": "^2.0.0",
-    "@marcus-j-davies/haprouter-route-udp": "^2.0.0",
-    "@marcus-j-davies/haprouter-route-websocket": "^2.0.0",
-    "@marcus-j-davies/haprouter-route-mqtt": "^2.0.0",
-    "@marcus-j-davies/haprouter-route-console": "^2.0.0",
-    "@marcus-j-davies/haprouter-route-file": "^2.0.0",
-    "@marcus-j-davies/haprouter-route-null": "^2.0.0"
+    "@marcus-j-davies/haprouter-route-http": "^3.0.0",
+    "@marcus-j-davies/haprouter-route-udp": "^3.0.0",
+    "@marcus-j-davies/haprouter-route-websocket": "^3.0.0",
+    "@marcus-j-davies/haprouter-route-mqtt": "^3.0.0",
+    "@marcus-j-davies/haprouter-route-console": "^3.0.0",
+    "@marcus-j-davies/haprouter-route-file": "^3.0.0",
+    "@marcus-j-davies/haprouter-route-null": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "7.32.0",
