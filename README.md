@@ -156,7 +156,7 @@ library, without it, projects like this one are not possible.
 ## Version History  
 
   - **2.0.0 BREAKING CHANGES**
-    - The Accessories Motion, Temp, Light Sensor and Humidty Sensor have all been removed,
+    - The Accessories Motion, Temp, Light Sensor and Humidity Sensor have all been removed,
       and replaced with 1 single accessory, where you select the services to enable.
     - Added Air Quality Sensor
     - Removed the **DELAY_ROUTE_SETUP** environment variable, and made it a setting.
