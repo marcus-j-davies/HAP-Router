@@ -12,7 +12,6 @@ const CONFIGPATH = PATH.join(ROOTPATH, 'haprouter_config.json');
 const HOMEKITPATH = PATH.join(ROOTPATH, 'HomeKitPersist');
 const CACHEPATH = PATH.join(ROOTPATH, 'characteristic_cache.json');
 const ROUTING = require('./routing');
-const DEL = require('del');
 
 const restoreBackup = function (Package) {
 	try {
@@ -298,7 +297,7 @@ const checkReset = function () {
 
 // The acrtual reset script
 const reset = function () {
-	DEL.sync(ROOTPATH, { force: true });
+	FS.rmdirSync(ROOTPATH, { recursive: true });
 	FS.mkdirSync(ROOTPATH, { recursive: true });
 
 	const DefaultFile = PATH.join(ROOTAPPPATH, 'haprouter_config.json.default');
