@@ -60,12 +60,12 @@ function cleanEV() {
 
 // Check if we are being asked for a Reset.
 if (UTIL.checkReset()) {
-	process.exit(); // stop (whilst we check they know what they are doing.)
+	return;
 }
 
 // Check password reset
 if (UTIL.checkPassword()) {
-	process.exit();
+	return;
 }
 
 // Set routing module path
@@ -73,46 +73,18 @@ ROUTING.setPath(UTIL.RootPath);
 
 // Check install module
 if (UTIL.checkInstallRequest()) {
-	process.exit();
+	return;
 }
 
 // Banner
-console.log(
-	CHALK.keyword('orange')(
-		'  _    _            _____   _____                _              '
-	)
-);
-console.log(
-	CHALK.keyword('orange')(
-		' | |  | |    /\\    |  __ \\ |  __ \\              | |             '
-	)
-);
-console.log(
-	CHALK.keyword('orange')(
-		' | |__| |   /  \\   | |__) || |__) | ___   _   _ | |_  ___  _ __ '
-	)
-);
-console.log(
-	CHALK.keyword('orange')(
-		" |  __  |  / /\\ \\  |  ___/ |  _  / / _ \\ | | | || __|/ _ \\| '__|"
-	)
-);
-console.log(
-	CHALK.keyword('orange')(
-		' | |  | | / ____ \\ | |     | | \\ \\| (_) || |_| || |_|  __/| |   '
-	)
-);
-console.log(
-	CHALK.keyword('orange')(
-		' |_|  |_|/_/    \\_\\|_|     |_|  \\_\\\\___/  \\__,_| \\__|\\___||_|   '
-	)
-);
+console.log(CHALK.keyword('orange')('  _    _            _____   _____                _               '));
+console.log(CHALK.keyword('orange')(' | |  | |    /\\    |  __ \\ |  __ \\              | |           '));
+console.log(CHALK.keyword('orange')(' | |__| |   /  \\   | |__) || |__) | ___   _   _ | |_  ___  _ __ '));
+console.log(CHALK.keyword('orange')(" |  __  |  / /\\ \\  |  ___/ |  _  / / _ \\ | | | || __|/ _ \\| '__|"));
+console.log(CHALK.keyword('orange')(' | |  | | / ____ \\ | |     | | \\ \\| (_) || |_| || |_|  __/| |   '));
+console.log(CHALK.keyword('orange')(' |_|  |_|/_/    \\_\\|_|     |_|  \\_\\\\___/  \\__,_| \\__|\\___||_|   '));
 console.log(' ');
-console.log(
-	CHALK.keyword('white')(
-		' ------- For the Smart Home Enthusiast, for the curios. -------'
-	)
-);
+console.log(CHALK.keyword('white')(	' ------- For the Smart Home Enthusiast, for the curios. -------'));
 console.log(' ');
 
 // Load Route Modules
