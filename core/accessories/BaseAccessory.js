@@ -194,7 +194,7 @@ BaseAccessory.prototype.getAccessories = function () {
 };
 
 BaseAccessory.prototype._createBatteryService = function () {
-	this._batteryService = new Service.BatteryService('', '');
+	this._batteryService = new Service.Battery('', '');
 	this._batteryService.setCharacteristic(Characteristic.BatteryLevel, 100);
 	this._batteryService.setCharacteristic(Characteristic.StatusLowBattery, 0);
 	this._batteryService.setCharacteristic(Characteristic.ChargingState, 0);

@@ -15,6 +15,7 @@ const { Smoke } = require('./SmokeSensor');
 const { Leak } = require('./LeakSensor');
 const { Camera } = require('./Camera/Camera');
 const { MultiSensor } = require('./MultiSensor');
+const { AirQualitySensor } = require('./AirQualitySensor');
 
 const Types = {
 	CONTACT_SENSOR: {
@@ -22,6 +23,14 @@ const Types = {
 		Icon: 'CONTACT_SENSOR.png',
 		SupportsRouting: true,
 		Class: ContactSensor,
+		Actions: [],
+		ConfigProperties: []
+	},
+	AIR_QUALITY_SENSOR: {
+		Label: 'Air Quality Sensor',
+		Icon: 'AIR_QUALITY.png',
+		SupportsRouting: true,
+		Class: AirQualitySensor,
 		Actions: [],
 		ConfigProperties: []
 	},
