@@ -142,6 +142,7 @@ const updateOptions = function (Config) {
 	ConfigOBJ.interface = Config.interface;
 	ConfigOBJ.webInterfaceAddress = Config.webInterfaceAddress;
 	ConfigOBJ.webInterfacePort = Config.webInterfacePort;
+	ConfigOBJ.routeInitDelay = Config.routeInitDelay;
 	ConfigOBJ.MQTTOptions.username = Config.MQTTOptions.username;
 	ConfigOBJ.MQTTOptions.password = Config.MQTTOptions.password;
 

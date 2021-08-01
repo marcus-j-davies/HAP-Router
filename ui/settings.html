@@ -89,6 +89,17 @@
             </table>
          </fieldset>
 
+          <!-- Route Settings-->
+          <fieldset>
+            <legend>Route Settings</legend>
+            <table>
+               <tr>
+                  <td style="width: 200px;">Delay Route Initialization (seconds)</td>
+                  <td><input type="number" id="CFG_RouteDelay" value="{{Config.routeInitDelay}}"></td>
+               </tr>
+            </table>
+         </fieldset>
+
          <!-- Backup / Restore-->
          
          <fieldset>
@@ -97,8 +108,8 @@
                <input type="button" class="StyledButton" value="Backup Configuration" onclick="location.href='../../../ui/backup'"> &nbsp; &nbsp; <input type="button" class="StyledButton" onclick="RestoreConfig()" value="Restore Configuration">
             </div>
          </fieldset>
-      
 
+        
          <!-- Save-->
          <fieldset style="text-align: right; margin-top: 20px;">
            <span style="color: rgb(255,255,255);" id="Message"></span> <input type="button" class="StyledButton" value="Save Changes" onclick="SaveSettings()">

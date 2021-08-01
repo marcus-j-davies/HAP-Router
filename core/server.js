@@ -678,8 +678,10 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		CONFIG.interface = CFG.interface;
 		CONFIG.webInterfaceAddress = CFG.webInterfaceAddress;
 		CONFIG.webInterfacePort = CFG.webInterfacePort;
+		CONFIG.routeInitDelay = CFG.routeInitDelay;
 		CONFIG.MQTTOptions.username = CFG.MQTTOptions.username;
 		CONFIG.MQTTOptions.password = CFG.MQTTOptions.password;
+
 
 		UTIL.updateOptions(CFG);
 
