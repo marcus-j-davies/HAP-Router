@@ -5,3 +5,5 @@ BackgroundTemplate.afphoto
 @marcus-j-davies
 package-lock.json
 node_modules
+.prettierrc.json
+.eslintrc.josn
