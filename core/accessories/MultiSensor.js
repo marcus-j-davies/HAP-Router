@@ -95,7 +95,7 @@ class MultiSensor extends BaseAccessory {
 			this._Properties['StatusFault'] = 0;
 			this._Properties['StatusTampered'] = 0;
 
-			var EventStruct = {
+			const EventStruct = {
 				Get: [
 					'MotionDetected',
 					'StatusActive',
@@ -129,7 +129,7 @@ class MultiSensor extends BaseAccessory {
 			this._Properties['StatusFault'] = 0;
 			this._Properties['StatusTampered'] = 0;
 
-			EventStruct = {
+			const EventStruct = {
 				Get: [
 					'CurrentTemperature',
 					'StatusActive',
@@ -163,7 +163,7 @@ class MultiSensor extends BaseAccessory {
 			this._Properties['StatusFault'] = 0;
 			this._Properties['StatusTampered'] = 0;
 
-			EventStruct = {
+			const EventStruct = {
 				Get: [
 					'CurrentAmbientLightLevel',
 					'StatusActive',

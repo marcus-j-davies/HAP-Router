@@ -51,7 +51,7 @@ class TV extends BaseAccessory {
 		this._Properties['Active'] = 0;
 		this._Properties['ActiveIdentifier'] = 1;
 
-		var EventStruct = {
+		let EventStruct = {
 			Get: ['Active', 'ActiveIdentifier'],
 			Set: ['Active', 'RemoteKey', 'ActiveIdentifier', 'PowerModeSelection']
 		};

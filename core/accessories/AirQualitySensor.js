@@ -32,7 +32,7 @@ class AirQualitySensor extends BaseAccessory {
 		this._Properties['StatusFault'] = 0;
 		this._Properties['StatusTampered'] = 0;
 
-		var EventStruct = {
+		const EventStruct = {
 			Get: [
 				'VOCDensity',
 				'PM10Density',
