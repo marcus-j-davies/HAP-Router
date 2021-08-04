@@ -3,7 +3,6 @@
 const FS = require('fs');
 const PATH = require('path');
 const READLINE = require('readline');
-const CHALK = require('chalk');
 const CRYPTO = require('crypto');
 const OS = require('os');
 const ROOTPATH = PATH.join(OS.homedir(), 'HAPRouter');
@@ -42,7 +41,7 @@ const restoreBackup = function (Package) {
 const performBackup = function () {
 	const BUPackage = {};
 
-	var S = FS.readFileSync(CONFIGPATH, 'utf8');
+	let S = FS.readFileSync(CONFIGPATH, 'utf8');
 	BUPackage.Config = JSON.parse(S);
 
 	if (FS.existsSync(CACHEPATH)) {
@@ -93,9 +92,9 @@ const getRndInteger = function (min, max) {
 };
 
 const genMAC = function () {
-	var hexDigits = '0123456789ABCDEF';
-	var macAddress = '';
-	for (var i = 0; i < 6; i++) {
+	const hexDigits = '0123456789ABCDEF';
+	let macAddress = '';
+	for (let i = 0; i < 6; i++) {
 		macAddress += hexDigits.charAt(Math.round(Math.random() * 15));
 		macAddress += hexDigits.charAt(Math.round(Math.random() * 15));
 		if (i != 5) macAddress += ':';
@@ -104,10 +103,10 @@ const genMAC = function () {
 };
 
 const makeID = function (length) {
-	var result = '';
-	var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	var charactersLength = characters.length;
-	for (var i = 0; i < length; i++) {
+	let result = '';
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	const charactersLength = characters.length;
+	for (let i = 0; i < length; i++) {
 		result += characters.charAt(Math.floor(Math.random() * charactersLength));
 	}
 	return result;
@@ -202,9 +201,7 @@ const checkPassword = function () {
 			ConfigOBJ.loginUsername = NUSR;
 			ConfigOBJ.loginPassword = PW;
 			saveConfig(ConfigOBJ);
-			console.log(
-				CHALK.keyword('yellow')(' Username and Password has been set.')
-			);
+			console.log(' Username and Password has been set.');
 			console.log('');
 			process.exit(0);
 		}
@@ -218,9 +215,7 @@ const checkInstallRequest = function () {
 			const Module = process.argv[3];
 
 			ROUTING.install(Module);
-			console.log(
-				CHALK.keyword('green')(' Module [' + Module + '] has been installed.')
-			);
+			console.log(' Module [' + Module + '] has been installed.');
 			console.log('');
 			process.exit(0);
 		}
@@ -247,34 +242,21 @@ const checkReset = function () {
 				output: process.stdout
 			});
 
-			console.log(CHALK.keyword('yellow')(' -- WARNING --'));
+			console.log(' -- WARNING --');
+			console.log('');
+			console.log(' HAP Router is about to be RESET!!.');
+
+			console.log(' This will.');
+			console.log('');
+			console.log('  - Delete ALL your Accessories.');
+			console.log('  - Destroy the Bridge.');
+			console.log('  - Delete all HomeKit cache data.');
+			console.log('  - Delete all HAP Router Configuration.');
+			console.log('  - Discard any Accessory identification.');
+			console.log('  - Reset the login details for the UI & API.');
 			console.log('');
 			console.log(
-				CHALK.keyword('yellow')(' HAP Router is about to be RESET!!.')
-			);
-			console.log(CHALK.keyword('yellow')(' This will.'));
-			console.log('');
-			console.log(CHALK.keyword('yellow')('  - Delete ALL your Accessories.'));
-			console.log(
-				CHALK.keyword('yellow')('  - Destroy the Bridge (and its Accessories).')
-			);
-			console.log(
-				CHALK.keyword('yellow')('  - Delete all HomeKit cache data.')
-			);
-			console.log(
-				CHALK.keyword('yellow')('  - Delete all HAP Router Configuration.')
-			);
-			console.log(
-				CHALK.keyword('yellow')('  - Discard any Accessory identification.')
-			);
-			console.log(
-				CHALK.keyword('yellow')('  - Reset the login details for the UI & API.')
-			);
-			console.log('');
-			console.log(
-				CHALK.keyword('yellow')(
-					' Evan if you recreate Accessories, you will need to re-enroll HAP Router on your iOS device.'
-				)
+				' Evan if you recreate Accessories, you will need to re-enroll HAP Router on your iOS device.'
 			);
 			console.log('');
 

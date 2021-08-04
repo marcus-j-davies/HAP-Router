@@ -154,7 +154,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		return (
 			CONFIG.loginUsername === username &&
 			CRYPTO.createHash('md5').update(password).digest('hex') ===
-				CONFIG.loginPassword
+			CONFIG.loginPassword
 		);
 	}
 
@@ -682,7 +682,6 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		CONFIG.MQTTOptions.username = CFG.MQTTOptions.username;
 		CONFIG.MQTTOptions.password = CFG.MQTTOptions.password;
 
-
 		UTIL.updateOptions(CFG);
 
 		_RestartRequired = true;
@@ -787,12 +786,10 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
 		const NewAccessoryOBJ = req.body;
 
-		NewAccessoryOBJ.pincode =
-			UTIL.getRndInteger(100, 999) +
-			'-' +
-			UTIL.getRndInteger(10, 99) +
-			'-' +
-			UTIL.getRndInteger(100, 999);
+		NewAccessoryOBJ.pincode = `${UTIL.getRndInteger(
+			100,
+			999
+		)}-${UTIL.getRndInteger(10, 99)}-${UTIL.getRndInteger(100, 999)}`;
 		NewAccessoryOBJ.username = UTIL.genMAC();
 		NewAccessoryOBJ.setupID = UTIL.makeID(4);
 		if (NewAccessoryOBJ.serialNumber === undefined) {

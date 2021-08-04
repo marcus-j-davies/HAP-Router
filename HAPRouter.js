@@ -3,7 +3,6 @@
 const UTIL = require('./core/util');
 UTIL.checkNewEV();
 
-const CHALK = require('chalk');
 const { Server } = require('./core/server');
 const ACCESSORY = require('./core/accessories/Types');
 const CONFIG = require(UTIL.ConfigPath);
@@ -77,14 +76,10 @@ if (UTIL.checkInstallRequest()) {
 }
 
 // Banner
-console.log(CHALK.keyword('orange')('  _    _            _____   _____                _               '));
-console.log(CHALK.keyword('orange')(' | |  | |    /\\    |  __ \\ |  __ \\              | |           '));
-console.log(CHALK.keyword('orange')(' | |__| |   /  \\   | |__) || |__) | ___   _   _ | |_  ___  _ __ '));
-console.log(CHALK.keyword('orange')(" |  __  |  / /\\ \\  |  ___/ |  _  / / _ \\ | | | || __|/ _ \\| '__|"));
-console.log(CHALK.keyword('orange')(' | |  | | / ____ \\ | |     | | \\ \\| (_) || |_| || |_|  __/| |   '));
-console.log(CHALK.keyword('orange')(' |_|  |_|/_/    \\_\\|_|     |_|  \\_\\\\___/  \\__,_| \\__|\\___||_|   '));
+console.clear();
 console.log(' ');
-console.log(CHALK.keyword('white')(	' ------- For the Smart Home Enthusiast, for the curios. -------'));
+console.log(' =========================  HAPRouter  =========================');
+console.log(' ======= For the Smart Home Enthusiast, for the curios. ========');
 console.log(' ');
 
 // Load Route Modules
@@ -92,12 +87,10 @@ ROUTING.loadModules();
 
 if (!CONFIG.bridgeConfig.hasOwnProperty('pincode')) {
 	// Genertae a Bridge
-	CONFIG.bridgeConfig.pincode =
-		UTIL.getRndInteger(100, 999) +
-		'-' +
-		UTIL.getRndInteger(10, 99) +
-		'-' +
-		UTIL.getRndInteger(100, 999);
+	CONFIG.bridgeConfig.pincode = `${UTIL.getRndInteger(
+		100,
+		999
+	)}-${UTIL.getRndInteger(10, 99)}-${UTIL.getRndInteger(100, 999)}`;
 	CONFIG.bridgeConfig.username = UTIL.genMAC();
 	CONFIG.bridgeConfig.setupID = UTIL.makeID(4);
 	CONFIG.bridgeConfig.serialNumber = UTIL.makeID(12);
@@ -109,13 +102,11 @@ if (!CONFIG.bridgeConfig.hasOwnProperty('pincode')) {
 		name: 'Switch Accessory Demo',
 		route: 'Output To Console',
 		manufacturer: 'Marcus Davies',
-		model: 'HR 1 Switch',
-		pincode:
-			UTIL.getRndInteger(100, 999) +
-			'-' +
-			UTIL.getRndInteger(10, 99) +
-			'-' +
-			UTIL.getRndInteger(100, 999),
+		model: 'HR 2 Switch',
+		pincode: `${UTIL.getRndInteger(100, 999)}-${UTIL.getRndInteger(
+			10,
+			99
+		)}-${UTIL.getRndInteger(100, 999)}`,
 		username: UTIL.genMAC(),
 		setupID: UTIL.makeID(4),
 		serialNumber: UTIL.makeID(12),
@@ -149,9 +140,7 @@ function setupRoutes() {
 		const RouteCFG = CONFIG.routes[RouteNames[i]];
 		RouteCFG.readyStatus =
 			'<span style="color:orange">Module is initializing...</span>';
-		console.log(
-			' Configuring Route : ' + RouteNames[i] + ' (' + RouteCFG.type + ')'
-		);
+		console.log(` Configuring Route : ${RouteNames[i]} (${RouteCFG.type})`);
 
 		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(
 			RouteCFG,
@@ -163,8 +152,7 @@ function setupRoutes() {
 					RouteCFG.readyStatus =
 						'<span style="color:greenyellow">Module Successfully Initialized.</span>';
 				} else {
-					RouteCFG.readyStatus =
-						'<span style="color:tomato">Module Error: ' + message + '</span>';
+					RouteCFG.readyStatus = `<span style="color:tomato">Module Error: ${message}</span>`;
 				}
 			}
 		);
@@ -175,13 +163,11 @@ function setupRoutes() {
 setTimeout(setupRoutes, CONFIG.routeInitDelay * 1000);
 
 // Load up cache (if available)
-var Cache = UTIL.getCharacteristicCache();
+const Cache = UTIL.getCharacteristicCache();
 
 // Main Accessory Initializer
 function initAccessory(Config) {
-	console.log(
-		' Configuring Accessory : ' + Config.name + ' (' + Config.type + ')'
-	);
+	console.log(` Configuring Accessory : ${Config.name} (${Config.type})`);
 
 	const TypeMetadata = ACCESSORY.Types[Config.type];
 	Config.accessoryID = Config.username.replace(/:/g, '');
@@ -203,7 +189,7 @@ function initAccessory(Config) {
 
 	if (!Config.bridged) {
 		Acc.on('PAIR_CHANGE', (Paired) => Pair(Paired, Config));
-		console.log('       Pin Code  ' + Config.pincode);
+		console.log(`       Pin Code: ${Config.pincode}`);
 		console.log('       Publishing Accessory (Unbridged)');
 		Acc.publish();
 	} else {
@@ -243,38 +229,24 @@ function MQTTDone() {
 function UIServerDone() {
 	// All done.
 
-	var IPAddress = IP.address();
+	let IPAddress = IP.address();
 	if (CONFIG.webInterfaceAddress !== 'ALL') {
 		IPAddress = CONFIG.webInterfaceAddress;
 	}
 
-	const Address = CHALK.keyword('red')(
-		'http://' + IPAddress + ':' + CONFIG.webInterfacePort + '/ui/login'
+	console.log(
+		'┌────────────────────────────────────────────────────────────────────┐'
 	);
 	console.log(
-		' ' +
-			CHALK.black.bgWhite(
-				'┌─────────────────────────────────────────────────────────────────────────────┐'
-			)
+		`|  Goto http://${IPAddress}:${CONFIG.webInterfacePort}/ to start managing your installation. |`
 	);
 	console.log(
-		' ' +
-			CHALK.black.bgWhite(
-				'|    Goto ' + Address + ' to start managing your installation. |'
-			)
+		'|  Default username and password is admin                            |'
 	);
 	console.log(
-		' ' +
-			CHALK.black.bgWhite(
-				'|    Default username and password is admin                                   |'
-			)
+		'└────────────────────────────────────────────────────────────────────┘'
 	);
-	console.log(
-		' ' +
-			CHALK.black.bgWhite(
-				'└─────────────────────────────────────────────────────────────────────────────┘'
-			)
-	);
+	console.log(' ');
 }
 
 // Device Change

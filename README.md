@@ -155,12 +155,19 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
+  - **2.1.0**
+    - Removed CHALK fomatted banner.
+    - Small improvements to core
+    - bug fixes
+
   - **2.0.0 BREAKING CHANGES**
     - The Accessories Motion, Temp, Light Sensor and Humidity Sensor have all been removed,
       and replaced with 1 single accessory, where you select the services to enable.
     - Added Air Quality Sensor
     - Removed the **DELAY_ROUTE_SETUP** environment variable, and made it a setting.
+    - Config resets now use node recursive options (previously using the **del** package)
     - Minimum NodeJS is now v12.22.2
+
 
 
   - **1.7.0**

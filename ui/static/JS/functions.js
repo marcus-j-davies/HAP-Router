@@ -49,7 +49,7 @@ function SaveSettings() {
 		interface: $('#CFG_MDNSInterface').val(),
 		webInterfacePort: parseInt($('#CFG_APIPort').val()),
 		webInterfaceAddress: $('#CFG_APIInterface').val(),
-        routeInitDelay: parseInt($('#CFG_RouteDelay').val()),
+		routeInitDelay: parseInt($('#CFG_RouteDelay').val()),
 
 		enableIncomingMQTT: $('#CFG_MQTTEnabled').is(':checked'),
 		MQTTBroker: $('#CFG_MQTTBroker').val(),
@@ -86,7 +86,7 @@ function GetParams(Package) {
 
 		const Type = EL.attr('data-type');
 		const ID = EL.attr('data-param');
-		var Value;
+		let Value;
 
 		switch (Type) {
 			case 'text':
@@ -285,7 +285,7 @@ function CloseEnroll() {
 	$('#EnrollDiv', window.top.document).css('display', 'none');
 }
 
-var Timer;
+let Timer;
 function StartPairCheck(Return, ID) {
 	Timer = setInterval(() => {
 		$.ajax({

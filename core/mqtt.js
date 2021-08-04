@@ -3,9 +3,9 @@ const mqtt = require('mqtt');
 const UTIL = require('./util');
 const CONFIG = require(UTIL.ConfigPath);
 
-var MQTTC;
-var _Accessories;
-var CallBack;
+let MQTTC;
+let _Accessories;
+let CallBack;
 
 const MQTTError = function (Error) {
 	console.log(' Could not connect to MQTT Broker : ' + Error);
@@ -41,10 +41,10 @@ const MQTTMessageReceved = function (topic, message) {
 	} catch (e) {
 		console.log(
 			' MQTT input could not be actioned -> MSG: ' +
-				message.toString() +
-				', Topic: ' +
-				topic +
-				''
+			message.toString() +
+			', Topic: ' +
+			topic +
+			''
 		);
 	}
 };

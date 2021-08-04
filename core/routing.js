@@ -6,7 +6,7 @@ const MATCHER = require('matcher');
 const { spawnSync } = require('child_process');
 const { dependencies } = require('../package.json');
 
-var RootPath;
+let RootPath;
 
 const Routes = {};
 
@@ -86,10 +86,10 @@ const loadStockModules = function () {
 };
 
 const install = function (Module) {
-	console.log(' Installing route module: ' + Module);
+	console.log(` Installing route module: ${Module}`);
 	spawnSync(
 		'npm',
-		['install', '' + Module + '', '--prefix', '"' + RootPath + '"'],
+		['install','--production', `${module}`, '--prefix', `"${RootPath}"`],
 		{ shell: true }
 	);
 };
