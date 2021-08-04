@@ -89,7 +89,7 @@ const install = function (Module) {
 	console.log(` Installing route module: ${Module}`);
 	spawnSync(
 		'npm',
-		['install','--production', `${module}`, '--prefix', `"${RootPath}"`],
+		['install','--production', `${Module}`, '--prefix', `"${RootPath}"`],
 		{ shell: true }
 	);
 };
