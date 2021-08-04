@@ -51,7 +51,7 @@ CameraSource.prototype.handleSnapshotRequest = async function (
 	}
 
 	let imageBuffer = Buffer.alloc(0);
-	var CB = callback;
+	let CB = callback;
 
 	const CMD = [];
 	CMD.push('-analyzeduration 1');
@@ -328,7 +328,7 @@ CameraSource.prototype.handleStreamRequest = async function (
 						);
 					}
 
-					var CB = callback;
+					let CB = callback;
 
 					const ffmpeg = spawn(
 						this.config.processor,
