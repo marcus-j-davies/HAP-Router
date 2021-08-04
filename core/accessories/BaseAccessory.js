@@ -29,10 +29,7 @@ class BaseAccessory extends EventEmitter {
 		this._Properties = {};
 
 		const UUID = uuid.generate(
-			'hap-nodejs:accessories:' +
-				AccessoryOBJ.name +
-				':' +
-				AccessoryOBJ.username
+			`hap-nodejs:accessories:${AccessoryOBJ.name}:${AccessoryOBJ.username}`
 		);
 
 		if (this._isBridge) {
