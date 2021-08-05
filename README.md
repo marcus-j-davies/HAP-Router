@@ -97,7 +97,26 @@ If you're a Home Automation Enthusiast, or just a tinkerer, Hap Router allows yo
 ## Nice! how do I get started
 The server is managed by a gorgeous looking Web User Interface (if the above images haven't already suggested so), It is a breeze to use, and at the basic level you:
  - Create a Route (Routes can be used by more than 1 accessory)
- - Create an Accessory (20 different accessory type thus far)
+ - Create an Accessory  
+   - Contact Sensor
+   - Air Quality Sensor
+   - Intruder Alarm
+   - Multisensor -  Combinations of:
+     - Motion
+     - Lux
+     - Temp
+     - Humidity
+   - Power Outlet
+   - Basic On/Off Switch
+   - Fan
+   - Lock
+   - Light Bulb
+   - Smart TV
+   - Garage Door Opener
+   - Thermostat
+   - Smoke Sensor
+   - Leak Sensor
+   - CCTV Camera
  - Enroll the device in HomeKit.
  - Have Fun.
 
