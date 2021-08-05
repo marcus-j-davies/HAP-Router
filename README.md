@@ -17,7 +17,7 @@ These transports can be a UDP broadcast, a message sent to an MQTT broker, sent 
 The accessories have also been created for you, and you simply select the type of accessory you wish to create  
 and set their associated information. 
 
-Transports are the medium, in which the event is travelled. By default, the following transports (or routes) are available:
+Transports are the medium, in which the event is travelled. By default, the following transports (or routes) are as follows:
 
   - HTTP
   - UDP Broadcast
