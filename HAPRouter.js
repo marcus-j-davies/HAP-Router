@@ -234,18 +234,10 @@ function UIServerDone() {
 		IPAddress = CONFIG.webInterfaceAddress;
 	}
 
-	console.log(
-		'┌────────────────────────────────────────────────────────────────────┐'
-	);
-	console.log(
-		`|  Goto http://${IPAddress}:${CONFIG.webInterfacePort}/ to start managing your installation. |`
-	);
-	console.log(
-		'|  Default username and password is admin                            |'
-	);
-	console.log(
-		'└────────────────────────────────────────────────────────────────────┘'
-	);
+	console.log('┌────────────────────────────────────────────────────────────────────┐');
+	console.log(`|  Goto http://${IPAddress}:${CONFIG.webInterfacePort}/ to start managing your installation. |`);
+	console.log('|  Default username and password is admin                            |'	);
+	console.log('└────────────────────────────────────────────────────────────────────┘');
 	console.log(' ');
 }
 
