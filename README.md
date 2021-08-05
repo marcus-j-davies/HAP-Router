@@ -175,7 +175,7 @@ library, without it, projects like this one are not possible.
 ## Version History  
 
   - **2.1.0**
-    - Removed CHALK fomatted banner.
+    - Removed CHALK formatted banner.
     - Small improvements to core
     - bug fixes
 
