@@ -174,7 +174,7 @@ library, without it, projects like this one are not possible.
 
 ## Version History  
 
-  - (Here)[./CHANGELOG.md]
+  - [Here](./CHANGELOG.md)
 
 ## To Do
   - Continue to add more accessory types
