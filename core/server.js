@@ -783,7 +783,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			Specification: ACCESSORY.Types[req.params.type],
 			Routes: Object.keys(CONFIG.routes)
 		};
-		PL.Specification.type = req.params.type;
+		PL.Specification.type = req.params.type.replace('__proto__','');
 
 		const HTML = CompiledTemplates['NewAccessory'](PL);
 
