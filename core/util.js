@@ -1,6 +1,4 @@
-﻿'use strict';
-
-const FS = require('fs');
+﻿const FS = require('fs');
 const PATH = require('path');
 const READLINE = require('readline');
 const CRYPTO = require('crypto');
@@ -61,12 +59,12 @@ const performBackup = function () {
 let allowSaveCharacteristicCache = true;
 const saveCharacteristicCache = function (Cache) {
 	if (allowSaveCharacteristicCache) {
-		console.info(' Saving current Characteristics...');
+		console.info('Saving current Characteristics...');
 
 		try {
 			FS.writeFileSync(CACHEPATH, JSON.stringify(Cache), 'utf8');
 		} catch (err) {
-			console.log(' Could not right to the config file.');
+			console.log('Could not right to the config file.');
 		}
 	}
 };
@@ -184,7 +182,7 @@ const saveConfig = function (Config) {
 	try {
 		FS.writeFileSync(CONFIGPATH, JSON.stringify(Config), 'utf8');
 	} catch (err) {
-		console.log(' Could not right to the config file.');
+		console.log('Could not right to the config file.');
 		process.exit(0);
 	}
 };
@@ -201,7 +199,7 @@ const checkPassword = function () {
 			ConfigOBJ.loginUsername = NUSR;
 			ConfigOBJ.loginPassword = PW;
 			saveConfig(ConfigOBJ);
-			console.log(' Username and Password has been set.');
+			console.log('Username and Password has been set.');
 			console.log('');
 			process.exit(0);
 		}
@@ -215,7 +213,7 @@ const checkInstallRequest = function () {
 			const Module = process.argv[3];
 
 			ROUTING.install(Module);
-			console.log(' Module [' + Module + '] has been installed.');
+			console.log('Module [' + Module + '] has been installed.');
 			console.log('');
 			process.exit(0);
 		}
@@ -242,29 +240,30 @@ const checkReset = function () {
 				output: process.stdout
 			});
 
-			console.log(' -- WARNING --');
 			console.log('');
-			console.log(' HAP Router is about to be RESET!!.');
+			console.log('-- WARNING --');
+			console.log('');
+			console.log('HAP Router is about to be RESET!!.');
 
-			console.log(' This will.');
+			console.log('This will.');
 			console.log('');
-			console.log('  - Delete ALL your Accessories.');
-			console.log('  - Destroy the Bridge.');
-			console.log('  - Delete all HomeKit cache data.');
-			console.log('  - Delete all HAP Router Configuration.');
-			console.log('  - Discard any Accessory identification.');
-			console.log('  - Reset the login details for the UI & API.');
+			console.log(' - Delete ALL your Accessories.');
+			console.log(' - Destroy the Bridge.');
+			console.log(' - Delete all HomeKit cache data.');
+			console.log(' - Delete all HAP Router Configuration.');
+			console.log(' - Discard any Accessory identification.');
+			console.log(' - Reset the login details for the UI & API.');
 			console.log('');
 			console.log(
-				' Evan if you recreate Accessories, you will need to re-enroll HAP Router on your iOS device.'
+				'Evan if you recreate Accessories, you will need to re-enroll HAP Router on your iOS device.'
 			);
 			console.log('');
 
-			rl.question(' Continue? (y/n) :: ', function (value) {
+			rl.question('Continue? (y/n) :: ', function (value) {
 				if (value.toUpperCase() === 'Y') {
 					console.log('');
 					reset();
-					console.log(' HAP Router has been reset.');
+					console.log('HAP Router has been reset.');
 					console.log('');
 					process.exit(0);
 				} else {

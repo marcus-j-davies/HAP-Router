@@ -1,4 +1,3 @@
-'use strict';
 const mqtt = require('mqtt');
 const UTIL = require('./util');
 const CONFIG = require(UTIL.ConfigPath);
@@ -41,10 +40,10 @@ const MQTTMessageReceved = function (topic, message) {
 	} catch (e) {
 		console.log(
 			' MQTT input could not be actioned -> MSG: ' +
-			message.toString() +
-			', Topic: ' +
-			topic +
-			''
+				message.toString() +
+				', Topic: ' +
+				topic +
+				''
 		);
 	}
 };
@@ -66,14 +65,14 @@ const MQTT = function (Accesories, CB) {
 			delete Options.password;
 		}
 
-		console.log(' Starting MQTT Client');
+		console.log('Starting MQTT Client');
 
 		try {
 			const _MQTTC = mqtt.connect(CONFIG.MQTTBroker, Options);
 			_MQTTC.on('error', MQTTError);
 			_MQTTC.on('connect', () => MQTTConnected(_MQTTC));
 		} catch (err) {
-			console.log(' Could not connect to MQTT Broker : ' + err);
+			console.log('Could not connect to MQTT Broker : ' + err);
 			process.exit(0);
 		}
 	} else {

@@ -1,4 +1,3 @@
-'use strict';
 const axios = require('axios');
 
 /* UI Params */
@@ -39,11 +38,13 @@ HTTPRoute.prototype.process = async function (payload) {
 	try {
 		await axios.request(CFG);
 	} catch (err) {
-		console.log(' HTTP Route error: ' + err);
+		if (err) {
+			console.log('HTTP Route error: ' + err);
+		}
 	}
 };
 
-HTTPRoute.prototype.close = function (reason) {};
+HTTPRoute.prototype.close = function () {};
 
 module.exports = {
 	Route: HTTPRoute,

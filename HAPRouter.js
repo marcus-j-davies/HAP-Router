@@ -1,11 +1,8 @@
-﻿'use strict';
-
-const UTIL = require('./core/util');
+﻿const UTIL = require('./core/util');
 UTIL.checkNewEV();
-
+const CONFIG = require(UTIL.ConfigPath);
 const { Server } = require('./core/server');
 const ACCESSORY = require('./core/accessories/Types');
-const CONFIG = require(UTIL.ConfigPath);
 const IP = require('ip');
 const MQTT = require('./core/mqtt');
 const NODECLEANUP = require('node-cleanup');
@@ -25,9 +22,10 @@ function clean(exitCode, signal) {
 	return false;
 }
 
+// Cleanup
 function cleanEV() {
 	return new Promise((resolve) => {
-		console.info(' Unpublishing Accessories...');
+		console.info('Unpublishing Accessories...');
 		Bridge.unpublish(false);
 
 		const AccessoryIDs = Object.keys(Accesories);
@@ -47,7 +45,7 @@ function cleanEV() {
 
 		UTIL.saveCharacteristicCache(CharacteristicCache);
 
-		console.info(' Cleaning up Routes...');
+		console.info('Cleaning up Routes...');
 		const RouteKeys = Object.keys(Routes);
 		RouteKeys.forEach((AE) => {
 			Routes[AE].close('appclose');
@@ -57,74 +55,106 @@ function cleanEV() {
 	});
 }
 
-// Check if we are being asked for a Reset.
-if (UTIL.checkReset()) {
-	return;
-}
-
-// Check password reset
-if (UTIL.checkPassword()) {
-	return;
-}
-
-// Set routing module path
-ROUTING.setPath(UTIL.RootPath);
-
-// Check install module
-if (UTIL.checkInstallRequest()) {
-	return;
-}
-
-// Banner
-console.clear();
-console.log(' ');
-console.log(' =========================  HAPRouter  =========================');
-console.log(' ======= For the Smart Home Enthusiast, for the curios. ========');
-console.log(' ');
-
-// Load Route Modules
-ROUTING.loadModules();
-
-if (!CONFIG.bridgeConfig.hasOwnProperty('pincode')) {
-	// Genertae a Bridge
-	CONFIG.bridgeConfig.pincode = `${UTIL.getRndInteger(
-		100,
-		999
-	)}-${UTIL.getRndInteger(10, 99)}-${UTIL.getRndInteger(100, 999)}`;
-	CONFIG.bridgeConfig.username = UTIL.genMAC();
-	CONFIG.bridgeConfig.setupID = UTIL.makeID(4);
-	CONFIG.bridgeConfig.serialNumber = UTIL.makeID(12);
-	UTIL.saveBridgeConfig(CONFIG.bridgeConfig);
-
-	// Create a demo accessory for new configs (accessories will heronin be created via the ui)
-	const DemoAccessory = {
-		type: 'SWITCH',
-		name: 'Switch Accessory Demo',
-		route: 'Output To Console',
-		manufacturer: 'Marcus Davies',
-		model: 'HR 2 Switch',
-		pincode: `${UTIL.getRndInteger(100, 999)}-${UTIL.getRndInteger(
-			10,
-			99
-		)}-${UTIL.getRndInteger(100, 999)}`,
-		username: UTIL.genMAC(),
-		setupID: UTIL.makeID(4),
-		serialNumber: UTIL.makeID(12),
-		bridged: true
-	};
-	CONFIG.accessories.push(DemoAccessory);
-	UTIL.appendAccessoryToConfig(DemoAccessory);
-}
-
-console.log(' Configuring HomeKit Bridge');
-
-HAPStorage.setCustomStoragePath(UTIL.HomeKitPath);
-
-// Configure Our Bridge
-const Bridge = new ACCESSORY.Bridge(CONFIG.bridgeConfig);
+// Bridge Class
+let Bridge;
 
 // Routes
 const Routes = {};
+
+// Load up cache (if available)
+const Cache = UTIL.getCharacteristicCache();
+
+// Accessories
+const Accesories = {};
+
+// UI Server
+let UIServer;
+
+// MQTT Client
+// eslint-disable-next-line no-unused-vars
+let MQTTC;
+
+// Init
+function Init() {
+	// Check Reset
+	if (UTIL.checkReset()) {
+		return;
+	}
+
+	// Set Module Path
+	ROUTING.setPath(UTIL.RootPath);
+
+	// CHeck Install module request
+	if (UTIL.checkInstallRequest()) {
+		return;
+	}
+
+	console.clear();
+
+	// Load Route Modules
+	ROUTING.loadModules();
+
+	// Generate A bridge and demo accessory
+	if (!CONFIG.bridgeConfig.hasOwnProperty('pincode')) {
+		// Genertae a Bridge
+		CONFIG.bridgeConfig.pincode = `${UTIL.getRndInteger(
+			100,
+			999
+		)}-${UTIL.getRndInteger(10, 99)}-${UTIL.getRndInteger(100, 999)}`;
+		CONFIG.bridgeConfig.username = UTIL.genMAC();
+		CONFIG.bridgeConfig.setupID = UTIL.makeID(4);
+		CONFIG.bridgeConfig.serialNumber = UTIL.makeID(12);
+		UTIL.saveBridgeConfig(CONFIG.bridgeConfig);
+
+		// Create a demo accessory for new configs (accessories will heronin be created via the ui)
+		const DemoAccessory = {
+			type: 'SWITCH',
+			name: 'Switch Accessory Demo',
+			route: 'Output To Console',
+			manufacturer: 'Marcus Davies',
+			model: 'HR 2 Switch',
+			pincode: `${UTIL.getRndInteger(100, 999)}-${UTIL.getRndInteger(
+				10,
+				99
+			)}-${UTIL.getRndInteger(100, 999)}`,
+			username: UTIL.genMAC(),
+			setupID: UTIL.makeID(4),
+			serialNumber: UTIL.makeID(12),
+			bridged: true
+		};
+		CONFIG.accessories.push(DemoAccessory);
+		UTIL.appendAccessoryToConfig(DemoAccessory);
+	}
+
+	console.log('Configuring HomeKit Bridge');
+	HAPStorage.setCustomStoragePath(UTIL.HomeKitPath);
+
+	// Configure Our Bridge
+	Bridge = new ACCESSORY.Bridge(CONFIG.bridgeConfig);
+
+	// Route Setup
+	setTimeout(setupRoutes, CONFIG.routeInitDelay * 1000);
+
+	// Configure Our Accessories
+	for (let i = 0; i < CONFIG.accessories.length; i++) {
+		const AccessoryOBJ = CONFIG.accessories[i];
+		initAccessory(AccessoryOBJ);
+	}
+
+	if (CONFIG.bridgeEnabled) {
+		// Publish Bridge
+		console.log('Publishing Bridge');
+		Bridge.publish();
+	}
+
+	console.log('Starting Client Services');
+
+	// Web Server (started later)
+	UIServer = new Server(Accesories, Bridge, setupRoutes, initAccessory);
+
+	// MQTT Client (+ Start Server)
+	MQTTC = new MQTT.MQTT(Accesories, MQTTDone);
+}
 
 function setupRoutes() {
 	const Keys = Object.keys(Routes);
@@ -140,7 +170,7 @@ function setupRoutes() {
 		const RouteCFG = CONFIG.routes[RouteNames[i]];
 		RouteCFG.readyStatus =
 			'<span style="color:orange">Module is initializing...</span>';
-		console.log(` Configuring Route : ${RouteNames[i]} (${RouteCFG.type})`);
+		console.log(`Configuring Route : ${RouteNames[i]} (${RouteCFG.type})`);
 
 		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(
 			RouteCFG,
@@ -160,14 +190,9 @@ function setupRoutes() {
 	}
 }
 
-setTimeout(setupRoutes, CONFIG.routeInitDelay * 1000);
-
-// Load up cache (if available)
-const Cache = UTIL.getCharacteristicCache();
-
 // Main Accessory Initializer
 function initAccessory(Config) {
-	console.log(` Configuring Accessory : ${Config.name} (${Config.type})`);
+	console.log(`Configuring Accessory : ${Config.name} (${Config.type})`);
 
 	const TypeMetadata = ACCESSORY.Types[Config.type];
 	Config.accessoryID = Config.username.replace(/:/g, '');
@@ -175,7 +200,7 @@ function initAccessory(Config) {
 
 	if (Cache !== undefined) {
 		if (Cache.hasOwnProperty(Config.accessoryID)) {
-			console.log(' Restoring Characteristics...');
+			console.log('Restoring Characteristics...');
 			Acc.setCharacteristics(Cache[Config.accessoryID]);
 		}
 	}
@@ -189,8 +214,8 @@ function initAccessory(Config) {
 
 	if (!Config.bridged) {
 		Acc.on('PAIR_CHANGE', (Paired) => Pair(Paired, Config));
-		console.log(`       Pin Code: ${Config.pincode}`);
-		console.log('       Publishing Accessory (Unbridged)');
+		console.log(` Pin Code: ${Config.pincode}`);
+		console.log(' Publishing Accessory (Unbridged)');
 		Acc.publish();
 	} else {
 		Bridge.addAccessory(Acc.getAccessory());
@@ -198,28 +223,6 @@ function initAccessory(Config) {
 
 	return Acc.getAccessory().setupURI();
 }
-
-// Configure Our Accessories
-const Accesories = {};
-for (let i = 0; i < CONFIG.accessories.length; i++) {
-	const AccessoryOBJ = CONFIG.accessories[i];
-	initAccessory(AccessoryOBJ);
-}
-
-if (CONFIG.bridgeEnabled) {
-	// Publish Bridge
-	console.log(' Publishing Bridge');
-	Bridge.publish();
-}
-
-console.log(' Starting Client Services');
-
-// Web Server (started later)
-const UIServer = new Server(Accesories, Bridge, setupRoutes, initAccessory);
-
-// MQTT Client (+ Start Server)
-// eslint-disable-next-line no-unused-vars
-const MQTTC = new MQTT.MQTT(Accesories, MQTTDone);
 
 function MQTTDone() {
 	UIServer.Start(UIServerDone);
@@ -234,10 +237,9 @@ function UIServerDone() {
 		IPAddress = CONFIG.webInterfaceAddress;
 	}
 
-	console.log('┌────────────────────────────────────────────────────────────────────┐');
-	console.log(`|  Goto http://${IPAddress}:${CONFIG.webInterfacePort}/ to start managing your installation. |`);
-	console.log('|  Default username and password is admin                            |'	);
-	console.log('└────────────────────────────────────────────────────────────────────┘');
+	console.log(
+		`Goto http://${IPAddress}:${CONFIG.webInterfacePort}/ to start managing your installation.`
+	);
 	console.log(' ');
 }
 
@@ -325,3 +327,5 @@ function Identify(paired, AccessoryCFG) {
 		}
 	}
 }
+
+Init();

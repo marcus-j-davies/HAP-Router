@@ -1,4 +1,3 @@
-'use strict';
 const EXPRESS = require('express');
 const BASICAUTH = require('express-basic-auth');
 const CRYPTO = require('crypto');
@@ -53,7 +52,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
 	// Start Server
 	this.Start = function (CB) {
-		console.log(' Starting Web Server');
+		console.log('Starting Web Server');
 		console.log(' ');
 
 		const TemplateKeys = Object.keys(Templates);
@@ -143,7 +142,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 				app.listen(CONFIG.webInterfacePort, CONFIG.webInterfaceAddress);
 			}
 		} catch (err) {
-			console.log(' Could not start Web Server : ' + err);
+			console.log('Could not start Web Server : ' + err);
 			process.exit(0);
 		}
 
@@ -154,7 +153,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		return (
 			CONFIG.loginUsername === username &&
 			CRYPTO.createHash('md5').update(password).digest('hex') ===
-			CONFIG.loginPassword
+				CONFIG.loginPassword
 		);
 	}
 

@@ -1,5 +1,3 @@
-'use strict';
-
 const PATH = require('path');
 const FS = require('fs');
 const MATCHER = require('matcher');
@@ -89,7 +87,7 @@ const install = function (Module) {
 	console.log(` Installing route module: ${Module}`);
 	spawnSync(
 		'npm',
-		['install','--production', `${Module}`, '--prefix', `"${RootPath}"`],
+		['install', '--production', `${Module}`, '--prefix', `"${RootPath}"`],
 		{ shell: true }
 	);
 };

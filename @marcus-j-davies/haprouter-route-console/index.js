@@ -1,5 +1,3 @@
-'use strict';
-
 /* UI Params */
 const Params = [];
 
@@ -19,7 +17,7 @@ ConsoleClass.prototype.process = async function (payload) {
 	console.log(payload);
 };
 
-ConsoleClass.prototype.close = function (reason) {};
+ConsoleClass.prototype.close = function () {};
 
 module.exports = {
 	Route: ConsoleClass,

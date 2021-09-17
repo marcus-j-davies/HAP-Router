@@ -1,4 +1,3 @@
-'use strict';
 const WS = require('ws');
 
 /* UI Params */
@@ -19,8 +18,9 @@ class WebsocketClass {
 	constructor(route, statusnotify) {
 		this.StatusNotify = statusnotify;
 		this.Websocket = new WS(route.uri);
-		this.Websocket.on('open', () => this.HandleWSOpen());
-		this.Websocket.on('error', (e) => this.WSError(e));
+		this.Websocket.on('open', this.HandleWSOpen);
+		this.Websocket.on('error', this.WSError);
+		this.Websocket.on('close', this.HandleWSClose);
 	}
 }
 
@@ -29,12 +29,16 @@ WebsocketClass.prototype.process = async function (payload) {
 	this.Websocket.send(JSONs);
 };
 
-WebsocketClass.prototype.close = function (reason) {
+WebsocketClass.prototype.close = function () {
 	this.Websocket.close();
 };
 
 WebsocketClass.prototype.HandleWSOpen = function () {
 	this.StatusNotify(true);
+};
+
+WebsocketClass.prototype.HandleWSClose = function () {
+	this.StatusNotify(false, 'Connection was closed.');
 };
 
 WebsocketClass.prototype.WSError = function (err) {

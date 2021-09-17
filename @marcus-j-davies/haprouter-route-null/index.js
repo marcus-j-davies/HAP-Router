@@ -1,5 +1,3 @@
-'use strict';
-
 /* UI Params */
 const Params = [];
 
@@ -15,9 +13,9 @@ class Null {
 	}
 }
 
-Null.prototype.process = async function (payload) {};
+Null.prototype.process = async function () {};
 
-Null.prototype.close = function (reason) {};
+Null.prototype.close = function () {};
 
 module.exports = {
 	Route: Null,

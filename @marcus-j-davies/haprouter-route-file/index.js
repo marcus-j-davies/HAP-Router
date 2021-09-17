@@ -1,4 +1,3 @@
-'use strict';
 const path = require('path');
 const fs = require('fs');
 
@@ -35,7 +34,7 @@ File.prototype.process = async function (payload) {
 		try {
 			fs.mkdirSync(Directory, { recursive: true });
 		} catch (err) {
-			console.log(' FILE Route error: ' + err);
+			console.log('FILE Route error: ' + err);
 			return;
 		}
 	}
@@ -48,11 +47,11 @@ File.prototype.process = async function (payload) {
 	try {
 		fs.writeFileSync(_Path, JSONs, 'utf8');
 	} catch (err) {
-		console.log(' FILE Route error: ' + err);
+		console.log('FILE Route error: ' + err);
 	}
 };
 
-File.prototype.close = function (reason) {};
+File.prototype.close = function () {};
 
 module.exports = {
 	Route: File,

@@ -1,5 +1,3 @@
-'use strict';
-
 const { Service, Characteristic, Categories } = require('hap-nodejs');
 const { BasicSet, BaseAccessory } = require('./BaseAccessory');
 

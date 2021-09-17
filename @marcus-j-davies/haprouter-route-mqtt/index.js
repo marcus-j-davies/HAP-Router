@@ -1,4 +1,3 @@
-'use strict';
 const mqtt = require('mqtt');
 
 /* UI Params */
@@ -38,8 +37,9 @@ class MQTTRoute {
 		};
 
 		this.MQTTBroker = mqtt.connect(route.mqttbroker, Options);
-		this.MQTTBroker.on('connect', () => this.mqttConnected());
-		this.MQTTBroker.on('error', (e) => this.mqttError(e));
+		this.MQTTBroker.on('connect', this.mqttConnected);
+		this.MQTTBroker.on('error', this.mqttError);
+		this.MQTTBroker.on('close', this.mqttClose);
 	}
 }
 
@@ -52,8 +52,12 @@ MQTTRoute.prototype.process = async function (payload) {
 	this.MQTTBroker.publish(T, JSONs, null, () => {});
 };
 
-MQTTRoute.prototype.close = function (reason) {
+MQTTRoute.prototype.close = function () {
 	this.MQTTBroker.end();
+};
+
+MQTTRoute.prototype.mqttClose = function () {
+	this.StatusNotify(false, 'Connection was closed.');
 };
 
 MQTTRoute.prototype.mqttConnected = function () {

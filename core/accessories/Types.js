@@ -1,5 +1,3 @@
-'use strict';
-
 const { Alarm } = require('./Alarm');
 const { ContactSensor } = require('./ContactSensor');
 const { Outlet } = require('./Outlet');

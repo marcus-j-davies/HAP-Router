@@ -1,4 +1,3 @@
-'use strict';
 const dgram = require('dgram');
 
 /* UI Params */
@@ -24,7 +23,8 @@ class UDP {
 		this.Route = route;
 		this.StatusNotify = statusnotify;
 		this.UDPServer = dgram.createSocket('udp4');
-		this.UDPServer.bind(() => this.UDPConnected());
+		this.UDPServer.on('error', this.UDPBindError);
+		this.UDPServer.bind(this.UDPConnected);
 	}
 }
 
@@ -40,8 +40,12 @@ UDP.prototype.process = async function (payload) {
 	);
 };
 
-UDP.prototype.close = function (reason) {
+UDP.prototype.close = function () {
 	this.UDPServer.close();
+};
+
+UDP.prototype.UDPBindError = function (err) {
+	this.StatusNotify(false, 'Error: ' + err.message);
 };
 
 UDP.prototype.UDPConnected = function () {
@@ -49,7 +53,11 @@ UDP.prototype.UDPConnected = function () {
 	this.StatusNotify(true);
 };
 
-UDP.prototype.UDPDone = function (e, n) {};
+UDP.prototype.UDPDone = function (err) {
+	if (err) {
+		console.log('UDP Route error: ' + err);
+	}
+};
 
 module.exports = {
 	Route: UDP,
