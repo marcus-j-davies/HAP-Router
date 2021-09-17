@@ -1,16 +1,16 @@
   - **3.0.0** 
 
-   - **Breaking Changes**
-    - Password storage now uses **bcrypt**.
-      Use the **passwd** command to recreate the hashed password, until then, the UI and API won't be available.
+    - **Breaking Changes**
+      - Password storage now uses **bcrypt**.
+        Use the **passwd** command to recreate the hashed password, until then, the UI and API won't be available.
 
-   - **Changes**
-    - Bump dependencies.
-    - Code Refactoring
-    - Various bug fixes and performance improvements.
-    - The web UI and API now has rate limiting (100/2.5s)
-    - The cookie encryption key is now generated at start up (previously hard coded)
-    - Various security enhancements 
+    - **Changes**
+      - Bump dependencies.
+      - Code Refactoring
+      - Various bug fixes and performance improvements.
+      - The web UI and API now has rate limiting (100/2.5s)
+      - The cookie encryption key is now generated at start up (previously hard coded)
+      - Various security enhancements 
 
   - **2.1.0**
 
