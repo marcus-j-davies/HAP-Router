@@ -9,6 +9,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ws":"7.4.6"
+    "ws":"^8.2.2"
   }
 }
