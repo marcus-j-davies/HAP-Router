@@ -1,6 +1,6 @@
 const EXPRESS = require('express');
 const BASICAUTH = require('express-basic-auth');
-const CRYPTO = require('crypto');
+const BCRYPT = require('bcrypt');
 const HANDLEBARS = require('handlebars');
 const FS = require('fs');
 const ACCESSORY = require('./accessories/Types');
@@ -13,7 +13,7 @@ const ROUTING = require('./routing');
 const QRCODE = require('qrcode');
 const HAPPackage = require('hap-nodejs/package.json');
 const RouterPackage = require('../package.json');
-const util = require('./util');
+const RateLimiter = require('express-rate-limit');
 
 const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 	// Vars
@@ -67,9 +67,15 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		// Express
 		const app = EXPRESS();
 
-		// Middleware
+		// Middlewares
+		const IOLimiter = RateLimiter({
+			windowMs: 2500,
+			max: 50
+		});
+		const CookieKey = BCRYPT.genSaltSync(10);
+		app.use(IOLimiter);
 		app.use(EXPRESS.json());
-		app.use(COOKIEPARSER('2jS4khgKVTMaVhwVxYPx8Kjnwwpfyvxa'));
+		app.use(COOKIEPARSER(CookieKey));
 
 		// UI
 		app.use(
@@ -152,8 +158,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 	function Authorizer(username, password) {
 		return (
 			CONFIG.loginUsername === username &&
-			CRYPTO.createHash('md5').update(password).digest('hex') ===
-				CONFIG.loginPassword
+			BCRYPT.compareSync(password, CONFIG.loginPassword)
 		);
 	}
 
@@ -162,7 +167,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			return;
 		}
 
-		const DATA = util.performBackup();
+		const DATA = UTIL.performBackup();
 
 		res.contentType('application/json');
 		res.setHeader(
@@ -177,7 +182,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			return;
 		}
 
-		if (util.restoreBackup(req.body)) {
+		if (UTIL.restoreBackup(req.body)) {
 			res.contentType('application/json');
 			res.send({ success: true });
 			process.exit(0);
@@ -195,10 +200,19 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		const ID = req.query.aid;
 		const Method = req.query.method;
 
-		_ConfiguredAccessories[ID][Method]();
-
-		res.contentType('application/json');
-		res.send({ success: true });
+		if (_ConfiguredAccessories[ID].hasOwnProperty(Method)) {
+			if (typeof _ConfiguredAccessories[ID][Method] === 'function') {
+				_ConfiguredAccessories[ID][Method]();
+				res.contentType('application/json');
+				res.send({ success: true });
+			} else {
+				res.contentType('application/json');
+				res.send({ success: false });
+			}
+		} else {
+			res.contentType('application/json');
+			res.send({ success: false });
+		}
 	}
 
 	// API - All Accessories
@@ -469,6 +483,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
 	/* Check PairStatus */
 	function checkPairStatus(ID) {
+		ID = ID.replace(/[.]/g, '').replace(/[/]/g, '').replace(/[\\]/g, '');
+
 		const AccessoryFileName = PATH.join(
 			UTIL.HomeKitPath,
 			'AccessoryInfo.' + ID + '.json'
@@ -590,13 +606,11 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		const Data = req.body;
 
 		const Username = Data.username;
-		const Password = CRYPTO.createHash('md5')
-			.update(Data.password)
-			.digest('hex');
+		const Password = Data.password;
 
 		if (
 			Username === CONFIG.loginUsername &&
-			Password === CONFIG.loginPassword
+			BCRYPT.compareSync(Password, CONFIG.loginPassword)
 		) {
 			res.cookie('Authentication', 'Success', {
 				signed: true

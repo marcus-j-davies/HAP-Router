@@ -1,7 +1,7 @@
 ﻿const FS = require('fs');
 const PATH = require('path');
 const READLINE = require('readline');
-const CRYPTO = require('crypto');
+const BCRYPT = require('bcrypt');
 const OS = require('os');
 const ROOTPATH = PATH.join(OS.homedir(), 'HAPRouter');
 const ROOTAPPPATH = PATH.join(__dirname, '../');
@@ -193,7 +193,7 @@ const checkPassword = function () {
 		if (process.argv[2] === 'passwd') {
 			const NUSR = process.argv[3];
 			const NPWD = process.argv[4];
-			const PW = CRYPTO.createHash('md5').update(NPWD).digest('hex');
+			const PW = BCRYPT.hashSync(NPWD, 10);
 			const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
 			const ConfigOBJ = JSON.parse(CFF);
 			ConfigOBJ.loginUsername = NUSR;

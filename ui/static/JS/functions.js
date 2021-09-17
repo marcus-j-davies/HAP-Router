@@ -397,6 +397,8 @@ function AccessoryAction(ID, Method) {
 		success: function (data) {
 			if (data.success) {
 				$('#ActionMessage').text('Action performed successfully!');
+			} else {
+				$('#ActionMessage').text('Action not found or incorrect type!');
 			}
 		}
 	});

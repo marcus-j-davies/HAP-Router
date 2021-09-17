@@ -89,6 +89,11 @@ function Init() {
 		return;
 	}
 
+	// check password chnage
+	if (UTIL.checkPassword()) {
+		return;
+	}
+
 	console.clear();
 
 	// Load Route Modules
