@@ -70,7 +70,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		// Middlewares
 		const IOLimiter = RateLimiter({
 			windowMs: 2500,
-			max: 50
+			max: 100
 		});
 		const CookieKey = BCRYPT.genSaltSync(10);
 		app.use(IOLimiter);
@@ -779,18 +779,20 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			return;
 		}
 
-		const Type = req.params.type.replace('__proto__', '');
+		const Type = req.params.type;
 
-		const PL = {
-			Specification: ACCESSORY.Types[Type],
-			Routes: Object.keys(CONFIG.routes)
-		};
-		PL.Specification.type = Type;
+		if (ACCESSORY.Types.hasOwnProperty(Type)) {
+			const PL = {
+				Specification: ACCESSORY.Types[Type],
+				Routes: Object.keys(CONFIG.routes)
+			};
+			PL.Specification.type = Type;
 
-		const HTML = CompiledTemplates['NewAccessory'](PL);
+			const HTML = CompiledTemplates['NewAccessory'](PL);
 
-		res.contentType('text/html');
-		res.send(HTML);
+			res.contentType('text/html');
+			res.send(HTML);
+		}
 	}
 
 	/* DO Create Accessory */
