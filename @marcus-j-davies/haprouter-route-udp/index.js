@@ -22,30 +22,43 @@ class UDP {
 	constructor(route, statusnotify) {
 		this.Route = route;
 		this.StatusNotify = statusnotify;
-		this.UDPServer = dgram.createSocket('udp4');
-		this.UDPServer.on('error', this.UDPBindError);
-		this.UDPServer.bind(this.UDPConnected);
+
+		try {
+			this.UDPServer = dgram.createSocket('udp4');
+			this.UDPServer.on('error', (e) => this.UDPBindError(e));
+			this.UDPServer.bind(() => this.UDPConnected());
+		} catch (err) {
+			statusnotify(false, err.message);
+		}
 	}
 }
 
 UDP.prototype.process = async function (payload) {
-	const JSONs = JSON.stringify(payload);
-	this.UDPServer.send(
-		JSONs,
-		0,
-		JSONs.length,
-		this.Route.port,
-		this.Route.address,
-		this.UDPDone
-	);
+	if (this.UDPServer !== undefined) {
+		const JSONs = JSON.stringify(payload);
+		try {
+			this.UDPServer.send(
+				JSONs,
+				0,
+				JSONs.length,
+				this.Route.port,
+				this.Route.address,
+				this.UDPDone
+			);
+		} catch (err) {
+			this.StatusNotify(false, err.message);
+		}
+	}
 };
 
 UDP.prototype.close = function () {
-	this.UDPServer.close();
+	if (this.UDPServer !== undefined) {
+		this.UDPServer.close();
+	}
 };
 
 UDP.prototype.UDPBindError = function (err) {
-	this.StatusNotify(false, 'Error: ' + err.message);
+	this.StatusNotify(false, err.message);
 };
 
 UDP.prototype.UDPConnected = function () {
@@ -55,7 +68,9 @@ UDP.prototype.UDPConnected = function () {
 
 UDP.prototype.UDPDone = function (err) {
 	if (err) {
-		console.log('UDP Route error: ' + err);
+		this.StatusNotify(false, err.message);
+	} else {
+		this.StatusNotify(true);
 	}
 };
 

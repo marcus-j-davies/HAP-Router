@@ -173,25 +173,27 @@ function setupRoutes() {
 
 	for (let i = 0; i < RouteNames.length; i++) {
 		const RouteCFG = CONFIG.routes[RouteNames[i]];
-		RouteCFG.readyStatus =
-			'<span style="color:orange">Module is initializing...</span>';
+		RouteCFG.readyStatus = 'Module is initializing...';
+		RouteCFG.readyRGB = 'orange';
 		console.log(`Configuring Route : ${RouteNames[i]} (${RouteCFG.type})`);
-
 		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(
 			RouteCFG,
-			(success, message) => {
-				if (success === undefined) {
-					RouteCFG.readyStatus =
-						'<span style="color:orange">Module is initializing...</span>';
-				} else if (success) {
-					RouteCFG.readyStatus =
-						'<span style="color:greenyellow">Module Successfully Initialized.</span>';
-				} else {
-					RouteCFG.readyStatus = `<span style="color:tomato">Module Error: ${message}</span>`;
-				}
-			}
+			(S, M) => ModuleUpdate(S, M, RouteCFG)
 		);
 		Routes[RouteNames[i]] = RouteClass;
+	}
+}
+
+function ModuleUpdate(success, message, CGF) {
+	if (success === undefined) {
+		CGF.readyStatus = 'Module is initializing...';
+		CGF.readyRGB = 'orange';
+	} else if (success) {
+		CGF.readyStatus = 'Module successfully initialized.';
+		CGF.readyRGB = 'limegreen';
+	} else {
+		CGF.readyStatus = `Module Error: ${message}`;
+		CGF.readyRGB = 'tomato';
 	}
 }
 

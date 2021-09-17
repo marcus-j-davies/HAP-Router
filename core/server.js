@@ -578,6 +578,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 				type: RS.Type,
 				typeName: RS.Name,
 				readyStatus: R.readyStatus,
+				readyRGB: R.readyRGB,
 				useCount:
 					UseCount === 1 ? UseCount + ' Accessory' : UseCount + ' Accessories'
 			};

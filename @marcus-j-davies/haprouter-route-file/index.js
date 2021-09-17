@@ -19,6 +19,7 @@ class File {
 	constructor(route, statusnotify) {
 		this.Route = route;
 		statusnotify(true);
+		this.StatusNotify = statusnotify;
 	}
 }
 
@@ -34,7 +35,7 @@ File.prototype.process = async function (payload) {
 		try {
 			fs.mkdirSync(Directory, { recursive: true });
 		} catch (err) {
-			console.log('FILE Route error: ' + err);
+			this.StatusNotify(false, err.message);
 			return;
 		}
 	}
@@ -46,8 +47,9 @@ File.prototype.process = async function (payload) {
 
 	try {
 		fs.writeFileSync(_Path, JSONs, 'utf8');
+		this.StatusNotify(true);
 	} catch (err) {
-		console.log('FILE Route error: ' + err);
+		this.StatusNotify(false, err.message);
 	}
 };
 

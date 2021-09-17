@@ -6,11 +6,12 @@
 
     - **Changes**
       - Bump dependencies.
-      - Code Refactoring
+      - Massive Code Refactoring
       - Various bug fixes and performance improvements.
       - The web UI and API now has rate limiting (100/2.5s)
       - The cookie encryption key is now generated at start up (previously hard coded)
       - Various security enhancements 
+      - Performance improvements to built in route modules
 
   - **2.1.0**
 
