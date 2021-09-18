@@ -24,28 +24,34 @@ const Params = [
 const Name = 'MQTT Message';
 const Icon = 'icon.png';
 
+const _MaxRetries = 5;
+const _RetryWaitTime = 10000;
+
 /* Route Class */
 class MQTTRoute {
 	/* Constructor */
 	constructor(route, statusnotify) {
 		this.Route = route;
 		this.StatusNotify = statusnotify;
-
-		const Options = {
-			username: route.mqttusername,
-			password: route.mqttpassword
-		};
-
-		try {
-			this.MQTTBroker = mqtt.connect(route.mqttbroker, Options);
-			this.MQTTBroker.on('connect', () => this.mqttConnected());
-			this.MQTTBroker.on('error', (e) => this.mqttError(e));
-			this.MQTTBroker.on('close', () => this.mqttClose());
-		} catch (err) {
-			statusnotify(false, err.message);
-		}
+		this._init();
 	}
 }
+
+MQTTRoute.prototype._init = function () {
+	const Options = {
+		username: this.Route.mqttusername,
+		password: this.Route.mqttpassword
+	};
+
+	try {
+		this.MQTTBroker = mqtt.connect(this.Route.mqttbroker, Options);
+		this.MQTTBroker.on('connect', () => this.mqttConnected());
+		this.MQTTBroker.on('error', (e) => this.mqttError(e));
+		this.MQTTBroker.on('close', () => this.mqttClose());
+	} catch (err) {
+		this.StatusNotify(false, err.message);
+	}
+};
 
 MQTTRoute.prototype.process = async function (payload) {
 	if (this.MQTTBroker !== undefined) {
@@ -65,7 +71,22 @@ MQTTRoute.prototype.close = function () {
 };
 
 MQTTRoute.prototype.mqttClose = function () {
-	this.StatusNotify(false, 'Connection was closed.');
+	if (this.Retries >= _MaxRetries) {
+		this.StatusNotify(false, 'Connection was closed. Recovery Failed.');
+	} else {
+		this.Retries++;
+		this.StatusNotify(
+			false,
+			'Connection was closed. Recovery Scheduled (' +
+				this.Retries +
+				'/' +
+				_MaxRetries +
+				')'
+		);
+		setTimeout(() => {
+			this._init();
+		}, _RetryWaitTime);
+	}
 };
 
 MQTTRoute.prototype.mqttConnected = function () {

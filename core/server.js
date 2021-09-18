@@ -14,6 +14,7 @@ const QRCODE = require('qrcode');
 const HAPPackage = require('hap-nodejs/package.json');
 const RouterPackage = require('../package.json');
 const RateLimiter = require('express-rate-limit');
+const WS = require('ws');
 
 const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 	// Vars
@@ -49,6 +50,16 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 	});
 
 	const CompiledTemplates = {};
+	let RouteStatusSocket;
+	const WSClients = {};
+
+	this.SendRouteStatus = function (status) {
+		const Clients = Object.keys(WSClients);
+		for (let i = 0; i < Clients.length; i++) {
+			const Client = WSClients[Clients[i]];
+			Client.send(JSON.stringify(status));
+		}
+	};
 
 	// Start Server
 	this.Start = function (CB) {
@@ -76,6 +87,14 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		app.use(IOLimiter);
 		app.use(EXPRESS.json());
 		app.use(COOKIEPARSER(CookieKey));
+
+		// Route Status Socket
+		RouteStatusSocket = new WS.Server({
+			port: parseInt(CONFIG.webInterfacePort) + 1
+		});
+		RouteStatusSocket.on('connection', (Socket, Request) => {
+			WSClients[Request.socket.remoteAddress] = Socket;
+		});
 
 		// UI
 		app.use(
@@ -507,6 +526,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			req.signedCookies.Authentication !== 'Success'
 		) {
 			res.redirect('../../../ui/login');
+
 			return false;
 		}
 		return true;
@@ -579,6 +599,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 				typeName: RS.Name,
 				readyStatus: R.readyStatus,
 				readyRGB: R.readyRGB,
+				clientId: R.clientID,
 				useCount:
 					UseCount === 1 ? UseCount + ' Accessory' : UseCount + ' Accessories'
 			};

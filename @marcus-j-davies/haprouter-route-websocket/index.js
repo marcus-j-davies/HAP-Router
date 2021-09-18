@@ -12,22 +12,30 @@ const Params = [
 const Name = 'Websocket';
 const Icon = 'icon.png';
 
+const _MaxRetries = 5;
+const _RetryWaitTime = 10000;
+
 /* Route Class */
 class WebsocketClass {
 	/* Constructor */
 	constructor(route, statusnotify) {
 		this.StatusNotify = statusnotify;
-
-		try {
-			this.Websocket = new WS(route.uri);
-			this.Websocket.on('open', () => this.HandleWSOpen());
-			this.Websocket.on('error', (e) => this.WSError(e));
-			this.Websocket.on('close', () => this.HandleWSClose());
-		} catch (err) {
-			statusnotify(false, err.message);
-		}
+		this.Route = route;
+		this.Retries = 0;
+		this._init();
 	}
 }
+
+WebsocketClass.prototype._init = function () {
+	try {
+		this.Websocket = new WS(this.Route.uri);
+		this.Websocket.on('open', () => this.HandleWSOpen());
+		this.Websocket.on('error', (e) => this.WSError(e));
+		this.Websocket.on('close', () => this.HandleWSClose());
+	} catch (err) {
+		this.StatusNotify(false, err.message);
+	}
+};
 
 WebsocketClass.prototype.process = async function (payload) {
 	if (this.Websocket !== undefined) {
@@ -38,11 +46,13 @@ WebsocketClass.prototype.process = async function (payload) {
 
 WebsocketClass.prototype.close = function () {
 	if (this.Websocket !== undefined) {
+		this.Websocket.removeAllListeners();
 		this.Websocket.close();
 	}
 };
 
 WebsocketClass.prototype.HandleWSOpen = function () {
+	this.Retries = 0;
 	this.StatusNotify(true);
 };
 
@@ -55,7 +65,22 @@ WebsocketClass.prototype.WSError = function (err) {
 };
 
 WebsocketClass.prototype.HandleWSClose = function () {
-	this.StatusNotify(false, 'Connection was closed.');
+	if (this.Retries >= _MaxRetries) {
+		this.StatusNotify(false, 'Connection was closed. Recovery Failed.');
+	} else {
+		this.Retries++;
+		this.StatusNotify(
+			false,
+			'Connection was closed. Recovery Scheduled (' +
+				this.Retries +
+				'/' +
+				_MaxRetries +
+				')'
+		);
+		setTimeout(() => {
+			this._init();
+		}, _RetryWaitTime);
+	}
 };
 
 module.exports = {

@@ -175,6 +175,11 @@ function setupRoutes() {
 		const RouteCFG = CONFIG.routes[RouteNames[i]];
 		RouteCFG.readyStatus = 'Module is initializing...';
 		RouteCFG.readyRGB = 'orange';
+		RouteCFG.clientID = (RouteCFG.type + '' + RouteNames[i])
+			.replace(/ /g, '')
+			.replace(/\./g, '')
+			.replace(/\//g, '')
+			.replace(/@/g, '');
 		console.log(`Configuring Route : ${RouteNames[i]} (${RouteCFG.type})`);
 		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(
 			RouteCFG,
@@ -184,17 +189,23 @@ function setupRoutes() {
 	}
 }
 
-function ModuleUpdate(success, message, CGF) {
+function ModuleUpdate(success, message, CFG) {
 	if (success === undefined) {
-		CGF.readyStatus = 'Module is initializing...';
-		CGF.readyRGB = 'orange';
+		CFG.readyStatus = 'Module is initializing...';
+		CFG.readyRGB = 'orange';
 	} else if (success) {
-		CGF.readyStatus = 'Module successfully initialized.';
-		CGF.readyRGB = 'limegreen';
+		CFG.readyStatus = 'Module is ready.';
+		CFG.readyRGB = 'limegreen';
 	} else {
-		CGF.readyStatus = `Module Error: ${message}`;
-		CGF.readyRGB = 'tomato';
+		CFG.readyStatus = `Module Error: ${message}`;
+		CFG.readyRGB = 'tomato';
 	}
+
+	UIServer.SendRouteStatus({
+		id: CFG.clientID,
+		status: CFG.readyStatus,
+		RGB: CFG.readyRGB
+	});
 }
 
 // Main Accessory Initializer
