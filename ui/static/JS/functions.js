@@ -317,7 +317,13 @@ function SaveNewRoute(Type) {
 
 	ParamElements.each((index, element) => {
 		const EL = $(element);
-		Data[EL.attr('data-param')] = EL.val();
+		if (EL.is(':checkbox')) {
+			Data[EL.attr('data-param')] = EL.prop('checked');
+		} else if (EL.attr('type') === 'number') {
+			Data[EL.attr('data-param')] = parseInt(EL.val());
+		} else {
+			Data[EL.attr('data-param')] = EL.val();
+		}
 	});
 
 	$.ajax({
@@ -342,7 +348,13 @@ function SaveRouteChanges(ID) {
 	};
 	ParamElements.each((index, element) => {
 		const EL = $(element);
-		Data[EL.attr('data-param')] = EL.val();
+		if (EL.is(':checkbox')) {
+			Data[EL.attr('data-param')] = EL.prop('checked');
+		} else if (EL.attr('type') === 'number') {
+			Data[EL.attr('data-param')] = parseInt(EL.val());
+		} else {
+			Data[EL.attr('data-param')] = EL.val();
+		}
 	});
 
 	$.ajax({

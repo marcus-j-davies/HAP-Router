@@ -45,7 +45,11 @@
 
                         <tr>
                            <td style="width: 200px">{{label}}</td>
-                           <td><input type="text" data-param="{{id}}" class="RouteParam" value="{{value}}""></td>
+                           {{#eq type "checkbox"}}
+                              <td><input type="checkbox"  data-param="{{id}}" class="RouteParam" {{#if value}}checked{{/if}}></td>
+                           {{else}}
+                              <td><input type="{{type}}"  data-param="{{id}}" class="RouteParam" value="{{value}}"></td>
+                           {{/eq}}
                         </tr>
                     
                   {{/Settings}}

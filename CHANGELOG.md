@@ -9,9 +9,14 @@
       - Massive Code Refactoring
       - Various bug fixes and performance improvements.
       - The web UI and API now has rate limiting (100/2.5s)
-      - The cookie encryption key is now generated at start up (previously hard coded)
+      - The cookie signature key is now generated at start up (previously hard coded)
       - Various security enhancements 
       - Performance improvements to built in route modules
+
+    - **New Features**
+      - The built-in **Websocket** and **MQTT** routes now include recovery if connections are lost
+      - Custom route modules can now specify input types of: **text**, **password**, **number** and **checkbox**
+        if not specified they are rendered as **text**
 
   - **2.1.0**
 

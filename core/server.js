@@ -347,6 +347,11 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 				id: RI.id,
 				value: RC[RI.id]
 			};
+			if (RI.hasOwnProperty('type')) {
+				I.type = RI.type;
+			} else {
+				I.type = 'text';
+			}
 			Settings.push(I);
 		});
 
@@ -397,6 +402,11 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 				label: RI.label,
 				id: RI.id
 			};
+			if (RI.hasOwnProperty('type')) {
+				I.type = RI.type;
+			} else {
+				I.type = 'text';
+			}
 			Settings.push(I);
 		});
 

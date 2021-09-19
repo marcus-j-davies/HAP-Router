@@ -12,7 +12,8 @@ const Params = [
 	},
 	{
 		id: 'mqttpassword',
-		label: 'Password'
+		label: 'Password',
+		type: 'password'
 	},
 	{
 		id: 'mqtttopic',

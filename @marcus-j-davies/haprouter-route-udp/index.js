@@ -8,7 +8,8 @@ const Params = [
 	},
 	{
 		id: 'port',
-		label: 'Broadcast Port'
+		label: 'Broadcast Port',
+		type: 'number'
 	}
 ];
 
