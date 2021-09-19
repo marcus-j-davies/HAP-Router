@@ -1,7 +1,7 @@
 {
   "name": "@marcus-j-davies/haprouter-route-http",
   "description": "The stock HAP Router HTTP route",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "main": "index.js",
   "author": {
     "name": "Marcus Davies",

@@ -89,6 +89,11 @@ function Init() {
 		return;
 	}
 
+	// check password chnage
+	if (UTIL.checkPassword()) {
+		return;
+	}
+
 	console.clear();
 
 	// Load Route Modules
@@ -168,26 +173,41 @@ function setupRoutes() {
 
 	for (let i = 0; i < RouteNames.length; i++) {
 		const RouteCFG = CONFIG.routes[RouteNames[i]];
-		RouteCFG.readyStatus =
-			'<span style="color:orange">Module is initializing...</span>';
+		RouteCFG.readyStatus = 'Module is initializing...';
+		RouteCFG.readyRGB = 'orange';
+		RouteCFG.clientID = (RouteCFG.type + '' + RouteNames[i])
+			.replace(/ /g, '')
+			.replace(/\./g, '')
+			.replace(/\//g, '')
+			.replace(/@/g, '');
 		console.log(`Configuring Route : ${RouteNames[i]} (${RouteCFG.type})`);
-
 		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(
 			RouteCFG,
-			(success, message) => {
-				if (success === undefined) {
-					RouteCFG.readyStatus =
-						'<span style="color:orange">Module is initializing...</span>';
-				} else if (success) {
-					RouteCFG.readyStatus =
-						'<span style="color:greenyellow">Module Successfully Initialized.</span>';
-				} else {
-					RouteCFG.readyStatus = `<span style="color:tomato">Module Error: ${message}</span>`;
-				}
-			}
+			(S, M) => ModuleUpdate(S, M, RouteCFG)
 		);
 		Routes[RouteNames[i]] = RouteClass;
 	}
+}
+
+function ModuleUpdate(success, message, CFG) {
+	if (success === undefined) {
+		CFG.readyStatus = 'Module is initializing...';
+		CFG.readyRGB = 'orange';
+	} else if (success) {
+		CFG.readyStatus = 'Module is ready.';
+		CFG.readyRGB = 'limegreen';
+	} else {
+		CFG.readyStatus = `Module Error: ${message}`;
+		CFG.readyRGB = 'tomato';
+	}
+
+	setTimeout(() => {
+		UIServer.SendRouteStatus({
+			id: CFG.clientID,
+			status: CFG.readyStatus,
+			RGB: CFG.readyRGB
+		});
+	}, 100);
 }
 
 // Main Accessory Initializer

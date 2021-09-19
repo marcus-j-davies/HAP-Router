@@ -4,7 +4,7 @@ const { BaseAccessory } = require('./BaseAccessory');
 class Bridge extends BaseAccessory {
 	constructor(Config) {
 		Config.name = 'HAP Router Bridge';
-		Config.model = 'HAP Router V2';
+		Config.model = 'HAP Router V3';
 		Config.manufacturer = 'Marcus Davies';
 		super(Config, Categories.BRIDGE);
 	}

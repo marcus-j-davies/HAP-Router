@@ -1,297 +1,302 @@
 ﻿@font-face {
 	font-family: 'roboto';
-	src: url('./roboto-light-webfont.woff2') format('woff2'), url('./roboto-light-webfont.woff') format('woff');
+	src: url('./roboto-light-webfont.woff2') format('woff2'),
+		url('./roboto-light-webfont.woff') format('woff');
 	font-weight: normal;
 	font-style: normal;
 }
 
 @font-face {
 	font-family: 'roboto';
-	src: url('./roboto-bold-webfont.woff2') format('woff2'), url('./roboto-bold-webfont.woff') format('woff');
+	src: url('./roboto-bold-webfont.woff2') format('woff2'),
+		url('./roboto-bold-webfont.woff') format('woff');
 	font-weight: bold;
 	font-style: normal;
 }
 
-
-html{
-    margin:0;
-    padding: 0;
-    width: 100%;
-    height: 100%;;
-    background-image: url('/ui/static/Images/BG.png');
-    background-position: 0 0;
-    background-size: 100% 100%;
-    margin: 0;
-    height: 100%;
-}
-    
-body{
-    margin: 0;
-    font-family:'roboto';
-    color:rgb(0,0,0);
-    font-size:18px;
+html {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url('/ui/static/Images/BG.png');
+	background-position: 0 0;
+	background-size: 100% 100%;
+	margin: 0;
+	height: 100%;
 }
 
-.LoginLogo{
-    position: absolute;
-    top: 100px;
-    left: calc(50% - 264px);
-}
-.LoginBanner{
-    position: absolute;
-    top: 55%;
-    width: 100%;
-    height: 150px;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    -webkit-box-shadow: 0px 0px 18px -3px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 0px 18px -3px rgba(0,0,0,0.75);
-    box-shadow: 0px 0px 18px -3px rgba(0,0,0,0.75);
+body {
+	margin: 0;
+	font-family: 'roboto';
+	color: rgb(0, 0, 0);
+	font-size: 18px;
 }
 
-.LoginBanner .LoginTable{
-    width: 400px;
-    margin-left: auto;
-    margin-right: 25px;
-    padding-top: 23px;
-    color: rgb(255,255,255);
+.LoginLogo {
+	position: absolute;
+	top: 100px;
+	left: calc(50% - 264px);
+}
+.LoginBanner {
+	position: absolute;
+	top: 55%;
+	width: 100%;
+	height: 150px;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	-webkit-box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.75);
+	box-shadow: 0px 0px 18px -3px rgba(0, 0, 0, 0.75);
 }
 
-.LoginBanner .LoginDisclaimer{
-    margin-right: auto;
-    margin-left: 25px;
-    color: rgb(255,255,255);
-    font-size: 22px;
-    margin-top: 22px;
+.LoginBanner .LoginTable {
+	width: 400px;
+	margin-left: auto;
+	margin-right: 25px;
+	padding-top: 23px;
+	color: rgb(255, 255, 255);
 }
 
-.Container{
-    display: flex;
-    height: 100vh;
-    width: 100%;
+.LoginBanner .LoginDisclaimer {
+	margin-right: auto;
+	margin-left: 25px;
+	color: rgb(255, 255, 255);
+	font-size: 22px;
+	margin-top: 22px;
 }
 
-.Container .Menu{
-    color: rgb(255,255,255);
-    width: 300px;
-    background: rgba(0,0,0,0.5);
-    font-size: 22px;
-    -webkit-box-shadow: -6px 3px 16px 12px rgba(0,0,0,0.75);
-    -moz-box-shadow: -6px 3px 16px 12px rgba(0,0,0,0.75);
-    box-shadow: -6px 3px 16px 12px rgba(0,0,0,0.75);
-    height: 100vh;
+.Container {
+	display: flex;
+	height: 100vh;
+	width: 100%;
 }
 
-.Container .Menu li{
-    padding-left: 30px;
-    margin-left: -40px;
-    list-style-type: none;
-    margin-bottom: 10px;
+.Container .Menu {
+	color: rgb(255, 255, 255);
+	width: 300px;
+	background: rgba(0, 0, 0, 0.5);
+	font-size: 22px;
+	-webkit-box-shadow: -6px 3px 16px 12px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: -6px 3px 16px 12px rgba(0, 0, 0, 0.75);
+	box-shadow: -6px 3px 16px 12px rgba(0, 0, 0, 0.75);
+	height: 100vh;
 }
 
-.Container .Content{
-    width: 100%;
-    height: 99vh;
+.Container .Menu li {
+	padding-left: 30px;
+	margin-left: -40px;
+	list-style-type: none;
+	margin-bottom: 10px;
 }
 
-.ContentTitle{
-    font-size: 32px;
-    margin-bottom: 15px;
+.Container .Content {
+	width: 100%;
+	height: 99vh;
 }
 
-blockquote.ContentSection{
-    margin-inline-end: 100px;
-    margin-inline-start: 100px;
-    margin-block-start: 40px;
+.ContentTitle {
+	font-size: 32px;
+	margin-bottom: 15px;
 }
 
-fieldset{
-    border-style: solid;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    border-collapse: collapse;
-    border-color: rgb(0,0,0);
-    border-width: 1px;
-    margin-bottom: 15px;
-    background-color: rgba(0,0,0,0.5);
-}
-fieldset > legend{
-    background-color: rgb(243,107,8);
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    color: rgb(255,255,255);
-    padding: 6px;
-    font-size: 14px;
-    border-style: solid;
-    border-width: 1px;
-    border-collapse: collapse;
-    border-color: rgb(0,0,0);
+blockquote.ContentSection {
+	margin-inline-end: 100px;
+	margin-inline-start: 100px;
+	margin-block-start: 40px;
 }
 
-fieldset table{
-    color: rgb(255,255,255);
-    font-size: 12px;
+fieldset {
+	border-style: solid;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	border-collapse: collapse;
+	border-color: rgb(0, 0, 0);
+	border-width: 1px;
+	margin-bottom: 15px;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+fieldset > legend {
+	background-color: rgb(243, 107, 8);
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	color: rgb(255, 255, 255);
+	padding: 6px;
+	font-size: 14px;
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+	border-color: rgb(0, 0, 0);
 }
 
-.PincodeHint{
-    background-color: rgb(243,107,8);
-    color: rgb(255,255,255);
-    text-align: center;
-    border-style: solid;
-    border-color: rgb(0,0,0);
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    border-width: 1px;
-    padding: 5px;
-    width: 80px;
-    vertical-align: sub;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+fieldset table {
+	color: rgb(255, 255, 255);
+	font-size: 12px;
 }
 
-
-
-.VersionDiv{
-
-    font-size: 14px;
-    text-align: center;
-    position: fixed;
-    bottom: 50px;
-    left: 65px;
+.PincodeHint {
+	background-color: rgb(243, 107, 8);
+	color: rgb(255, 255, 255);
+	text-align: center;
+	border-style: solid;
+	border-color: rgb(0, 0, 0);
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	border-width: 1px;
+	padding: 5px;
+	width: 80px;
+	vertical-align: sub;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
 }
 
-.OptionBox{
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    margin: 10px;
-    font-size: 11px;
-    color: rgb(255,255,255);
-    width: 80px;
-    height: 75px;
-    padding: 5px;
-    border-color: rgba(255,255,255,0.0);
-    border-width: 1px;
-    border-style: solid;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition-duration:0.3s;
-    padding-bottom: 10px;
+.VersionDiv {
+	font-size: 14px;
+	text-align: center;
+	position: fixed;
+	bottom: 50px;
+	left: 65px;
 }
 
-.OptionBox:hover{
-    border-color: rgba(255,255,255,1.0);
-    background-color: rgba(220,220,220,0.3);
-   
-}
-    
-
-li > a, li > a:hover, li > a:visited{
-    text-decoration: none;
-    color: unset;
-    font-size: 18px;
-
-}
-
-img.AccessoryIcon{
-    width: 40px;
-    vertical-align: middle;
-}
-
-img.AccessoryIcon[Invert]{
-    filter: invert(1);
+.OptionBox {
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	margin: 10px;
+	font-size: 11px;
+	color: rgb(255, 255, 255);
+	width: 80px;
+	height: 75px;
+	padding: 5px;
+	border-color: rgba(255, 255, 255, 0);
+	border-width: 1px;
+	border-style: solid;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition-duration: 0.3s;
+	padding-bottom: 10px;
 }
 
-img.RouteIcon{
-    width: 40px;
-    vertical-align: middle;
-}
-img.RouteIcon[Invert]{
-    filter: invert(1);
+.OptionBox:hover {
+	border-color: rgba(255, 255, 255, 1);
+	background-color: rgba(220, 220, 220, 0.3);
 }
 
-
-
-.StyledButton{
-    color:rgb(255,255,255);
-    background-color:#F36B08;
-    padding-top:10px;
-    padding-bottom:10px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    border-color: rgb(0,0,0);
-    border-style: solid;
-    border-width: 1px;
-    border-collapse: collapse;
-    font-size: 12px;
-    cursor: pointer;
-    min-width: 90px;
-    vertical-align: middle;
+li > a,
+li > a:hover,
+li > a:visited {
+	text-decoration: none;
+	color: unset;
+	font-size: 18px;
 }
 
-.StyledButton[disabled]{
-    opacity: 0.3;
+img.AccessoryIcon {
+	width: 40px;
+	vertical-align: middle;
 }
 
-select{
-    -moz-appearance: none; 
-	-webkit-appearance: none; 
+img.AccessoryIcon[Invert] {
+	filter: invert(1);
+}
+
+img.RouteIcon {
+	width: 40px;
+	vertical-align: middle;
+}
+img.RouteIcon[Invert] {
+	filter: invert(1);
+}
+
+.StyledButton {
+	color: rgb(255, 255, 255);
+	background-color: #f36b08;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	border-color: rgb(0, 0, 0);
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+	font-size: 12px;
+	cursor: pointer;
+	min-width: 90px;
+	vertical-align: middle;
+}
+
+.StyledButton[disabled] {
+	opacity: 0.3;
+}
+
+select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
 	appearance: none;
 }
 
-input[type='text'], input[type='number'], input[type='password'], select, textarea{
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 3px;
-    border-collapse: collapse;
-    border-style: solid;
-    border-width: 1px;
-    padding: 3px;
-    width: 215px;
-    height: 15px;
+input[type='text'],
+input[type='number'],
+input[type='password'],
+select,
+textarea {
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 3px;
+	border-collapse: collapse;
+	border-style: solid;
+	border-width: 1px;
+	padding: 3px;
+	width: 215px;
+	height: 15px;
 }
-textarea{
-    width:227px;
-    height: 100px;
+textarea {
+	width: 227px;
+	height: 100px;
 }
-select{
-    height: 25px;
-    width: 223px;
-}
-
-div.PopupCurtain{
-    position: absolute;
-    top:0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.3);
-    display: none;
+select {
+	height: 25px;
+	width: 223px;
 }
 
-div.PopupCurtain > div.PopupContent{ 
-   
-    position: relative;
-    margin-top: 10%;
-    margin-left: auto;
-    margin-right: auto;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    border-style: solid;
-    border-width: 3px;
-    border-color: #F36B08;
-    background-color: rgb(255,255,255);
-    -webkit-box-shadow: 10px 10px 5px -4px rgba(0,0,0,0.75);
-    -moz-box-shadow: 10px 10px 5px -4px rgba(0,0,0,0.75);
-    box-shadow: 10px 10px 5px -4px rgba(0,0,0,0.75);
-    overflow: hidden;
-    
+div.PopupCurtain {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.3);
+	display: none;
+}
+
+div.PopupCurtain > div.PopupContent {
+	position: relative;
+	margin-top: 10%;
+	margin-left: auto;
+	margin-right: auto;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #f36b08;
+	background-color: rgb(255, 255, 255);
+	-webkit-box-shadow: 10px 10px 5px -4px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: 10px 10px 5px -4px rgba(0, 0, 0, 0.75);
+	box-shadow: 10px 10px 5px -4px rgba(0, 0, 0, 0.75);
+	overflow: hidden;
+}
+
+div.routeReadyDot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	display: inline-block;
+	margin-right: 10px;
 }

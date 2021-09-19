@@ -11,6 +11,18 @@
    <script src="../../../ui/static/JS/qrcode.min.js"></script>
    <script src="../../../ui/static/JS/lc_switch.min.js"></script>
    <script src="../../../ui/static/JS/functions.js"></script>
+
+   <script>
+      const WS = new WebSocket('ws://'+window.location.hostname+':'+(parseInt(window.location.port)+1)+'/routestatus');
+      WS.onopen = function(){
+         WS.onmessage = function(event){
+            const PL = JSON.parse(event.data);
+            $('#'+PL.id+' div').css({backgroundColor:PL.RGB})
+            $('#'+PL.id+' span').html(PL.status)
+         }
+      }
+   </script>
+
 </head>
 
 <body>
@@ -37,7 +49,7 @@
                   <td rowspan="4" style="text-align: right; vertical-align: top;">{{useCount}}</td>
                </tr>
                <tr><td>{{typeName}}</td></tr>
-               <tr><td style="font-weight: bold;">{{{readyStatus}}}</td></tr>
+               <tr><td style="font-weight: bold;" id="{{clientId}}"><div class="routeReadyDot" style="background-color: {{readyRGB}};"></div><span>{{{readyStatus}}}</span></td></tr>
                <tr><td>&nbsp;</td></tr>
 
 

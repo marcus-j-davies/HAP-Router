@@ -16,6 +16,7 @@ const Icon = 'icon.png';
 class HTTPRoute {
 	/* Constructor */
 	constructor(route, statusnotify) {
+		this.StatusNotify = statusnotify;
 		this.Route = route;
 		statusnotify(true);
 	}
@@ -37,9 +38,10 @@ HTTPRoute.prototype.process = async function (payload) {
 
 	try {
 		await axios.request(CFG);
+		this.StatusNotify(true);
 	} catch (err) {
 		if (err) {
-			console.log('HTTP Route error: ' + err);
+			this.StatusNotify(false, err.message);
 		}
 	}
 };

@@ -1,19 +1,21 @@
 const EXPRESS = require('express');
 const BASICAUTH = require('express-basic-auth');
-const CRYPTO = require('crypto');
+const BCRYPT = require('bcrypt');
 const HANDLEBARS = require('handlebars');
 const FS = require('fs');
 const ACCESSORY = require('./accessories/Types');
 const UTIL = require('./util');
 const CONFIG = require(UTIL.ConfigPath);
 const COOKIEPARSER = require('cookie-parser');
+const COOKIE = require('cookie');
 const PATH = require('path');
 const OS = require('os');
 const ROUTING = require('./routing');
 const QRCODE = require('qrcode');
 const HAPPackage = require('hap-nodejs/package.json');
 const RouterPackage = require('../package.json');
-const util = require('./util');
+const RateLimiter = require('express-rate-limit');
+const WS = require('ws');
 
 const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 	// Vars
@@ -49,6 +51,17 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 	});
 
 	const CompiledTemplates = {};
+	let RouteStatusSocket;
+	const WSClients = {};
+	const CookieKey = BCRYPT.genSaltSync(10);
+
+	this.SendRouteStatus = function (status) {
+		const Clients = Object.keys(WSClients);
+		for (let i = 0; i < Clients.length; i++) {
+			const Client = WSClients[Clients[i]];
+			Client.send(JSON.stringify(status));
+		}
+	};
 
 	// Start Server
 	this.Start = function (CB) {
@@ -67,9 +80,50 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		// Express
 		const app = EXPRESS();
 
-		// Middleware
+		// Middlewares
+		const IOLimiter = RateLimiter({
+			windowMs: 2500,
+			max: 100
+		});
+
+		app.use(IOLimiter);
 		app.use(EXPRESS.json());
-		app.use(COOKIEPARSER('2jS4khgKVTMaVhwVxYPx8Kjnwwpfyvxa'));
+		app.use(COOKIEPARSER(CookieKey));
+
+		// Route Status Socket
+		RouteStatusSocket = new WS.Server({
+			port: parseInt(CONFIG.webInterfacePort) + 1
+		});
+
+		function noop() {}
+		function heartbeat() {
+			this.isAlive = true;
+		}
+
+		RouteStatusSocket.on('connection', (Socket, Request) => {
+			if (_CheckAuth(Request)) {
+				Socket.isAlive = true;
+				Socket.on('pong', heartbeat);
+				WSClients[Request.socket.remoteAddress] = Socket;
+			} else {
+				Socket.send("Well that's uncalled for!");
+				Socket.terminate();
+			}
+		});
+
+		setInterval(() => {
+			const Clients = Object.keys(WSClients);
+			for (let i = 0; i < Clients.length; i++) {
+				const Client = WSClients[Clients[i]];
+				if (!Client.isAlive) {
+					Client.terminate();
+					delete WSClients[Clients[i]];
+				} else {
+					Client.isAlive = false;
+					Client.ping(noop);
+				}
+			}
+		}, 30000);
 
 		// UI
 		app.use(
@@ -152,8 +206,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 	function Authorizer(username, password) {
 		return (
 			CONFIG.loginUsername === username &&
-			CRYPTO.createHash('md5').update(password).digest('hex') ===
-				CONFIG.loginPassword
+			BCRYPT.compareSync(password, CONFIG.loginPassword)
 		);
 	}
 
@@ -162,7 +215,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			return;
 		}
 
-		const DATA = util.performBackup();
+		const DATA = UTIL.performBackup();
 
 		res.contentType('application/json');
 		res.setHeader(
@@ -177,7 +230,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			return;
 		}
 
-		if (util.restoreBackup(req.body)) {
+		if (UTIL.restoreBackup(req.body)) {
 			res.contentType('application/json');
 			res.send({ success: true });
 			process.exit(0);
@@ -195,10 +248,19 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		const ID = req.query.aid;
 		const Method = req.query.method;
 
-		_ConfiguredAccessories[ID][Method]();
-
-		res.contentType('application/json');
-		res.send({ success: true });
+		if (_ConfiguredAccessories[ID].hasOwnProperty(Method)) {
+			if (typeof _ConfiguredAccessories[ID][Method] === 'function') {
+				_ConfiguredAccessories[ID][Method]();
+				res.contentType('application/json');
+				res.send({ success: true });
+			} else {
+				res.contentType('application/json');
+				res.send({ success: false });
+			}
+		} else {
+			res.contentType('application/json');
+			res.send({ success: false });
+		}
 	}
 
 	// API - All Accessories
@@ -314,6 +376,11 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 				id: RI.id,
 				value: RC[RI.id]
 			};
+			if (RI.hasOwnProperty('type')) {
+				I.type = RI.type;
+			} else {
+				I.type = 'text';
+			}
 			Settings.push(I);
 		});
 
@@ -364,6 +431,11 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 				label: RI.label,
 				id: RI.id
 			};
+			if (RI.hasOwnProperty('type')) {
+				I.type = RI.type;
+			} else {
+				I.type = 'text';
+			}
 			Settings.push(I);
 		});
 
@@ -469,6 +541,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
 	/* Check PairStatus */
 	function checkPairStatus(ID) {
+		ID = ID.replace(/[.]/g, '').replace(/[/]/g, '').replace(/[\\]/g, '');
+
 		const AccessoryFileName = PATH.join(
 			UTIL.HomeKitPath,
 			'AccessoryInfo.' + ID + '.json'
@@ -486,14 +560,29 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
 	/* Check Auth */
 	function _CheckAuth(req, res) {
-		if (
-			req.signedCookies.Authentication === undefined ||
-			req.signedCookies.Authentication !== 'Success'
-		) {
-			res.redirect('../../../ui/login');
-			return false;
+		if (res !== undefined) {
+			if (
+				req.signedCookies.Authentication === undefined ||
+				req.signedCookies.Authentication !== 'Success'
+			) {
+				res.redirect('../../../ui/login');
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			if (req.headers.cookie !== undefined) {
+				const WSCookies = COOKIE.parse(req.headers.cookie);
+				const SignedCookies = COOKIEPARSER.signedCookies(WSCookies, CookieKey);
+				if (SignedCookies.Authentication !== undefined) {
+					return SignedCookies.Authentication === 'Success';
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
 		}
-		return true;
 	}
 
 	/* QR Code */
@@ -562,6 +651,8 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 				type: RS.Type,
 				typeName: RS.Name,
 				readyStatus: R.readyStatus,
+				readyRGB: R.readyRGB,
+				clientId: R.clientID,
 				useCount:
 					UseCount === 1 ? UseCount + ' Accessory' : UseCount + ' Accessories'
 			};
@@ -590,13 +681,11 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		const Data = req.body;
 
 		const Username = Data.username;
-		const Password = CRYPTO.createHash('md5')
-			.update(Data.password)
-			.digest('hex');
+		const Password = Data.password;
 
 		if (
 			Username === CONFIG.loginUsername &&
-			Password === CONFIG.loginPassword
+			BCRYPT.compareSync(Password, CONFIG.loginPassword)
 		) {
 			res.cookie('Authentication', 'Success', {
 				signed: true
@@ -765,16 +854,20 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			return;
 		}
 
-		const PL = {
-			Specification: ACCESSORY.Types[req.params.type],
-			Routes: Object.keys(CONFIG.routes)
-		};
-		PL.Specification.type = req.params.type;
+		const Type = req.params.type;
 
-		const HTML = CompiledTemplates['NewAccessory'](PL);
+		if (ACCESSORY.Types.hasOwnProperty(Type)) {
+			const PL = {
+				Specification: ACCESSORY.Types[Type],
+				Routes: Object.keys(CONFIG.routes)
+			};
+			PL.Specification.type = Type;
 
-		res.contentType('text/html');
-		res.send(HTML);
+			const HTML = CompiledTemplates['NewAccessory'](PL);
+
+			res.contentType('text/html');
+			res.send(HTML);
+		}
 	}
 
 	/* DO Create Accessory */
