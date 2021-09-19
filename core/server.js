@@ -94,14 +94,36 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		RouteStatusSocket = new WS.Server({
 			port: parseInt(CONFIG.webInterfacePort) + 1
 		});
+
+		function noop() {}
+		function heartbeat() {
+			this.isAlive = true;
+		}
+
 		RouteStatusSocket.on('connection', (Socket, Request) => {
 			if (_CheckAuth(Request)) {
+				Socket.isAlive = true;
+				Socket.on('pong', heartbeat);
 				WSClients[Request.socket.remoteAddress] = Socket;
 			} else {
 				Socket.send("Well that's uncalled for!");
 				Socket.terminate();
 			}
 		});
+
+		setInterval(() => {
+			const Clients = Object.keys(WSClients);
+			for (let i = 0; i < Clients.length; i++) {
+				const Client = WSClients[Clients[i]];
+				if (!Client.isAlive) {
+					Client.terminate();
+					delete WSClients[Clients[i]];
+				} else {
+					Client.isAlive = false;
+					Client.ping(noop);
+				}
+			}
+		}, 30000);
 
 		// UI
 		app.use(
