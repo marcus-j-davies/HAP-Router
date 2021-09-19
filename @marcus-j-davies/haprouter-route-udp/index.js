@@ -43,7 +43,7 @@ UDP.prototype.process = async function (payload) {
 				JSONs.length,
 				this.Route.port,
 				this.Route.address,
-				this.UDPDone
+				(e) => this.UDPDone(e)
 			);
 		} catch (err) {
 			this.StatusNotify(false, err.message);

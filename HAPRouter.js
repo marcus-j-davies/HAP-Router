@@ -201,11 +201,13 @@ function ModuleUpdate(success, message, CFG) {
 		CFG.readyRGB = 'tomato';
 	}
 
-	UIServer.SendRouteStatus({
-		id: CFG.clientID,
-		status: CFG.readyStatus,
-		RGB: CFG.readyRGB
-	});
+	setTimeout(() => {
+		UIServer.SendRouteStatus({
+			id: CFG.clientID,
+			status: CFG.readyStatus,
+			RGB: CFG.readyRGB
+		});
+	}, 100);
 }
 
 // Main Accessory Initializer

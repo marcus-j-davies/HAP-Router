@@ -33,6 +33,7 @@ class MQTTRoute {
 	constructor(route, statusnotify) {
 		this.Route = route;
 		this.StatusNotify = statusnotify;
+		this.Retries = 0;
 		this._init();
 	}
 }
