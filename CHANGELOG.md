@@ -17,6 +17,7 @@
       - The built-in **Websocket** and **MQTT** routes now include recovery if connections are lost
       - Custom route modules can now specify input types of: **text**, **password**, **number** and **checkbox**
         if not specified they are rendered as **text**
+      - Route status is now updated in real time on the Web UI
 
   - **2.1.0**
 

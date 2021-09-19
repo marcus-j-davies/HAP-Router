@@ -7,6 +7,7 @@ const ACCESSORY = require('./accessories/Types');
 const UTIL = require('./util');
 const CONFIG = require(UTIL.ConfigPath);
 const COOKIEPARSER = require('cookie-parser');
+const COOKIE = require('cookie');
 const PATH = require('path');
 const OS = require('os');
 const ROUTING = require('./routing');
@@ -52,6 +53,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 	const CompiledTemplates = {};
 	let RouteStatusSocket;
 	const WSClients = {};
+	const CookieKey = BCRYPT.genSaltSync(10);
 
 	this.SendRouteStatus = function (status) {
 		const Clients = Object.keys(WSClients);
@@ -83,7 +85,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			windowMs: 2500,
 			max: 100
 		});
-		const CookieKey = BCRYPT.genSaltSync(10);
+
 		app.use(IOLimiter);
 		app.use(EXPRESS.json());
 		app.use(COOKIEPARSER(CookieKey));
@@ -93,7 +95,12 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			port: parseInt(CONFIG.webInterfacePort) + 1
 		});
 		RouteStatusSocket.on('connection', (Socket, Request) => {
-			WSClients[Request.socket.remoteAddress] = Socket;
+			if (_CheckAuth(Request)) {
+				WSClients[Request.socket.remoteAddress] = Socket;
+			} else {
+				Socket.send("Well that's uncalled for!");
+				Socket.terminate();
+			}
 		});
 
 		// UI
@@ -531,15 +538,29 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 
 	/* Check Auth */
 	function _CheckAuth(req, res) {
-		if (
-			req.signedCookies.Authentication === undefined ||
-			req.signedCookies.Authentication !== 'Success'
-		) {
-			res.redirect('../../../ui/login');
-
-			return false;
+		if (res !== undefined) {
+			if (
+				req.signedCookies.Authentication === undefined ||
+				req.signedCookies.Authentication !== 'Success'
+			) {
+				res.redirect('../../../ui/login');
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			if (req.headers.cookie !== undefined) {
+				const WSCookies = COOKIE.parse(req.headers.cookie);
+				const SignedCookies = COOKIEPARSER.signedCookies(WSCookies, CookieKey);
+				if (SignedCookies.Authentication !== undefined) {
+					return SignedCookies.Authentication === 'Success';
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
 		}
-		return true;
 	}
 
 	/* QR Code */
