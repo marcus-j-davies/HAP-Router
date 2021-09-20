@@ -4,6 +4,13 @@
 
 ![Image](./Screenshot.png)  
 
+![NPM](https://img.shields.io/npm/l/hap-router)
+![npm](https://img.shields.io/npm/v/hap-router)
+![node-current](https://img.shields.io/node/v/hap-router)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/marcus-j-davies/HAP-Router.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/marcus-j-davies/HAP-Router/context:javascript)
+![npms.io (maintenance)](https://img.shields.io/npms-io/maintenance-score/hap-router)
+![David](https://img.shields.io/david/marcus-j-davies/hap-router)
+
 A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.  
 
 HAP Router is a middleware NodeJS server that allows you to take advantage of Apples HomeKit technology, and bring it in to your automation ecosystem.  
