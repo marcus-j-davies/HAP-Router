@@ -248,7 +248,7 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 		const ID = req.query.aid;
 		const Method = req.query.method;
 
-		if (_ConfiguredAccessories[ID].hasOwnProperty(Method)) {
+		if (_ConfiguredAccessories[ID][Method] !== undefined) {
 			if (typeof _ConfiguredAccessories[ID][Method] === 'function') {
 				_ConfiguredAccessories[ID][Method]();
 				res.contentType('application/json');
