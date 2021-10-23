@@ -1,6 +1,6 @@
 {
 	"name": "hap-router",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"description": "A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.",
 	"main": "HAPRouter.js",
 	"keywords": [
@@ -28,7 +28,7 @@
 		"events": "^3.3.0",
 		"express": "^4.17.1",
 		"express-basic-auth": "^1.2.0",
-		"hap-nodejs": "^0.9.5",
+		"hap-nodejs": "^0.9.6",
 		"ip": "^1.1.5",
 		"mqtt": "^4.2.8",
 		"handlebars": "^4.7.7",
@@ -37,8 +37,8 @@
 		"matcher": "^4.0.0",
 		"qrcode": "^1.4.4",
 		"bcrypt": "^5.0.1",
-		"express-rate-limit": "^5.3.0",
-		"ws": "^8.2.2",
+		"express-rate-limit": "^5.5.0",
+		"ws": "^8.2.3",
 		"@marcus-j-davies/haprouter-route-http": "^3.2.0",
 		"@marcus-j-davies/haprouter-route-udp": "^3.2.0",
 		"@marcus-j-davies/haprouter-route-websocket": "^3.2.0",
@@ -51,8 +51,8 @@
 		"node": ">=12.22.2"
 	},
 	"devDependencies": {
-		"eslint": "^7.32.0",
-		"prettier": "^2.3.2"
+		"eslint": "^8.1.0",
+		"prettier": "^2.4.1"
 	},
 	"repository": {
 		"type": "git",
@@ -63,5 +63,3 @@
 	},
 	"homepage": "https://github.com/marcus-j-davies/hap-router#readme"
 }
-
-

@@ -227,9 +227,9 @@ const Types = {
 			},
 			{
 				id: 'packetSize',
-				label: 'Max Packet Size',
+				label: 'Max Packet Size (multiples of 188)',
 				type: 'numeric',
-				default: 1316
+				default: 376
 			},
 			{
 				id: 'maxStreams',

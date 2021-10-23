@@ -1,3 +1,12 @@
+  - **3.0.1** 
+
+    - **Fixes**
+      - Fix incorrect accessory function call in the UI
+
+    - **Changes**
+      - Bump dependencies.
+      - Change default Max Packet Size for Camera Accessory
+
   - **3.0.0** 
 
     - **Breaking Changes**
