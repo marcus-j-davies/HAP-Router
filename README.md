@@ -9,7 +9,8 @@
 ![node-current](https://img.shields.io/node/v/hap-router)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/marcus-j-davies/HAP-Router.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/marcus-j-davies/HAP-Router/context:javascript)
 ![npms.io (maintenance)](https://img.shields.io/npms-io/maintenance-score/hap-router)
-![David](https://img.shields.io/david/marcus-j-davies/hap-router)
+![Dependencies](https://img.shields.io/librariesio/release/npm/hap-router)
+
 
 A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.  
 
