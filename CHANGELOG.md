@@ -1,3 +1,16 @@
+  - **3.0.2** 
+
+    - **Changes**
+      - Bump cookie-parser
+      - Bump express
+      - Bump express-basic-auth
+      - Bump hap-nodejs
+      - Bump mqtt
+      - Bump qrcode
+      - Bump ws
+      - Bump axios
+      - Bump ESLint
+
   - **3.0.1** 
 
     - **Fixes**
