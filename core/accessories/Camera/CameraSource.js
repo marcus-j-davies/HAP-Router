@@ -6,6 +6,9 @@ const {
 const IP = require('ip');
 const { spawn } = require('child_process');
 
+const FFMPEGH264ProfileNames = ['baseline', 'main', 'high'];
+const FFMPEGH264LevelNames = ['3.1', '3.2', '4.0'];
+
 const CameraSource = function (Config) {
 	this.config = Config;
 	this.controller = undefined;
@@ -207,12 +210,16 @@ CameraSource.prototype.handleStreamRequest = async function (
 					let VPT = 0;
 					let APT = 0;
 					let MaxPaketSize = this.maxPacketSize;
+					let Profile;
+					let Level;
 
 					const videoInfo = request['video'];
 					if (videoInfo) {
 						width = videoInfo['width'];
 						height = videoInfo['height'];
 						VPT = videoInfo['pt'];
+						Profile = FFMPEGH264ProfileNames[videoInfo['profile']];
+						Level = FFMPEGH264LevelNames[videoInfo['level']];
 
 						const expectedFPS = videoInfo['fps'];
 						if (expectedFPS < FPS) {
@@ -273,6 +280,8 @@ CameraSource.prototype.handleStreamRequest = async function (
 					CMD.push('-b:v ' + bitRate + 'k');
 					CMD.push('-bufsize ' + bitRate + 'k');
 					CMD.push('-maxrate ' + bitRate + 'k');
+					CMD.push('-profile:v ' + Profile);
+					CMD.push('-level:v ' + Level);
 					CMD.push('-payload_type ' + VPT);
 
 					// Output
