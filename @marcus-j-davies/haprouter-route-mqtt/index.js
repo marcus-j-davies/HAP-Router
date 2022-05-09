@@ -41,7 +41,7 @@ class MQTTRoute {
 
 MQTTRoute.prototype._init = function () {
 	const Options = {
-		username: this.Route.mqttusername,,,
+		username: this.Route.mqttusername,
 		password: this.Route.mqttpassword
 	};
 
