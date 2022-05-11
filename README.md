@@ -8,8 +8,8 @@
 ![npm](https://img.shields.io/npm/v/hap-router)
 [![Package Quality](https://packagequality.com/shield/hap-router.svg)](https://packagequality.com/#?package=hap-router)
 [![DeepScan grade](https://deepscan.io/api/teams/17652/projects/21016/branches/591318/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=17652&pid=21016&bid=591318)
-![GitHub issues](https://img.shields.io/github/issues-raw/zwave-js/hap-router)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/zwave-js/hap-router)
+![GitHub issues](https://img.shields.io/github/issues-raw/marcus-j-davies/hap-router)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/marcus-j-davies/hap-router)
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/hap-router)
 
 
