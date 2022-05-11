@@ -1,39 +1,32 @@
 const { Service, Characteristic, Categories } = require('hap-nodejs');
 const { BaseAccessory } = require('./BaseAccessory');
 
-const ServicesEnabled = {
-	Motion: false,
-	Light: false,
-	Temp: false,
-	Humidity: false
-};
-
 const Set = function (payload) {
 	Object.keys(payload).forEach((K) => {
 		switch (K) {
 			case 'MotionDetected':
-				if (ServicesEnabled.Motion) {
+				if (this._ServicesEnabled.Motion) {
 					this._Properties[K] = payload[K];
 					this._MotionService.setCharacteristic(Characteristic[K], payload[K]);
 				}
 				break;
 
 			case 'CurrentAmbientLightLevel':
-				if (ServicesEnabled.Light) {
+				if (this._ServicesEnabled.Light) {
 					this._Properties[K] = payload[K];
 					this._LighService.setCharacteristic(Characteristic[K], payload[K]);
 				}
 				break;
 
 			case 'CurrentTemperature':
-				if (ServicesEnabled.Temp) {
+				if (this._ServicesEnabled.Temp) {
 					this._Properties[K] = payload[K];
 					this._TempService.setCharacteristic(Characteristic[K], payload[K]);
 				}
 				break;
 
 			case 'CurrentRelativeHumidity':
-				if (ServicesEnabled.Humidity) {
+				if (this._ServicesEnabled.Humidity) {
 					this._Properties[K] = payload[K];
 					this._HumidityService.setCharacteristic(
 						Characteristic[K],
@@ -46,13 +39,13 @@ const Set = function (payload) {
 			case 'StatusFault':
 			case 'StatusTampered':
 				this._Properties[K] = payload[K];
-				if (ServicesEnabled.Temp)
+				if (this._ServicesEnabled.Temp)
 					this._TempService.setCharacteristic(Characteristic[K], payload[K]);
-				if (ServicesEnabled.Light)
+				if (this._ServicesEnabled.Light)
 					this._LighService.setCharacteristic(Characteristic[K], payload[K]);
-				if (ServicesEnabled.Motion)
+				if (this._ServicesEnabled.Motion)
 					this._MotionService.setCharacteristic(Characteristic[K], payload[K]);
-				if (ServicesEnabled.Humidity)
+				if (this._ServicesEnabled.Humidity)
 					this._HumidityService.setCharacteristic(
 						Characteristic[K],
 						payload[K]
@@ -73,9 +66,16 @@ class MultiSensor extends BaseAccessory {
 	constructor(Config) {
 		super(Config, Categories.SENSOR);
 
+		this._ServicesEnabled = {
+			Motion: false,
+			Light: false,
+			Temp: false,
+			Humidity: false
+		};
+
 		// Motion
 		if (Config.enableMotionSensor) {
-			ServicesEnabled.Motion = true;
+			this._ServicesEnabled.Motion = true;
 
 			this._MotionService = new Service.MotionSensor(
 				'Motion Sensor',
@@ -109,7 +109,7 @@ class MultiSensor extends BaseAccessory {
 
 		// Temp
 		if (Config.enableTempSensor) {
-			ServicesEnabled.Temp = true;
+			this._ServicesEnabled.Temp = true;
 
 			this._TempService = new Service.TemperatureSensor(
 				'Temperature Sensor',
@@ -143,7 +143,7 @@ class MultiSensor extends BaseAccessory {
 
 		// Lux Sensor
 		if (Config.enableLuxSensor) {
-			ServicesEnabled.Light = true;
+			this._ServicesEnabled.Light = true;
 
 			this._LighService = new Service.LightSensor(
 				'Light Sensor',
@@ -177,7 +177,7 @@ class MultiSensor extends BaseAccessory {
 
 		// Humidity
 		if (Config.enableHumiditySensor) {
-			ServicesEnabled.Humidity = true;
+			this._ServicesEnabled.Humidity = true;
 
 			this._HumidityService = new Service.HumiditySensor(
 				'Humidity Sensor',

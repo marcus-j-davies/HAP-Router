@@ -9,7 +9,6 @@ const CONFIGPATH = PATH.join(ROOTPATH, 'haprouter_config.json');
 const HOMEKITPATH = PATH.join(ROOTPATH, 'HomeKitPersist');
 const CACHEPATH = PATH.join(ROOTPATH, 'characteristic_cache.json');
 const ROUTING = require('./routing');
-const SEMVER = require('semver');
 
 const restoreBackup = function (Package) {
 	try {
@@ -281,11 +280,7 @@ const checkReset = function () {
 // The acrtual reset script
 const reset = function () {
 	if (FS.existsSync(ROOTPATH)) {
-		if (SEMVER.gte(process.versions.node, '14.14.0')) {
-			FS.rmSync(ROOTPATH, { recursive: true, force: true });
-		} else {
-			FS.rmdirSync(ROOTPATH, { recursive: true, force: true });
-		}
+		FS.rmSync(ROOTPATH, { recursive: true, force: true });
 	}
 	FS.mkdirSync(ROOTPATH, { recursive: true });
 	const DefaultFile = PATH.join(ROOTAPPPATH, 'haprouter_config.json.default');

@@ -6,11 +6,11 @@
 
 ![NPM](https://img.shields.io/npm/l/hap-router)
 ![npm](https://img.shields.io/npm/v/hap-router)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/marcus-j-davies/HAP-Router.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/marcus-j-davies/Hap-Router/context:javascript)
-![npms.io (maintenance)](https://img.shields.io/npms-io/maintenance-score/hap-router)
+[![Package Quality](https://packagequality.com/shield/hap-router.svg)](https://packagequality.com/#?package=hap-router)
+[![DeepScan grade](https://deepscan.io/api/teams/17652/projects/21016/branches/591318/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=17652&pid=21016&bid=591318)
+![GitHub issues](https://img.shields.io/github/issues-raw/zwave-js/node-red-contrib-zwave-js)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/zwave-js/node-red-contrib-zwave-js)
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/hap-router)
-
-
 
 
 A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.  

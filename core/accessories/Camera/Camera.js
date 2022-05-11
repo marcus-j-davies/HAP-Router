@@ -34,7 +34,7 @@ const Set = function (payload) {
 class Camera extends BaseAccessory {
 	constructor(Config) {
 		// Door Bell?
-		if (Config.enableDoorbellService === true) {
+		if (Config.enableDoorbellService) {
 			super(Config, Categories.VIDEO_DOORBELL);
 
 			this._VDBService = new Service.Doorbell('', '');
@@ -117,7 +117,7 @@ class Camera extends BaseAccessory {
 
 		Options.video.resolutions = videoResolutions;
 
-		if (Config.enableAudio === true) {
+		if (Config.enableAudio) {
 			Options.audio = {
 				codecs: [
 					{
@@ -141,7 +141,7 @@ class Camera extends BaseAccessory {
 		this._accessory.configureController(this.Controller);
 
 		// Motion?
-		if (Config.enableMotionDetectionService === true) {
+		if (Config.enableMotionDetectionService) {
 			this._MDService = new Service.MotionSensor('', '');
 			this._MDService.setCharacteristic(Characteristic.MotionDetected, false);
 			this._MDService.setCharacteristic(Characteristic.StatusActive, 1);

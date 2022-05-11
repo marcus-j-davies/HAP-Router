@@ -15,7 +15,7 @@ class LightBulb extends BaseAccessory {
 			Set: ['On']
 		};
 
-		if (Config.supportsBrightness === true) {
+		if (Config.supportsBrightness) {
 			this._service.setCharacteristic(Characteristic.Brightness, 100);
 			this._Properties['Brightness'] = 100;
 			EventStruct.Get.push('Brightness');

@@ -5,74 +5,52 @@ const { Server } = require('./core/server');
 const ACCESSORY = require('./core/accessories/Types');
 const IP = require('ip');
 const MQTT = require('./core/mqtt');
-const NODECLEANUP = require('node-cleanup');
 const ROUTING = require('./core/routing');
 const { HAPStorage } = require('hap-nodejs');
 
-// resgister process exit handler
-NODECLEANUP(clean);
+let Bridge; // Bridge
+const Routes = {}; // Rouets
+const Cache = UTIL.getCharacteristicCache(); // Load up cache (if available)
+const Accesories = {}; // Accessories
+let UIServer; // UI Server
 
-// Cleanup our mess
-function clean(exitCode, signal) {
-	cleanEV().then(() => {
-		process.kill(process.pid, signal);
-	});
-
-	NODECLEANUP.uninstall();
-	return false;
-}
-
-// Cleanup
-function cleanEV() {
-	return new Promise((resolve) => {
-		console.info('Unpublishing Accessories...');
-		Bridge.unpublish(false);
-
-		const AccessoryIDs = Object.keys(Accesories);
-		for (let i = 0; i < AccessoryIDs.length; i++) {
-			const Acc = Accesories[AccessoryIDs[i]];
-			if (!Acc.isBridged) {
-				Acc.unpublish(false);
-			}
-		}
-
-		const CharacteristicCache = {};
-
-		for (let i = 0; i < AccessoryIDs.length; i++) {
-			const Acc = Accesories[AccessoryIDs[i]];
-			CharacteristicCache[AccessoryIDs[i]] = Acc.getProperties();
-		}
-
-		UTIL.saveCharacteristicCache(CharacteristicCache);
-
-		console.info('Cleaning up Routes...');
-		const RouteKeys = Object.keys(Routes);
-		RouteKeys.forEach((AE) => {
-			Routes[AE].close('appclose');
-		});
-
-		resolve();
-	});
-}
-
-// Bridge Class
-let Bridge;
-
-// Routes
-const Routes = {};
-
-// Load up cache (if available)
-const Cache = UTIL.getCharacteristicCache();
-
-// Accessories
-const Accesories = {};
-
-// UI Server
-let UIServer;
-
-// MQTT Client
 // eslint-disable-next-line no-unused-vars
-let MQTTC;
+let MQTTC; // MQTT Client
+
+process.on('SIGINT', exitHandler.bind(null));
+process.on('SIGTERM', exitHandler.bind(null));
+
+function exitHandler() {
+	console.info('Unpublishing Accessories...');
+	Bridge.unpublish(false);
+
+	const AccessoryIDs = Object.keys(Accesories);
+	for (let i = 0; i < AccessoryIDs.length; i++) {
+		const Acc = Accesories[AccessoryIDs[i]];
+		if (!Acc.isBridged) {
+			Acc.unpublish(false);
+		}
+	}
+
+	const CharacteristicCache = {};
+
+	for (let i = 0; i < AccessoryIDs.length; i++) {
+		const Acc = Accesories[AccessoryIDs[i]];
+		CharacteristicCache[AccessoryIDs[i]] = Acc.getProperties();
+	}
+
+	UTIL.saveCharacteristicCache(CharacteristicCache);
+
+	console.info('Cleaning up Routes...');
+	const RouteKeys = Object.keys(Routes);
+	RouteKeys.forEach((AE) => {
+		Routes[AE].close('appclose');
+	});
+
+	process.off('SIGINT', exitHandler.bind(null));
+	process.off('SIGTERM', exitHandler.bind(null));
+	process.exit(0);
+}
 
 // Init
 function Init() {

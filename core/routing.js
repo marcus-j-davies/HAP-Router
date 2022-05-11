@@ -20,6 +20,8 @@ const setPath = function (Path) {
 const loadModules = function () {
 	loadStockModules();
 
+	const Regex = new  RegExp("@*/haprouter-route-*")
+
 	const LockPath = PATH.join(RootPath, 'package-lock.json');
 
 	if (!FS.existsSync(LockPath)) {
@@ -29,7 +31,7 @@ const loadModules = function () {
 	const CustomDeps = require(LockPath).dependencies;
 	let Match1 = Object.keys(CustomDeps)
 		.filter((RP) =>
-			MATCHER.isMatch(RP, '@*/haprouter-route-*', { caseSensitive: false })
+			MATCHER.isMatch(RP, '*@*/haprouter-route-*', { caseSensitive: false })
 		)
 		.map((RP) => RP);
 	const Match2 = Object.keys(CustomDeps)
