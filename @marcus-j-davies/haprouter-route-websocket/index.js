@@ -33,7 +33,7 @@ WebsocketClass.prototype._init = function () {
 		this.Websocket.on('error', (e) => this.WSError(e));
 		this.Websocket.on('close', () => this.HandleWSClose());
 	} catch (err) {
-		this.StatusNotify(false, err.message);
+		this.StatusNotify({success:false,message: err.message});
 	}
 };
 
@@ -53,29 +53,29 @@ WebsocketClass.prototype.close = function () {
 
 WebsocketClass.prototype.HandleWSOpen = function () {
 	this.Retries = 0;
-	this.StatusNotify(true);
+	this.StatusNotify({success:true});
 };
 
 WebsocketClass.prototype.WSError = function (err) {
 	if (err) {
-		this.StatusNotify(false, err.message);
+		this.StatusNotify({success:false,message: err.message});
 	} else {
-		this.StatusNotify(true);
+		this.StatusNotify({success:true});
 	}
 };
 
 WebsocketClass.prototype.HandleWSClose = function () {
 	if (this.Retries >= _MaxRetries) {
-		this.StatusNotify(false, 'Connection was closed. Recovery Failed.');
+		this.StatusNotify({success:false,message: 'Connection was closed. Recovery Failed.'});
 	} else {
 		this.Retries++;
-		this.StatusNotify(
-			false,
+		this.StatusNotify({success:
+			false,message:
 			'Connection was closed. Recovery Scheduled (' +
 				this.Retries +
 				'/' +
 				_MaxRetries +
-				')'
+				')'}
 		);
 		setTimeout(() => {
 			this._init();

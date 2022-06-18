@@ -18,7 +18,7 @@ class File {
 	/* Constructor */
 	constructor(route, statusnotify) {
 		this.Route = route;
-		statusnotify(true);
+		statusnotify({success:true});
 		this.StatusNotify = statusnotify;
 	}
 }
@@ -35,7 +35,8 @@ File.prototype.process = async function (payload) {
 		try {
 			fs.mkdirSync(Directory, { recursive: true });
 		} catch (err) {
-			this.StatusNotify(false, err.message);
+			this.StatusNotify({success:false,message:err.message});
+		
 			return;
 		}
 	}
@@ -47,9 +48,9 @@ File.prototype.process = async function (payload) {
 
 	try {
 		fs.writeFileSync(_Path, JSONs, 'utf8');
-		this.StatusNotify(true);
+		this.StatusNotify({success:true});
 	} catch (err) {
-		this.StatusNotify(false, err.message);
+		this.StatusNotify({success:false,message:err.message});
 	}
 };
 

@@ -51,7 +51,7 @@ MQTTRoute.prototype._init = function () {
 		this.MQTTBroker.on('error', (e) => this.mqttError(e));
 		this.MQTTBroker.on('close', () => this.mqttClose());
 	} catch (err) {
-		this.StatusNotify(false, err.message);
+		this.StatusNotify({success:false,message:err.message});
 	}
 };
 
@@ -74,16 +74,16 @@ MQTTRoute.prototype.close = function () {
 
 MQTTRoute.prototype.mqttClose = function () {
 	if (this.Retries >= _MaxRetries) {
-		this.StatusNotify(false, 'Connection was closed. Recovery Failed.');
+		this.StatusNotify({success:false,message: 'Connection was closed. Recovery Failed.'});
 	} else {
 		this.Retries++;
-		this.StatusNotify(
-			false,
+		this.StatusNotify({success:
+			false,message:
 			'Connection was closed. Recovery Scheduled (' +
 				this.Retries +
 				'/' +
 				_MaxRetries +
-				')'
+				')'}
 		);
 		setTimeout(() => {
 			this._init();
@@ -92,14 +92,14 @@ MQTTRoute.prototype.mqttClose = function () {
 };
 
 MQTTRoute.prototype.mqttConnected = function () {
-	this.StatusNotify(true);
+	this.StatusNotify({success:true});
 };
 
 MQTTRoute.prototype.mqttError = function (err) {
 	if (err) {
-		this.StatusNotify(false, err.message);
+		this.StatusNotify({success:false,message: err.message});
 	} else {
-		this.StatusNotify(true);
+		this.StatusNotify({success:true});
 	}
 };
 

@@ -9,7 +9,7 @@ const Icon = 'icon.png';
 class ConsoleClass {
 	/* Constructor */
 	constructor(route, statusnotify) {
-		statusnotify(true);
+		statusnotify({success:true});
 	}
 }
 
