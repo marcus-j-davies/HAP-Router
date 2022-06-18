@@ -50,8 +50,8 @@
 		"node": ">=14.14.0"
 	},
 	"devDependencies": {
-		"eslint": "^8.14.0",
-		"prettier": "^2.6.2"
+		"eslint": "^8.18.0",
+		"prettier": "^2.7.1"
 	},
 	"repository": {
 		"type": "git",
