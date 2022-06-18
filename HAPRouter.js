@@ -161,24 +161,31 @@ function setupRoutes() {
 		console.log(`Configuring Route : ${RouteNames[i]} (${RouteCFG.type})`);
 		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(
 			RouteCFG,
-			(S, M) => ModuleUpdate(S, M, RouteCFG)
+			(PL) => ModuleUpdate(PL, RouteCFG)
+			
 		);
+		ModuleUpdate(undefined, RouteCFG)
 		Routes[RouteNames[i]] = RouteClass;
 	}
 }
 
-function ModuleUpdate(success, message, CFG) {
-	if (success === undefined) {
+function ModuleUpdate(PL, CFG) {
+
+	if(PL === undefined){
 		CFG.readyStatus = 'Module is initializing...';
 		CFG.readyRGB = 'orange';
-	} else if (success) {
-		CFG.readyStatus = 'Module is ready.';
-		CFG.readyRGB = 'limegreen';
-	} else {
-		CFG.readyStatus = `Module Error: ${message}`;
-		CFG.readyRGB = 'tomato';
 	}
-
+	else{
+		if(PL.success){
+			CFG.readyStatus = 'Module is ready.';
+			CFG.readyRGB = 'limegreen';
+		}
+		else{
+			CFG.readyStatus = `Module Error: ${PL.message}`;
+			CFG.readyRGB = 'tomato';
+		}
+	}
+	
 	setTimeout(() => {
 		UIServer.SendRouteStatus({
 			id: CFG.clientID,
