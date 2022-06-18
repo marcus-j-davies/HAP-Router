@@ -1,3 +1,18 @@
+  - **4.0.0** 
+
+    - **Breaking Changes**
+      - Min NodeJS version is now 14.14.0
+      - Route status callback has been updated, and now requires an object to be passed.
+        ```javascript
+        {
+          "success": boolean,
+          "message": string
+        }
+        ```
+    - **Fixes**
+      - Fix missing folder at start up.
+
+
   - **3.0.2** 
 
     - **Changes**
