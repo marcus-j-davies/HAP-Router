@@ -172,7 +172,7 @@ By default the subscribed topic is **HAPRouter/IN/+**
 | passwd {{Username}} {{Password}}  | Set the UI and API login information             |    
 
 ## Installing and Running  
-Make sure you have Node >= v12.22.2 installed  
+Make sure you have Node >= v14.14.0 installed  
 
 Simply install via NPM ```npm install hap-router```  
 to run the server just call ```node HAPRouter.js``` 
