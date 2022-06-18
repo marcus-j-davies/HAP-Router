@@ -5,6 +5,15 @@ const Params = [
 	{
 		id: 'destinationURI',
 		label: 'HTTP URI'
+	},
+	{
+		id: 'username',
+		label: 'HTTP Username (optional)'
+	},
+	{
+		id: 'password',
+		label: 'HTTP Password (optional)',
+		type: 'password'
 	}
 ];
 
@@ -35,6 +44,17 @@ HTTPRoute.prototype.process = async function (payload) {
 		),
 		data: payload
 	};
+
+	if (
+		this.Route.username !== undefined &&
+		this.Route.username.length > 0 &&
+		this.Route.password !== undefined &&
+		this.Route.password.length > 0
+	) {
+		CFG.auth = {};
+		CFG.auth.username = this.Route.username;
+		CFG.auth.password = this.Route.password;
+	}
 
 	try {
 		await axios.request(CFG);
