@@ -33,7 +33,7 @@ WebsocketClass.prototype._init = function () {
 		this.Websocket.on('error', (e) => this.WSError(e));
 		this.Websocket.on('close', () => this.HandleWSClose());
 	} catch (err) {
-		this.StatusNotify({success:false,message: err.message});
+		this.StatusNotify({ success: false, message: err.message });
 	}
 };
 
@@ -53,30 +53,34 @@ WebsocketClass.prototype.close = function () {
 
 WebsocketClass.prototype.HandleWSOpen = function () {
 	this.Retries = 0;
-	this.StatusNotify({success:true});
+	this.StatusNotify({ success: true });
 };
 
 WebsocketClass.prototype.WSError = function (err) {
 	if (err) {
-		this.StatusNotify({success:false,message: err.message});
+		this.StatusNotify({ success: false, message: err.message });
 	} else {
-		this.StatusNotify({success:true});
+		this.StatusNotify({ success: true });
 	}
 };
 
 WebsocketClass.prototype.HandleWSClose = function () {
 	if (this.Retries >= _MaxRetries) {
-		this.StatusNotify({success:false,message: 'Connection was closed. Recovery Failed.'});
+		this.StatusNotify({
+			success: false,
+			message: 'Connection was closed. Recovery Failed.'
+		});
 	} else {
 		this.Retries++;
-		this.StatusNotify({success:
-			false,message:
-			'Connection was closed. Recovery Scheduled (' +
+		this.StatusNotify({
+			success: false,
+			message:
+				'Connection was closed. Recovery Scheduled (' +
 				this.Retries +
 				'/' +
 				_MaxRetries +
-				')'}
-		);
+				')'
+		});
 		setTimeout(() => {
 			this._init();
 		}, _RetryWaitTime);

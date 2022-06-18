@@ -18,7 +18,7 @@ class HTTPRoute {
 	constructor(route, statusnotify) {
 		this.StatusNotify = statusnotify;
 		this.Route = route;
-		statusnotify({success:true});
+		statusnotify({ success: true });
 	}
 }
 
@@ -38,10 +38,10 @@ HTTPRoute.prototype.process = async function (payload) {
 
 	try {
 		await axios.request(CFG);
-		this.StatusNotify({success:true});
+		this.StatusNotify({ success: true });
 	} catch (err) {
 		if (err) {
-			this.StatusNotify({success:false,message:err.message});
+			this.StatusNotify({ success: false, message: err.message });
 		}
 	}
 };
