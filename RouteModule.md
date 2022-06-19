@@ -14,10 +14,6 @@ The **package.json** file is needed by all nodejs modules.
   "description": "The stock HAP Router HTTP route",
   "version": "4.0.0",
   "main": "index.js",
-  "author": {
-    "name": "Marcus Davies",
-    "email": "marcus.davies83@icloud.com"
-  },
   "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2"
