@@ -15,6 +15,7 @@
 
     - **New Features**
       - Characteristic values are now written to disc every hour, to ensure most recent values are saved, in case of unexpected termination.
+      - Bridge functionality can now be independently switched off.
 
 
   - **3.0.2** 

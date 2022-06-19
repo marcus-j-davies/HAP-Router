@@ -12,17 +12,17 @@ The **package.json** file is needed by all nodejs modules.
 {
   "name": "@marcus-j-davies/haprouter-route-http",
   "description": "The stock HAP Router HTTP route",
-  "version": "1.2.0",
+  "version": "4.0.0",
   "main": "index.js",
   "author": {
     "name": "Marcus Davies",
+    "email": "marcus.davies83@icloud.com"
   },
   "license": "MIT",
   "dependencies": {
-    "axios": "0.21.1"
+    "axios": "^0.27.2"
   }
 }
-
 ```
 
 And the all important **index.js** file  
@@ -35,6 +35,15 @@ const Params = [
 	{
 		id: 'destinationURI',
 		label: 'HTTP URI'
+	},
+	{
+		id: 'username',
+		label: 'HTTP Username (optional)'
+	},
+	{
+		id: 'password',
+		label: 'HTTP Password (optional)',
+		type: 'password'
 	}
 ];
 
@@ -48,7 +57,7 @@ class HTTPRoute {
 	constructor(route, statusnotify) {
 		this.StatusNotify = statusnotify;
 		this.Route = route;
-		statusnotify(true);
+		statusnotify({ success: true });
 	}
 }
 
@@ -66,12 +75,23 @@ HTTPRoute.prototype.process = async function (payload) {
 		data: payload
 	};
 
+	if (
+		this.Route.username !== undefined &&
+		this.Route.username.length > 0 &&
+		this.Route.password !== undefined &&
+		this.Route.password.length > 0
+	) {
+		CFG.auth = {};
+		CFG.auth.username = this.Route.username;
+		CFG.auth.password = this.Route.password;
+	}
+
 	try {
 		await axios.request(CFG);
-		this.StatusNotify(true);
+		this.StatusNotify({ success: true });
 	} catch (err) {
 		if (err) {
-			this.StatusNotify(false, err.message);
+			this.StatusNotify({ success: false, message: err.message });
 		}
 	}
 };
@@ -84,7 +104,6 @@ module.exports = {
 	Name: Name,
 	Icon: Icon
 };
-
 ```
 
 Your module file (it doesn't have to be called **index.js**), must export 4 objects.
@@ -109,8 +128,8 @@ The callback method signature(s) are as follows:
 | Signature          | Meaning                                                                 |
 |--------------------|-------------------------------------------------------------------------|
 | (undefined)        | Default - Module is initialising                                        |
-| (true)             | The module (and all of its internals) is ready for use                  |
-| (false, "Message") | The module is in a faulted state, pass a brief message to explain       |
+| ({"success":true})             | The module (and all of its internals) is ready for use                  |
+| ({"success":false,message:"some error message"}) | The module is in a faulted state, pass a brief message to explain       |
 
 
 The class must expose 2 prototype  methods: **process** and **close**
@@ -122,7 +141,7 @@ The class must expose 2 prototype  methods: **process** and **close**
 
 The **Inputs** object must be an array of input objects, it allows settings to be passed to the route during its constructor.  
 
-```json
+```javascript
 [
     {
         "id": "some_internal_identifyer",
