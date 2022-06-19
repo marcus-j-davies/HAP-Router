@@ -110,6 +110,14 @@ const makeID = function (length) {
 	return result;
 };
 
+//  Bridge Status
+const updateBridgeStatus = function (enabled) {
+	const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
+	const ConfigOBJ = JSON.parse(CFF);
+	ConfigOBJ.bridgeEnabled = enabled;
+	saveConfig(ConfigOBJ);
+};
+
 //  Route COnfig
 const updateRouteConfig = function (Name, Route) {
 	const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
@@ -312,5 +320,6 @@ module.exports = {
 	updateAccessory: updateAccessory,
 	deleteRoute: deleteRoute,
 	performBackup: performBackup,
-	restoreBackup: restoreBackup
+	restoreBackup: restoreBackup,
+	updateBridgeStatus: updateBridgeStatus
 };

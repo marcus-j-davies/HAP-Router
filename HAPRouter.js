@@ -20,11 +20,10 @@ let MQTTC; // MQTT Client
 process.on('SIGINT', exitHandler.bind(null));
 process.on('SIGTERM', exitHandler.bind(null));
 
-function saveCache(unpublish){
-
+function saveCache(unpublish) {
 	const AccessoryIDs = Object.keys(Accesories);
 
-	if(unpublish){
+	if (unpublish) {
 		for (let i = 0; i < AccessoryIDs.length; i++) {
 			const Acc = Accesories[AccessoryIDs[i]];
 			if (!Acc.isBridged) {
@@ -32,7 +31,7 @@ function saveCache(unpublish){
 			}
 		}
 	}
-	
+
 	const CharacteristicCache = {};
 
 	for (let i = 0; i < AccessoryIDs.length; i++) {
@@ -47,7 +46,7 @@ function exitHandler() {
 	console.info('Unpublishing Accessories...');
 	Bridge.unpublish(false);
 
-     saveCache(true);
+	saveCache(true);
 
 	console.info('Cleaning up Routes...');
 	const RouteKeys = Object.keys(Routes);
@@ -145,6 +144,8 @@ function Init() {
 
 	// MQTT Client (+ Start Server)
 	MQTTC = new MQTT.MQTT(Accesories, MQTTDone);
+
+	setInterval(() => saveCache(false), 60000 * 60);
 }
 
 function setupRoutes() {
@@ -337,5 +338,3 @@ function Identify(paired, AccessoryCFG) {
 }
 
 Init();
-
-setTimeout(()=> saveCache(false),60000);

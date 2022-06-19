@@ -21,12 +21,12 @@
             <legend>Bridge Settings</legend>
            
             <table style="width: 100%;">
-            <!--
+            
              <tr>
-                td style="width: 200px;">Bridge Functionality</td>
-                <td> <input event="ChangeBridgeStatus" type="checkbox" {{#if bridgeEnabled}}checked{{/if}} disabled></td>
+                <td style="width: 200px;">Bridge Functionality</td>
+                <td> <input event="ChangeBridgeStatus" type="checkbox" {{#if bridgeEnabled}}checked{{/if}}></td>
              </tr>
-            -->
+            
              <tr>
                <td style="width: 200px;">Bridge Enrollment</td>
                <td><input type="button" class="StyledButton" value="Enroll" onclick="ShowBridgePair('{{bridgeInfo.setupURI}}','{{bridgeInfo.serialNumber}}','{{bridgeInfo.pinCode}}','{{bridgeInfo.accessoryID}}')" {{#if bridgeInfo.isPaired}}disabled{{/if}}></td>
