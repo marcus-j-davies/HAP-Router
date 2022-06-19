@@ -110,6 +110,14 @@ const makeID = function (length) {
 	return result;
 };
 
+//  Bridge Status
+const updateBridgeStatus = function (enabled) {
+	const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
+	const ConfigOBJ = JSON.parse(CFF);
+	ConfigOBJ.bridgeEnabled = enabled;
+	saveConfig(ConfigOBJ);
+};
+
 //  Route COnfig
 const updateRouteConfig = function (Name, Route) {
 	const CFF = FS.readFileSync(CONFIGPATH, 'utf8');
@@ -279,9 +287,10 @@ const checkReset = function () {
 
 // The acrtual reset script
 const reset = function () {
-	FS.rmdirSync(ROOTPATH, { recursive: true });
+	if (FS.existsSync(ROOTPATH)) {
+		FS.rmSync(ROOTPATH, { recursive: true, force: true });
+	}
 	FS.mkdirSync(ROOTPATH, { recursive: true });
-
 	const DefaultFile = PATH.join(ROOTAPPPATH, 'haprouter_config.json.default');
 	const SaveTo = PATH.join(ROOTPATH, 'haprouter_config.json');
 
@@ -311,5 +320,6 @@ module.exports = {
 	updateAccessory: updateAccessory,
 	deleteRoute: deleteRoute,
 	performBackup: performBackup,
-	restoreBackup: restoreBackup
+	restoreBackup: restoreBackup,
+	updateBridgeStatus: updateBridgeStatus
 };

@@ -1,7 +1,7 @@
 {
   "name": "@marcus-j-davies/haprouter-route-http",
   "description": "The stock HAP Router HTTP route",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "main": "index.js",
   "author": {
     "name": "Marcus Davies",
@@ -9,6 +9,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.24.0"
+    "axios": "^0.27.2"
   }
 }

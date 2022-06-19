@@ -4,10 +4,10 @@
 <head>
    <meta charset="utf-8" />
    <title>HAP Router</title>
-   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+   <link rel="stylesheet" href="../../../ui/static/Style/jquery-ui.css" />
    <link rel="stylesheet" href="../../../ui/static/Style/style.css" />
-   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+   <script src="../../../ui/static/JS/jquery-3.4.1.min.js"></script>
+   <script src="../../../ui/static/JS/query-ui.min.js"></script>
    <script src="../../../ui/static/JS/qrcode.min.js"></script>
    <script src="../../../ui/static/JS/lc_switch.min.js"></script>
    <script src="../../../ui/static/JS/functions.js"></script>
@@ -21,12 +21,12 @@
             <legend>Bridge Settings</legend>
            
             <table style="width: 100%;">
-            <!--
+            
              <tr>
-                td style="width: 200px;">Bridge Functionality</td>
-                <td> <input event="ChangeBridgeStatus" type="checkbox" {{#if bridgeEnabled}}checked{{/if}} disabled></td>
+                <td style="width: 200px;">Bridge Functionality</td>
+                <td> <input event="ChangeBridgeStatus" type="checkbox" {{#if bridgeEnabled}}checked{{/if}}></td>
              </tr>
-            -->
+            
              <tr>
                <td style="width: 200px;">Bridge Enrollment</td>
                <td><input type="button" class="StyledButton" value="Enroll" onclick="ShowBridgePair('{{bridgeInfo.setupURI}}','{{bridgeInfo.serialNumber}}','{{bridgeInfo.pinCode}}','{{bridgeInfo.accessoryID}}')" {{#if bridgeInfo.isPaired}}disabled{{/if}}></td>

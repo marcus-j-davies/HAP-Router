@@ -34,7 +34,7 @@ const Set = function (payload) {
 
 class TV extends BaseAccessory {
 	constructor(Config) {
-		super(Config, Categories.TELEVISION);
+		super(Config, Categories[Config.category.replace(/ /g, '_')]);
 
 		this._Inputs = [];
 

@@ -1014,12 +1014,25 @@ const Server = function (Accesories, Bridge, RouteSetup, AccessoryIniter) {
 			return;
 		}
 
-		if (req.body.enableBridge) {
+		const Enabled = req.body.enableBridge;
+
+		if (Enabled) {
 			console.log(' Publishing Bridge');
 			_Bridge.publish();
 		} else {
+			console.log(' Unpublishing Bridge');
 			_Bridge.unpublish(false);
 		}
+
+		CONFIG.bridgeEnabled = Enabled;
+
+		UTIL.updateBridgeStatus(Enabled);
+
+		const Response = {
+			success: true
+		};
+		res.contentType('application/json');
+		res.send(JSON.stringify(Response));
 	}
 };
 

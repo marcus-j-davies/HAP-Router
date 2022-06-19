@@ -29,7 +29,7 @@ class UDP {
 			this.UDPServer.on('error', (e) => this.UDPBindError(e));
 			this.UDPServer.bind(() => this.UDPConnected());
 		} catch (err) {
-			statusnotify(false, err.message);
+			statusnotify({ success: false, message: err.message });
 		}
 	}
 }
@@ -47,7 +47,7 @@ UDP.prototype.process = async function (payload) {
 				(e) => this.UDPDone(e)
 			);
 		} catch (err) {
-			this.StatusNotify(false, err.message);
+			this.StatusNotify({ success: false, message: err.message });
 		}
 	}
 };
@@ -59,19 +59,19 @@ UDP.prototype.close = function () {
 };
 
 UDP.prototype.UDPBindError = function (err) {
-	this.StatusNotify(false, err.message);
+	this.StatusNotify({ success: false, message: err.message });
 };
 
 UDP.prototype.UDPConnected = function () {
 	this.UDPServer.setBroadcast(true);
-	this.StatusNotify(true);
+	this.StatusNotify({ success: true });
 };
 
 UDP.prototype.UDPDone = function (err) {
 	if (err) {
-		this.StatusNotify(false, err.message);
+		this.StatusNotify({ success: false, message: err.message });
 	} else {
-		this.StatusNotify(true);
+		this.StatusNotify({ success: true });
 	}
 };
 

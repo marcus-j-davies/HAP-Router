@@ -1,3 +1,25 @@
+  - **4.0.0** 
+
+    - **Breaking Changes**
+      - Min NodeJS version is now 14.14.0
+      - Route status callback has been updated, and now requires an object to be passed.
+        ```javascript
+        {
+          "success": boolean,
+          "message": string
+        }
+        ```
+    - **Fixes**
+      - Fix missing HAPRouter folder at start up.
+      - Fix multisensor config, affecting other instances of the same accessory type.
+      - Address minor security warnings
+
+    - **New Features**
+      - Characteristic values are now written to disc every hour, to ensure most recent values are saved, in case of unexpected termination.
+      - Bridge functionality can now be independently switched off.
+      - Television Accessory, can now have different icons.
+
+
   - **3.0.2** 
 
     - **Changes**

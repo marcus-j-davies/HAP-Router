@@ -5,6 +5,15 @@ const Params = [
 	{
 		id: 'destinationURI',
 		label: 'HTTP URI'
+	},
+	{
+		id: 'username',
+		label: 'HTTP Username (optional)'
+	},
+	{
+		id: 'password',
+		label: 'HTTP Password (optional)',
+		type: 'password'
 	}
 ];
 
@@ -18,7 +27,7 @@ class HTTPRoute {
 	constructor(route, statusnotify) {
 		this.StatusNotify = statusnotify;
 		this.Route = route;
-		statusnotify(true);
+		statusnotify({ success: true });
 	}
 }
 
@@ -36,12 +45,23 @@ HTTPRoute.prototype.process = async function (payload) {
 		data: payload
 	};
 
+	if (
+		this.Route.username !== undefined &&
+		this.Route.username.length > 0 &&
+		this.Route.password !== undefined &&
+		this.Route.password.length > 0
+	) {
+		CFG.auth = {};
+		CFG.auth.username = this.Route.username;
+		CFG.auth.password = this.Route.password;
+	}
+
 	try {
 		await axios.request(CFG);
-		this.StatusNotify(true);
+		this.StatusNotify({ success: true });
 	} catch (err) {
 		if (err) {
-			this.StatusNotify(false, err.message);
+			this.StatusNotify({ success: false, message: err.message });
 		}
 	}
 };

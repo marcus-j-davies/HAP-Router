@@ -6,11 +6,11 @@
 
 ![NPM](https://img.shields.io/npm/l/hap-router)
 ![npm](https://img.shields.io/npm/v/hap-router)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/marcus-j-davies/HAP-Router.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/marcus-j-davies/Hap-Router/context:javascript)
-![npms.io (maintenance)](https://img.shields.io/npms-io/maintenance-score/hap-router)
+[![Package Quality](https://packagequality.com/shield/hap-router.svg)](https://packagequality.com/#?package=hap-router)
+[![DeepScan grade](https://deepscan.io/api/teams/17652/projects/21016/branches/591318/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=17652&pid=21016&bid=591318)
+![GitHub issues](https://img.shields.io/github/issues-raw/marcus-j-davies/hap-router)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/marcus-j-davies/hap-router)
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/hap-router)
-
-
 
 
 A Middleware HAP Router for bringing HomeKit functionality to your Home Automation.  
@@ -172,7 +172,7 @@ By default the subscribed topic is **HAPRouter/IN/+**
 | passwd {{Username}} {{Password}}  | Set the UI and API login information             |    
 
 ## Installing and Running  
-Make sure you have Node >= v12.22.2 installed  
+Make sure you have Node >= v14.14.0 installed  
 
 Simply install via NPM ```npm install hap-router```  
 to run the server just call ```node HAPRouter.js``` 
@@ -181,9 +181,25 @@ to run the server just call ```node HAPRouter.js```
 HAP Router is based on the awesome [HAP-NodeJS](https://github.com/homebridge/HAP-NodeJS)
 library, without it, projects like this one are not possible.
 
-## Version History  
+## License
+MIT License
 
-  - [Here](./CHANGELOG.md)
+Copyright (c) 2021 Marcus Davies
 
-## To Do
-  - Continue to add more accessory types
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

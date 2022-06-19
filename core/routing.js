@@ -1,6 +1,5 @@
 const PATH = require('path');
 const FS = require('fs');
-const MATCHER = require('matcher');
 const { spawnSync } = require('child_process');
 const { dependencies } = require('../package.json');
 
@@ -20,6 +19,9 @@ const setPath = function (Path) {
 const loadModules = function () {
 	loadStockModules();
 
+	const RegexScope = new RegExp('@.*/haprouter-route-.*');
+	const Regex = new RegExp('haprouter-route-.*');
+
 	const LockPath = PATH.join(RootPath, 'package-lock.json');
 
 	if (!FS.existsSync(LockPath)) {
@@ -27,15 +29,13 @@ const loadModules = function () {
 	}
 
 	const CustomDeps = require(LockPath).dependencies;
+
 	let Match1 = Object.keys(CustomDeps)
-		.filter((RP) =>
-			MATCHER.isMatch(RP, '@*/haprouter-route-*', { caseSensitive: false })
-		)
+		.filter((RP) => RegexScope.test(RP))
 		.map((RP) => RP);
+
 	const Match2 = Object.keys(CustomDeps)
-		.filter((RP) =>
-			MATCHER.isMatch(RP, 'haprouter-route-*', { caseSensitive: false })
-		)
+		.filter((RP) => Regex.test(RP))
 		.map((RP) => RP);
 
 	Match1 = Match1.concat(Match2);
@@ -59,10 +59,10 @@ const loadModules = function () {
 };
 
 const loadStockModules = function () {
+	const RegexScope = new RegExp('@.*/haprouter-route-.*');
+
 	const RPKGS = Object.keys(dependencies)
-		.filter((D) =>
-			MATCHER.isMatch(D, '@*/haprouter-route-*', { caseSensitive: false })
-		)
+		.filter((D) => RegexScope.test(D))
 		.map((D) => D);
 
 	RPKGS.forEach((RP) => {

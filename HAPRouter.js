@@ -5,74 +5,59 @@ const { Server } = require('./core/server');
 const ACCESSORY = require('./core/accessories/Types');
 const IP = require('ip');
 const MQTT = require('./core/mqtt');
-const NODECLEANUP = require('node-cleanup');
 const ROUTING = require('./core/routing');
 const { HAPStorage } = require('hap-nodejs');
 
-// resgister process exit handler
-NODECLEANUP(clean);
+let Bridge; // Bridge
+const Routes = {}; // Rouets
+const Cache = UTIL.getCharacteristicCache(); // Load up cache (if available)
+const Accesories = {}; // Accessories
+let UIServer; // UI Server
 
-// Cleanup our mess
-function clean(exitCode, signal) {
-	cleanEV().then(() => {
-		process.kill(process.pid, signal);
-	});
+// eslint-disable-next-line no-unused-vars
+let MQTTC; // MQTT Client
 
-	NODECLEANUP.uninstall();
-	return false;
-}
+process.on('SIGINT', exitHandler.bind(null));
+process.on('SIGTERM', exitHandler.bind(null));
 
-// Cleanup
-function cleanEV() {
-	return new Promise((resolve) => {
-		console.info('Unpublishing Accessories...');
-		Bridge.unpublish(false);
+function saveCache(unpublish) {
+	const AccessoryIDs = Object.keys(Accesories);
 
-		const AccessoryIDs = Object.keys(Accesories);
+	if (unpublish) {
 		for (let i = 0; i < AccessoryIDs.length; i++) {
 			const Acc = Accesories[AccessoryIDs[i]];
 			if (!Acc.isBridged) {
 				Acc.unpublish(false);
 			}
 		}
+	}
 
-		const CharacteristicCache = {};
+	const CharacteristicCache = {};
 
-		for (let i = 0; i < AccessoryIDs.length; i++) {
-			const Acc = Accesories[AccessoryIDs[i]];
-			CharacteristicCache[AccessoryIDs[i]] = Acc.getProperties();
-		}
+	for (let i = 0; i < AccessoryIDs.length; i++) {
+		const Acc = Accesories[AccessoryIDs[i]];
+		CharacteristicCache[AccessoryIDs[i]] = Acc.getProperties();
+	}
 
-		UTIL.saveCharacteristicCache(CharacteristicCache);
-
-		console.info('Cleaning up Routes...');
-		const RouteKeys = Object.keys(Routes);
-		RouteKeys.forEach((AE) => {
-			Routes[AE].close('appclose');
-		});
-
-		resolve();
-	});
+	UTIL.saveCharacteristicCache(CharacteristicCache);
 }
 
-// Bridge Class
-let Bridge;
+function exitHandler() {
+	console.info('Unpublishing Accessories...');
+	Bridge.unpublish(false);
 
-// Routes
-const Routes = {};
+	saveCache(true);
 
-// Load up cache (if available)
-const Cache = UTIL.getCharacteristicCache();
+	console.info('Cleaning up Routes...');
+	const RouteKeys = Object.keys(Routes);
+	RouteKeys.forEach((AE) => {
+		Routes[AE].close('appclose');
+	});
 
-// Accessories
-const Accesories = {};
-
-// UI Server
-let UIServer;
-
-// MQTT Client
-// eslint-disable-next-line no-unused-vars
-let MQTTC;
+	process.off('SIGINT', exitHandler.bind(null));
+	process.off('SIGTERM', exitHandler.bind(null));
+	process.exit(0);
+}
 
 // Init
 function Init() {
@@ -117,7 +102,7 @@ function Init() {
 			name: 'Switch Accessory Demo',
 			route: 'Output To Console',
 			manufacturer: 'Marcus Davies',
-			model: 'HR 2 Switch',
+			model: 'HR 4 Switch',
 			pincode: `${UTIL.getRndInteger(100, 999)}-${UTIL.getRndInteger(
 				10,
 				99
@@ -159,6 +144,8 @@ function Init() {
 
 	// MQTT Client (+ Start Server)
 	MQTTC = new MQTT.MQTT(Accesories, MQTTDone);
+
+	setInterval(() => saveCache(false), 60000 * 60);
 }
 
 function setupRoutes() {
@@ -181,24 +168,25 @@ function setupRoutes() {
 			.replace(/\//g, '')
 			.replace(/@/g, '');
 		console.log(`Configuring Route : ${RouteNames[i]} (${RouteCFG.type})`);
-		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(
-			RouteCFG,
-			(S, M) => ModuleUpdate(S, M, RouteCFG)
+		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(RouteCFG, (PL) =>
+			ModuleUpdate(PL, RouteCFG)
 		);
 		Routes[RouteNames[i]] = RouteClass;
 	}
 }
 
-function ModuleUpdate(success, message, CFG) {
-	if (success === undefined) {
+function ModuleUpdate(PL, CFG) {
+	if (PL === undefined) {
 		CFG.readyStatus = 'Module is initializing...';
 		CFG.readyRGB = 'orange';
-	} else if (success) {
-		CFG.readyStatus = 'Module is ready.';
-		CFG.readyRGB = 'limegreen';
 	} else {
-		CFG.readyStatus = `Module Error: ${message}`;
-		CFG.readyRGB = 'tomato';
+		if (PL.success) {
+			CFG.readyStatus = 'Module is ready.';
+			CFG.readyRGB = 'limegreen';
+		} else {
+			CFG.readyStatus = `Module Error: ${PL.message}`;
+			CFG.readyRGB = 'tomato';
+		}
 	}
 
 	setTimeout(() => {
