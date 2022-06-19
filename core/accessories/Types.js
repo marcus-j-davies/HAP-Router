@@ -140,6 +140,18 @@ const Types = {
 				label: 'Source Inputs',
 				type: 'array',
 				default: ['HDMI 1', 'HDMI 2', 'HDMI 3']
+			},
+			{
+				id: 'category',
+				label: 'System/Icon Type',
+				type: 'select',
+				options: [
+					'TELEVISION',
+					'TV SET TOP BOX',
+					'TV STREAMING STICK',
+					'AUDIO RECEIVER'
+				],
+				default: 'TELEVISION'
 			}
 		]
 	},

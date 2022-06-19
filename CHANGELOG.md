@@ -17,6 +17,7 @@
     - **New Features**
       - Characteristic values are now written to disc every hour, to ensure most recent values are saved, in case of unexpected termination.
       - Bridge functionality can now be independently switched off.
+      - Television Accessory, can now have different icons.
 
 
   - **3.0.2** 
