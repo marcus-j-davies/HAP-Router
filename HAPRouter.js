@@ -102,7 +102,7 @@ function Init() {
 			name: 'Switch Accessory Demo',
 			route: 'Output To Console',
 			manufacturer: 'Marcus Davies',
-			model: 'HR 2 Switch',
+			model: 'HR 4 Switch',
 			pincode: `${UTIL.getRndInteger(100, 999)}-${UTIL.getRndInteger(
 				10,
 				99
@@ -171,7 +171,6 @@ function setupRoutes() {
 		const RouteClass = new ROUTING.Routes[RouteCFG.type].Class(RouteCFG, (PL) =>
 			ModuleUpdate(PL, RouteCFG)
 		);
-		ModuleUpdate(undefined, RouteCFG);
 		Routes[RouteNames[i]] = RouteClass;
 	}
 }
