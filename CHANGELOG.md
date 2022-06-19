@@ -11,7 +11,8 @@
         ```
     - **Fixes**
       - Fix missing HAPRouter folder at start up.
-      - Fix multi sensor config, affecting other instances of the same accessory type.
+      - Fix multisensor config, affecting other instances of the same accessory type.
+      - Address minor security warnings
 
     - **New Features**
       - Characteristic values are now written to disc every hour, to ensure most recent values are saved, in case of unexpected termination.
