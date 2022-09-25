@@ -4,7 +4,6 @@ const { spawnSync } = require('child_process');
 const { dependencies } = require('../package.json');
 
 let RootPath;
-
 const Routes = {};
 
 const setPath = function (Path) {
