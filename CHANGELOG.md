@@ -1,3 +1,17 @@
+  - **4.1.0** 
+
+    - **Fixes**
+      - Fix incorrect regex expression for module search
+
+    - **New Features**
+      - Add Avahi advertiser
+
+    - **Changes**
+      - Bump various dependencies 
+      - Make Avahi default advertiser 
+      - Renamed **Smart TV** to **AV Device**
+      - Replaced **AV Device** icon
+
   - **4.0.0** 
 
     - **Breaking Changes**

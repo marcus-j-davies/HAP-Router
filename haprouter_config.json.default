@@ -1,5 +1,5 @@
 {
-    "advertiser": "ciao",
+    "advertiser": "avahi",
     "interface": "ALL",
     "bridgeEnabled": true,
     "loginUsername": "admin",
