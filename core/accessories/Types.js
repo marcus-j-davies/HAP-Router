@@ -129,8 +129,8 @@ const Types = {
 		]
 	},
 	TELEVISION: {
-		Label: 'Smart TV',
-		Icon: 'TV.png',
+		Label: 'AV Equipment',
+		Icon: 'AV.png',
 		SupportsRouting: true,
 		Class: TV,
 		Actions: [],

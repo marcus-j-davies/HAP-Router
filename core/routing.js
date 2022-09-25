@@ -18,8 +18,8 @@ const setPath = function (Path) {
 const loadModules = function () {
 	loadStockModules();
 
-	const RegexScope = new RegExp('@.*/haprouter-route-.*');
-	const Regex = new RegExp('haprouter-route-.*');
+	const RegexScope = new RegExp(/^@.*\/haprouter-route-.*$/);
+	const Regex = new RegExp(/^haprouter-route-.*$/);
 
 	const LockPath = PATH.join(RootPath, 'package-lock.json');
 
@@ -58,7 +58,7 @@ const loadModules = function () {
 };
 
 const loadStockModules = function () {
-	const RegexScope = new RegExp('@.*/haprouter-route-.*');
+	const RegexScope = new RegExp(/^@.*\/haprouter-route-.*$/);
 
 	const RPKGS = Object.keys(dependencies)
 		.filter((D) => RegexScope.test(D))
