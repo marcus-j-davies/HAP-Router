@@ -9,8 +9,8 @@
     - **Changes**
       - Bump various dependencies 
       - Make Avahi default advertiser 
-      - Renamed **Smart TV** to **AV Equipment**
-      - Replaced **AV Equipment** icon
+      - Renamed **Smart TV** to **AV Device**
+      - Replaced **AV Device** icon
 
   - **4.0.0** 
 

@@ -129,7 +129,7 @@ const Types = {
 		]
 	},
 	TELEVISION: {
-		Label: 'AV Equipment',
+		Label: 'AV Device',
 		Icon: 'AV.png',
 		SupportsRouting: true,
 		Class: TV,
